@@ -1,33 +1,29 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/Nerdware-LLC">
-    <img src="https://github.com/Nerdware-LLC/.github/blob/main/profile/nerdware_logo.png" alt="Logo" height="120" width="120">
-  </a>
+# Fixit Cloud ☁️
 
-  <!-- PROJECT NAME/HEADER -->
-  <h1 align="center" style="font-size: 50px;">Nerdware Template Repository</h3>
-  <!-- PROJECT TAGLINE -->
-  <p align="center">
-    <strong>🚀 An Awesome Template to Jumpstart Projects 🚀</strong>
-  </p>
-</p>
+Terraform modules for implementing Fixit Cloud architecture.
 
-<!-- PROJECT SHIELDS (space them apart with '&nbsp;' works well)
-<div align="center" style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: space-evenly; padding-top: 10px;">
-  SHIELDS-GO-HERE
-</div>
--->
+**See fixit-cloud-live for the Terragrunt files which implement these modules.**
 
 ---
 
-> ### **_After Initializing a New Repo, Don't Forget to Update the [.gitignore](/.gitignore) !_**
->
-> GitHub has some [awesome templates here](https://github.com/github/gitignore).
+### Network ACL Rule Numbering Outline
 
-## 🗺 Project Layout
+| Rules     | Protocol |    Ports     | CIDR Block           | Public Subnets Ingress | Public Subnets Egress | Private Subnets Ingress | Private Subnets Egress | Notes                   |
+| :-------- | :------: | :----------: | :------------------- | :--------------------: | :-------------------: | :---------------------: | :--------------------: | :---------------------- |
+| 100       |   HTTP   |      80      | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |                         |           ✔️           |                         |
+| 101 - 199 |   HTTP   |      80      | Public Subnets       |                        |                       |           ✔️            |                        | Not used in production  |
+| 200       |  HTTPS   |     443      | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |                         |           ✔️           |                         |
+| 201 - 299 |  HTTPS   |     443      | Public Subnets       |                        |                       |           ✔️            |                        |                         |
+| 300       |   SSH    |      22      | EC2 Instance Connect |           ✔️           |                       |                         |                        | Varies between regions  |
+| 301 - 349 |   SSH    |      22      | Administrator IPs    |           ✔️           |                       |                         |                        | Not used in production  |
+| 350       |   SSH    |      22      | Bastion private IP   |                        |                       |           ✔️            |                        | Not used in production  |
+| 351 - 399 |   SSH    |      22      | Private Subnets      |                        |          ✔️           |                         |                        | Not used in production  |
+| 400 - 499 |    -     |      -       | -                    |                        |                       |                         |                        | Reserved for future use |
+| 500       |    -     | 1024 - 65535 | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |           ✔️            |           ✔️           | Ephemeral ports         |
 
-- [`.github`](/.github) GitHub related files.
+> Note: SSH rules are only used in non-production VPCs that utilize ["pet" instances][pets-meme].
+
+---
 
 ## License
 
@@ -44,5 +40,6 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.Anderson
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
+[pets-meme]: https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/
 [linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
