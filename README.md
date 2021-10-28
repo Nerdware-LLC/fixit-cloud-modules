@@ -1,8 +1,8 @@
-# Fixit Cloud ☁️
+# Fixit Cloud ☁️ MODULES
 
-Terraform modules for implementing Fixit Cloud architecture.
+Terraform modules for defining Fixit Cloud architecture.
 
-**See fixit-cloud-live for the Terragrunt files which implement these modules.**
+**Check out the [fixit-cloud-live][fixit-cloud-live] repo to view the Terragrunt files which implement these modules.**
 
 ---
 
@@ -40,6 +40,7 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.Anderson
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
+[fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
 [pets-meme]: https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/
 [linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
