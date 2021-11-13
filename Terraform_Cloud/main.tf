@@ -20,11 +20,11 @@ locals {
   provided via var.variables_for_all_workspaces are included as well */
   all_vars_with_workspace_ids = flatten([
     for ws_name, ws_config in var.workspaces : [
-      [
+      (ws_config.variables == null ? [] : [
         for ws_var_obj in ws_config.variables : merge(ws_var_obj, {
           workspace_id = tfe_workspace.map[ws_name].id
         })
-      ],
+      ]),
       [ # Here we add the variables in var.variables_for_all_workspaces
         for all_ws_var_obj in var.variables_for_all_workspaces : merge(all_ws_var_obj, {
           workspace_id = tfe_workspace.map[ws_name].id
