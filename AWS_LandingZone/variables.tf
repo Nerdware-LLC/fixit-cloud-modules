@@ -1,0 +1,141 @@
+##################################################
+### INPUT VARIABLES
+
+variable "organization_config" {
+  description = <<-EOF
+  A config object for an AWS Organization. For more info on these
+  parameters, please refer to the documentation for AWS Organizations and
+  the relevant API/CLI commands. Note that "should_enable_all_features"
+  defaults to "true".
+  EOF
+  type = object({
+    should_enable_all_features = optional(bool)
+    org_trusted_services       = list(string)
+    enabled_policy_types       = list(string)
+  })
+}
+
+variable "organizational_units" {
+  description = <<-EOF
+  A list of config objects for orginizational units within an AWS 
+  Organization. The keys of the object are names of OU entities, with each 
+  respective value pointing to the OU's config object with params identifying 
+  the OU's parent entity ("root" by default, or another OU) and optional tags.
+  EOF
+  type = list(object({
+    name   = string
+    parent = optional(string)
+    tags   = optional(map(string))
+  }))
+  validation {
+    condition = alltrue([
+      # Each 'parent' value must be "root"/null, or an existing key
+      for ou_config in var.organizational_units : contains(
+        flatten(["root", null, var.organizational_units[*].name]),
+        ou_config.parent
+      )
+    ])
+    error_message = "All \"parent\" values must either be \"root\", \"null\", or the name of another organizational unit."
+  }
+}
+
+variable "member_accounts" {
+  description = <<-EOF
+  A config object for child/member accounts within an AWS Organization.
+  The keys of the object are names of child accounts, with each respective
+  value pointing to the account's config object with params identifying the
+  parent entity ("root", or an OU) and other attributes. Note that
+  "should_allow_iam_user_access_to_billing" defaults to "true", and
+  "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".
+  EOF
+  type = map(object({
+    parent                                  = string
+    email                                   = string
+    should_allow_iam_user_access_to_billing = optional(bool)
+    org_account_access_role_name            = optional(string)
+    tags                                    = optional(map(string))
+  }))
+}
+
+variable "admin_sso_config" {
+  description = <<-EOF
+  An object for configuring administrator access to accounts via AWS SSO.
+  Please note that SSO requires some setup in the console; for example, 
+  GROUPS and USERS cannot be created via the AWS provider - they must be 
+  created beforehand. For an overview of the default config values, please 
+  refer to the README.
+  EOF
+  type = object({
+    sso_group_name             = optional(string)
+    permission_set_name        = optional(string)
+    permission_set_description = optional(string)
+    permission_set_tags        = optional(map(string))
+    session_duration           = optional(number)
+  })
+  default = {}
+  validation {
+    condition = anytrue([ # Either a number between 1-12, OR null.
+      (
+        tonumber(var.admin_sso_config.session_duration) >= 1 &&
+        tonumber(var.admin_sso_config.session_duration) <= 12
+      ),
+      var.admin_sso_config.session_duration == null
+    ])
+    error_message = "\"session_duration\", if provided, must be a number between 1-12."
+  }
+}
+
+variable "service_control_policies" {
+  description = <<-EOF
+  A map of SCP policy names with config object values. The "target" property
+  indicates to which organization entity the policy should be attached; valid
+  values are "root" and the name of any OU. For more info, please refer to 
+  AWS documentation for SCPs and IAM policies.
+  EOF
+  type = map(object({
+    target      = string
+    description = optional(string)
+    statements = list(object({
+      Sid       = string
+      Effect    = string
+      Action    = optional(list(string))
+      NotAction = optional(list(string))
+      Resource  = optional(list(string))
+      Condition = optional(any)
+    }))
+    tags = optional(map(string))
+  }))
+}
+
+variable "management_policies" {
+  description = <<-EOF
+  Map policy names to management policy config objects to provision 
+  organization management policies. The "target" property indicates to which 
+  organization entity the policy should be attached; valid values are "root" 
+  and the name of any OU. The "type" for each policy config object can be 
+  one of the following: AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY, or 
+  TAG_POLICY. Please refer to AWS documentation for info regarding how to 
+  structure each policy type.
+  EOF
+  type = map(object({
+    target      = string
+    type        = string
+    description = optional(string)
+    content     = any
+    tags        = optional(map(string))
+  }))
+  default = null
+  validation {
+    condition = (
+      var.management_policies == null || alltrue([
+        for policy in values(var.management_policies) : contains(
+          ["AISERVICES_OPT_OUT_POLICY", "BACKUP_POLICY", "TAG_POLICY"],
+          policy.type
+        )
+      ])
+    )
+    error_message = "The \"type\" property for all management policies must be one of \"AISERVICES_OPT_OUT_POLICY\", \"BACKUP_POLICY\", or \"TAG_POLICY\"."
+  }
+}
+
+##################################################
