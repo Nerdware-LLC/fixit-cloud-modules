@@ -8,7 +8,7 @@ data "tfe_organization" "Nerdware" {
 resource "tfe_workspace" "map" {
   for_each = var.workspaces
 
-  organization      = tfe_organization.Nerdware.name
+  organization      = data.tfe_organization.Nerdware.name
   name              = each.key
   description       = each.value.description
   working_directory = each.value.modules_repo_dir
