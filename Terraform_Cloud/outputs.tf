@@ -7,8 +7,9 @@ output "Organization" {
 
 output "Workspaces" {
   value = {
-    for key, value in tfe_workspace.map : key => value
-    if !can(nonsensitive(value)) && key != "vcs_repo"
+    for ws_name, ws_config in tfe_workspace.map : ws_name => {
+      for key, value in ws_config : key => value if !can(nonsensitive(value)) && key != "vcs_repo"
+    }
   }
 }
 
