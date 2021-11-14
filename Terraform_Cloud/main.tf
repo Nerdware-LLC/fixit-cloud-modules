@@ -8,10 +8,20 @@ data "tfe_organization" "Nerdware" {
 resource "tfe_workspace" "map" {
   for_each = var.workspaces
 
-  organization      = data.tfe_organization.Nerdware.name
-  name              = each.key
-  description       = each.value.description
-  working_directory = each.value.modules_repo_dir
+  organization        = data.tfe_organization.Nerdware.name
+  name                = each.key
+  description         = each.value.description
+  working_directory   = each.value.modules_repo_dir
+  allow_destroy_plan  = each.value.is_destroyable == true
+  speculative_enabled = each.value.is_speculative_plan_enabled == true
+  queue_all_runs      = false
+
+  vcs_repo {
+    identifier = "Nerdware-LLC/fixit-cloud-modules"
+    # The below variable is stored/provided by TF Cloud - do not fiddle with it.
+    oauth_token_id     = var.fixit-cloud-modules-repo_github-oauth-token-id
+    ingress_submodules = false
+  }
 }
 
 locals {
