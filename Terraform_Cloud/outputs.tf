@@ -7,9 +7,9 @@ output "Organization" {
 
 locals {
   workspaces_output = {
-    for ws_name, ws_config in tfe_workspace.map : ws_name => {
+    for ws_name, ws_config in tfe_workspace.map : ws_name => nonsensitive({
       for key, value in ws_config : key => value if !can(nonsensitive(value)) && key != "vcs_repo"
-    }
+    })
   }
 }
 
