@@ -48,6 +48,7 @@ variable "fixit-cloud-modules-repo_github-oauth-token-id" {
   exists solely to silence CLI warnings/errors.
   EOF
   type        = string
+  sensitive   = true
 }
 
 ###################################################
