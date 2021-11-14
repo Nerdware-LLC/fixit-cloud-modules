@@ -6,7 +6,12 @@ output "Organization" {
 }
 
 output "Workspaces" {
-  value = tfe_workspace.map
+  value = {
+    for key, value in tfe_workspace.map : key => value
+    if k != "vcs_repo"
+  }
+  /* The "vcs_repo" object is filtered out because it 
+  contains sensitive variable value "oauth_token_id" */
 }
 
 ###################################################
