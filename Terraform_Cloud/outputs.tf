@@ -5,16 +5,9 @@ output "Organization" {
   value = data.tfe_organization.Nerdware
 }
 
-locals {
-  workspaces_output = nonsensitive({
-    for ws_name, ws_config in tfe_workspace.map : ws_name => nonsensitive({
-      for key, value in ws_config : key => value if !can(nonsensitive(value)) && key != "vcs_repo"
-    })
-  })
-}
-
 output "Workspaces" {
-  value = local.workspaces_output
+  value     = tfe_workspace.map
+  sensitive = true
 }
 
 ###################################################
