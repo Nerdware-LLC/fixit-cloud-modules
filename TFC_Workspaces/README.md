@@ -1,4 +1,4 @@
-# Terraform Cloud
+# Terraform Cloud Workspaces
 
 Terraform module for managing Terraform Cloud workspaces and variables.
 
