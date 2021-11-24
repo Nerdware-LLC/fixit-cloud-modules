@@ -85,56 +85,34 @@ variable "admin_sso_config" {
   }
 }
 
-variable "service_control_policies" {
+variable "organization_policies" {
   description = <<-EOF
-  A map of SCP policy names with config object values. The "target" property
-  indicates to which organization entity the policy should be attached; valid
-  values are "root" and the name of any OU. For more info, please refer to 
-  AWS documentation for SCPs and IAM policies.
-  EOF
-  type = map(object({
-    target      = string
-    description = optional(string)
-    statements = list(object({
-      Sid       = string
-      Effect    = string
-      Action    = optional(list(string))
-      NotAction = optional(list(string))
-      Resource  = optional(list(string))
-      Condition = optional(any)
-    }))
-    tags = optional(map(string))
-  }))
-}
-
-variable "management_policies" {
-  description = <<-EOF
-  Map policy names to management policy config objects to provision 
-  organization management policies. The "target" property indicates to which 
-  organization entity the policy should be attached; valid values are "root" 
-  and the name of any OU. The "type" for each policy config object can be 
-  one of the following: AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY, or 
-  TAG_POLICY. Please refer to AWS documentation for info regarding how to 
-  structure each policy type.
+  Map policy names to organization policy config objects to provision 
+  organization policies. The "target" property indicates to which 
+  organization entity the policy should be attached; valid values are "root" and 
+  the name of any OU. The "type" for each policy config object can be one one of 
+  the following: SERVICE_CONTROL_POLICY, AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY, 
+  or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs 
+  for info regarding how to structure each policy type.
   EOF
   type = map(object({
     target      = string
     type        = string
     description = optional(string)
-    content     = any
+    statement   = string
     tags        = optional(map(string))
   }))
   default = null
   validation {
     condition = (
-      var.management_policies == null || alltrue([
-        for policy in values(var.management_policies) : contains(
-          ["AISERVICES_OPT_OUT_POLICY", "BACKUP_POLICY", "TAG_POLICY"],
+      var.organization_policies == null || alltrue([
+        for policy in values(var.organization_policies) : contains(
+          ["SERVICE_CONTROL_POLICY", "AISERVICES_OPT_OUT_POLICY", "BACKUP_POLICY", "TAG_POLICY"],
           policy.type
         )
       ])
     )
-    error_message = "The \"type\" property for all management policies must be one of \"AISERVICES_OPT_OUT_POLICY\", \"BACKUP_POLICY\", or \"TAG_POLICY\"."
+    error_message = "Invalid \"type\" property on one or more organization policies."
   }
 }
 

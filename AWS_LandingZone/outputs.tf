@@ -13,12 +13,8 @@ output "Organization_Member_Accounts" {
   value = aws_organizations_account.map
 }
 
-output "Service_Control_Policies" {
-  value = aws_organizations_policy.Service_Control_Policies
-}
-
-output "Management_Policies" {
-  value = aws_organizations_policy.Management_Policies
+output "Organization_Policies" {
+  value = aws_organizations_policy.map
 }
 
 ##################################################
