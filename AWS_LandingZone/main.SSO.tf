@@ -43,8 +43,8 @@ data "aws_identitystore_group" "Admins_SSO_Group" {
 resource "aws_ssoadmin_account_assignment" "map" {
   for_each = aws_organizations_account.map # keys --> account names
 
-  instance_arn       = data.aws_ssoadmin_permission_set.AdministratorAccess.instance_arn
-  permission_set_arn = data.aws_ssoadmin_permission_set.AdministratorAccess.arn
+  instance_arn       = aws_ssoadmin_permission_set.AdministratorAccess.instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.AdministratorAccess.arn
 
   principal_type = "GROUP"
   principal_id   = data.aws_identitystore_group.Admins_SSO_Group.group_id
