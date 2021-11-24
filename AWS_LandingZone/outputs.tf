@@ -6,7 +6,7 @@ output "Organization" {
 }
 
 output "Organizational_Units" {
-  value = aws_organizations_organizational_unit.map
+  value = local.all_org_units
 }
 
 output "Organization_Member_Accounts" {

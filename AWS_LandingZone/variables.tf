@@ -42,9 +42,11 @@ variable "member_accounts" {
   A config object for child/member accounts within an AWS Organization.
   The keys of the object are names of child accounts, with each respective
   value pointing to the account's config object with params identifying the
-  parent entity ("root", or an OU) and other attributes. Note that
-  "should_allow_iam_user_access_to_billing" defaults to "true", and
-  "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".
+  parent organizational unit and other attributes. Note that best practices
+  entails attaching organization policies to OUs - not accounts - so this
+  module does not permit member accounts to have a "parent" value of "root".
+  The "should_allow_iam_user_access_to_billing" property defaults to "true", 
+  and "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".
   EOF
   type = map(object({
     parent                                  = string
@@ -53,6 +55,12 @@ variable "member_accounts" {
     org_account_access_role_name            = optional(string)
     tags                                    = optional(map(string))
   }))
+  validation {
+    condition = alltrue([
+      for parent in values(var.member_accounts)[*].parent : parent != "root"
+    ])
+    error_message = "All \"parent\" values must be the name of an organizational unit, not \"root\"."
+  }
 }
 
 variable "admin_sso_config" {
