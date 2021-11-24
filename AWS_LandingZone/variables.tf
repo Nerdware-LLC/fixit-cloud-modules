@@ -17,25 +17,23 @@ variable "organization_config" {
 
 variable "organizational_units" {
   description = <<-EOF
-  A list of config objects for orginizational units within an AWS 
-  Organization. The keys of the object are names of OU entities, with each 
+  A map of config objects for orginizational units within an AWS 
+  Organization. The keys of the map are names of OU entities, with each 
   respective value pointing to the OU's config object with params identifying 
-  the OU's parent entity ("root" by default, or another OU) and optional tags.
+  the OU's parent entity ("root" or the name of another OU) and optional tags.
   EOF
-  type = list(object({
-    name   = string
-    parent = optional(string)
+  type = map(object({
+    parent = string
     tags   = optional(map(string))
   }))
   validation {
     condition = alltrue([
-      # Each 'parent' value must be "root"/null, or an existing key.
-      for ou_config in var.organizational_units : (can(lookup(ou_config, "parent"))
-        ? contains(flatten(["root", null, var.organizational_units[*].name]), ou_config.parent)
-        : true
+      for org_unit_parent in values(var.organizational_units)[*].parent : contains(
+        flatten(["root", keys(var.organizational_units)]),
+        org_unit_parent
       )
     ])
-    error_message = "All \"parent\" values must either be \"root\", \"null\", or the name of another organizational unit."
+    error_message = "All \"parent\" values must either be \"root\" or the name of another organizational unit."
   }
 }
 

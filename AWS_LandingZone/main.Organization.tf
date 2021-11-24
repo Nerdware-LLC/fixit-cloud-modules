@@ -12,13 +12,12 @@ resource "aws_organizations_organization" "this" {
   enabled_policy_types          = var.organization_config.enabled_policy_types
 }
 
+# Organizational Units
 resource "aws_organizations_organizational_unit" "map" {
-  for_each = {
-    for ou_config in var.organizational_units : ou_config.name => ou_config
-  }
+  for_each = var.organizational_units
 
   name = each.key
-  parent_id = (contains(["root", null], each.value.parent)
+  parent_id = (each.value.parent == "root"
     ? aws_organizations_organization.this.master_account_id
     : aws_organizations_organizational_unit.map[each.value.parent].id
   )
