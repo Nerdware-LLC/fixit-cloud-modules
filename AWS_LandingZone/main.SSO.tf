@@ -16,7 +16,7 @@ resource "aws_ssoadmin_permission_set" "AdministratorAccess" {
     ? "PT${var.admin_sso_config.session_duration}H"
     : "PT12H"
   )
-  tags = var.admin_sso_config.tags
+  tags = var.admin_sso_config.permission_set_tags
 }
 
 # Attach the AdministratorAccess managed IAM policy to the above PermSet
