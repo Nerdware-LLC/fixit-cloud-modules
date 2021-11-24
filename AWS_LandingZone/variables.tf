@@ -30,10 +30,10 @@ variable "organizational_units" {
   validation {
     condition = alltrue([
       # Each 'parent' value must be "root"/null, or an existing key
-      for ou_config in var.organizational_units : contains(
-        flatten(["root", null, var.organizational_units[*].name]),
-        ou_config.parent
-      )
+      for ou_config in var.organizational_units : anytrue([
+        contains(flatten(["root", var.organizational_units[*].name]), ou_config.parent),
+        ou_config.parent == null
+      ])
     ])
     error_message = "All \"parent\" values must either be \"root\", \"null\", or the name of another organizational unit."
   }
