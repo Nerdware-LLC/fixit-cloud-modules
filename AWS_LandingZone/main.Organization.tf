@@ -67,7 +67,11 @@ resource "aws_organizations_organizational_unit" "Level_3_OUs" {
 }
 
 locals {
-  # This local is used in aws_organizations_account resource, as well as OU output.
+  /* This local is used by
+    - resource aws_organizations_account
+    - resource aws_organizations_policy_attachment
+    - output   Organizational_Units
+  */
   all_org_units = merge(
     aws_organizations_organizational_unit.Level_1_OUs,
     aws_organizations_organizational_unit.Level_2_OUs,
