@@ -46,7 +46,7 @@ resource "aws_organizations_organizational_unit" "Level_1_OUs" {
   for_each = local.Level_1_OUs
 
   name      = each.key
-  parent_id = one(aws_organizations_organization.this.roots[0]).id
+  parent_id = one(aws_organizations_organization.this.roots).id
   tags      = each.value.tags
 }
 
