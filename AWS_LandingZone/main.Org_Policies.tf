@@ -14,13 +14,8 @@ resource "aws_organizations_policy" "map" {
   name        = each.key
   description = each.value.description
   type        = each.value.type
-
-  content = jsonencode({
-    Version   = "2012-10-17"
-    Statement = jsondecode(each.value.statement)
-  })
-
-  tags = each.value.tags
+  content     = jsondecode(each.value.statement)
+  tags        = each.value.tags
 }
 
 resource "aws_organizations_policy_attachment" "map" {
