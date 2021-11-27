@@ -14,7 +14,7 @@ resource "aws_organizations_policy" "map" {
   name        = each.key
   description = each.value.description
   type        = each.value.type
-  content     = jsondecode(each.value.statement)
+  content     = jsonencode(each.value.statement)
   tags        = each.value.tags
 }
 
