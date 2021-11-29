@@ -23,7 +23,7 @@ resource "aws_organizations_policy_attachment" "map" {
 
   policy_id = aws_organizations_policy.map[each.key].id
   target_id = (each.value.target == "root"
-    ? aws_organizations_organization.this.master_account_id
+    ? one(aws_organizations_organization.this.roots).id
     : local.all_org_units[each.value.target].id
   )
 }
