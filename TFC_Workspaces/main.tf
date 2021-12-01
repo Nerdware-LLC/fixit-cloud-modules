@@ -33,7 +33,7 @@ resource "tfe_workspace" "map" {
 }
 
 locals {
-  /* This local provides a flat list of all workspace variable configs, along 
+  /* This local provides a flat list of all workspace variable configs, along
   with each variables respective "workspace_id" value. Note that variables
   provided via var.variables_for_all_workspaces are included as well */
   all_vars_with_workspace_ids = flatten([
