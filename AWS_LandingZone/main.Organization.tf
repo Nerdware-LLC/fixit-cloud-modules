@@ -17,11 +17,11 @@ resource "aws_organizations_organization" "this" {
 
 locals {
   /* TODO move the below explainer to the README
-  To avoid CYCLE ERRORs in nested organizational_unit resources, 
-  we need to have separate resource blocks - one for each nesting depth 
+  To avoid CYCLE ERRORs in nested organizational_unit resources,
+  we need to have separate resource blocks - one for each nesting depth
   within the organization's structure. AWS allows organizations to have a
   maximum nesting depth of 5, which includes the root account as well as
-  account leaf-nodes within the org tree. Therefore, our implementation 
+  account leaf-nodes within the org tree. Therefore, our implementation
   can provide 3 OU nesting levels:
       Level_1   --> OUs that are direct children of root
       Level_2   --> OUs that are direct children of L1 OUs
