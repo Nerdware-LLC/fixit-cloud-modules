@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      # Git Style
+      - id: check-added-large-files # default=500kb
+        alias: check-added-large-files-500kb
+      - id: check-merge-conflict
+      - id: check-vcs-permalinks
+      - id: forbid-new-submodules
+      # TODO Upon deploying into production, add "no-commit-to-branch" to protect "main".
+
+      # Common Errors
+      - id: check-executables-have-shebangs
+      - id: check-yaml
+      - id: end-of-file-fixer # Ensures files end in newline char
+        alias: end-of-file-newline-fixer
+      - id: trailing-whitespace # Trims superfluous whitespace from eol
+        alias: trailing-whitespace-eol-trimmer
+        args: [--markdown-linebreak-ext=md]
+
+      # Security
+      - id: detect-aws-credentials
+        args: ["--allow-missing-credentials"]
+      - id: detect-private-key
+
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.17
+    hooks:
+      - id: shellcheck
+      - id: terraform-fmt
+      - id: tflint
+      # TODO add TFSec
