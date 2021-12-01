@@ -4,8 +4,7 @@
 # Docs => https://github.com/terraform-linters/tflint/blob/master/docs
 
 config {
-  plugin_dir = "./.tflint.d/plugins"
-  module     = true
+  module = true
 }
 
 plugin "aws" {
