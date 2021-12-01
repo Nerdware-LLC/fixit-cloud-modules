@@ -1,0 +1,18 @@
+checks:
+  - code: CUSTOM_TFSEC_CHECK_1
+    description: Custom check to ensure EBS encryption is globally required
+    impact: <
+      By not requiring all EBS volumes to be encrypted, some data may be placed at risk
+    resolution: Enable default EBS encryption
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - aws_ebs_encryption_by_default
+    severity: ERROR
+    matchSpec:
+      name: enabled
+      action: equals
+      value: true
+    errorMessage: Global default EBS encryption must be enabled
+    relatedLinks:
+      - https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_encryption_by_default
