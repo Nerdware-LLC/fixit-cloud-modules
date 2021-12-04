@@ -121,19 +121,4 @@ variable "organization_policies" {
   }
 }
 
-variable "org_cloudtrail_config" {
-  type = object({
-    trail_name = string
-    cloudwatch_delivery_role_config = object({
-      name = string
-      tags = optional(map(string))
-    })
-    s3_bucket_config = object({
-      name   = string
-      region = string
-      tags   = optional(map(string))
-    })
-  })
-}
-
 ######################################################################
