@@ -1,18 +1,14 @@
-##################################################
+######################################################################
 ### AWS ORGANIZATION
 
 # The root "management" account
 resource "aws_organizations_organization" "this" {
-  feature_set = (
-    coalesce(var.organization_config.should_enable_all_features, true)
-    ? "ALL"
-    : "CONSOLIDATED_BILLING"
-  )
+  feature_set                   = "ALL"
   aws_service_access_principals = var.organization_config.org_trusted_services
   enabled_policy_types          = var.organization_config.enabled_policy_types
 }
 
-#--------------------------------------------------
+#---------------------------------------------------------------------
 # Organizational Units
 
 locals {
@@ -105,4 +101,4 @@ resource "aws_organizations_account" "map" {
   }
 }
 
-##################################################
+######################################################################

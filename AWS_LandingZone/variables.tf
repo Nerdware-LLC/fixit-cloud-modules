@@ -1,4 +1,4 @@
-##################################################
+######################################################################
 ### INPUT VARIABLES
 
 variable "organization_config" {
@@ -9,17 +9,16 @@ variable "organization_config" {
   defaults to "true".
   EOF
   type = object({
-    should_enable_all_features = optional(bool)
-    org_trusted_services       = list(string)
-    enabled_policy_types       = list(string)
+    org_trusted_services = list(string)
+    enabled_policy_types = list(string)
   })
 }
 
 variable "organizational_units" {
   description = <<-EOF
-  A map of config objects for orginizational units within an AWS 
-  Organization. The keys of the map are names of OU entities, with each 
-  respective value pointing to the OU's config object with params identifying 
+  A map of config objects for orginizational units within an AWS
+  Organization. The keys of the map are names of OU entities, with each
+  respective value pointing to the OU's config object with params identifying
   the OU's parent entity ("root" or the name of another OU) and optional tags.
   EOF
   type = map(object({
@@ -45,7 +44,7 @@ variable "member_accounts" {
   parent organizational unit and other attributes. Note that best practices
   entails attaching organization policies to OUs - not accounts - so this
   module does not permit member accounts to have a "parent" value of "root".
-  The "should_allow_iam_user_access_to_billing" property defaults to "true", 
+  The "should_allow_iam_user_access_to_billing" property defaults to "true",
   and "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".
   EOF
   type = map(object({
@@ -66,9 +65,9 @@ variable "member_accounts" {
 variable "admin_sso_config" {
   description = <<-EOF
   An object for configuring administrator access to accounts via AWS SSO.
-  Please note that SSO requires some setup in the console; for example, 
-  GROUPS and USERS cannot be created via the AWS provider - they must be 
-  created beforehand. For an overview of the default config values, please 
+  Please note that SSO requires some setup in the console; for example,
+  GROUPS and USERS cannot be created via the AWS provider - they must be
+  created beforehand. For an overview of the default config values, please
   refer to the README.
   EOF
   type = object({
@@ -93,12 +92,12 @@ variable "admin_sso_config" {
 
 variable "organization_policies" {
   description = <<-EOF
-  Map policy names to organization policy config objects to provision 
-  organization policies. The "target" property indicates to which 
-  organization entity the policy should be attached; valid values are "root" and 
-  the name of any OU. The "type" for each policy config object can be one one of 
-  the following: SERVICE_CONTROL_POLICY, AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY, 
-  or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs 
+  Map policy names to organization policy config objects to provision
+  organization policies. The "target" property indicates to which
+  organization entity the policy should be attached; valid values are "root" and
+  the name of any OU. The "type" for each policy config object can be one one of
+  the following: SERVICE_CONTROL_POLICY, AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY,
+  or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs
   for info regarding how to structure each policy type.
   EOF
   type = map(object({
@@ -122,4 +121,19 @@ variable "organization_policies" {
   }
 }
 
-##################################################
+variable "org_cloudtrail_config" {
+  type = object({
+    trail_name = string
+    cloudwatch_delivery_role_config = object({
+      name = string
+      tags = optional(map(string))
+    })
+    s3_bucket_config = object({
+      name   = string
+      region = string
+      tags   = optional(map(string))
+    })
+  })
+}
+
+######################################################################
