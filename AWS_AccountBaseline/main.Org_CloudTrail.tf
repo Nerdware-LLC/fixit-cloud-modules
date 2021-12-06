@@ -296,7 +296,7 @@ resource "aws_s3_bucket_public_access_block" "Org_CloudTrail_S3_Bucket" {
 
 # BEST PRACTICES: attach a resource policy to the bucket, only allow the Org_CloudTrail ARN
 resource "aws_s3_bucket_policy" "Org_CloudTrail_S3_Bucket" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
+  count = local.IS_LOG_ARCHIVE_ACCOUNT && aws_cloudtrail.Org_CloudTrail != null ? 1 : 0
 
   bucket = one(aws_s3_bucket.Org_CloudTrail_S3_Bucket).id
 
