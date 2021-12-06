@@ -15,7 +15,7 @@ variable "org_cloudtrail" {
   })
 }
 
-variable "org_cloudtrail_s3_buckets" {
+variable "org_cloudtrail_s3_bucket" {
   type = object({
     name = string
     tags = optional(map(string))
