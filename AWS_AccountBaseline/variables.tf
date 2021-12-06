@@ -19,6 +19,10 @@ variable "org_cloudtrail_s3_bucket" {
   type = object({
     name = string
     tags = optional(map(string))
+    access_logs_s3 = object({
+      name = string
+      tags = optional(map(string))
+    })
   })
 }
 
