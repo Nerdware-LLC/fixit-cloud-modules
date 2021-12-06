@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "Org_CloudTrail_S3_Buckets" {
       : {}
     )
     content {
-      target_bucket = logging.value["target_bucket"]
+      target_bucket = logging.value
     }
   }
 
