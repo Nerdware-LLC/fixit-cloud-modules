@@ -10,7 +10,17 @@ output "Org_CloudTrail_KMS_Key" {
 }
 
 output "Org_CloudTrail_S3_Bucket" {
-  value = one(aws_s3_bucket.Org_CloudTrail_S3_Bucket)
+  value = (length(aws_s3_bucket.Org_CloudTrail_S3_Buckets) > 0
+    ? aws_s3_bucket.Org_CloudTrail_S3_Buckets[1]
+    : null
+  )
+}
+
+output "Org_CloudTrail_S3_Access_Logs_Bucket" {
+  value = (length(aws_s3_bucket.Org_CloudTrail_S3_Buckets) > 0
+    ? aws_s3_bucket.Org_CloudTrail_S3_Buckets[0]
+    : null
+  )
 }
 
 output "CloudWatch_LogGroup" {
