@@ -23,7 +23,7 @@ resource "tfe_workspace" "map" {
       : {}
     )
     content {
-      identifier = vcs_repo.value["repo"]
+      identifier = vcs_repo.value
       # The below variable is stored/provided by TF Cloud - do not fiddle with it.
       oauth_token_id     = var.fixit-cloud-modules-repo_github-oauth-token-id
       ingress_submodules = false
