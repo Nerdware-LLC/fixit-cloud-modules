@@ -14,7 +14,7 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   s3_bucket_name = var.org_cloudtrail_s3_bucket.name
   # TODO As of 12/6/21, this rule always err's out. Rm the 'ignore' directive once they fix it.
   #tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
-  kms_key_id                 = one(aws_kms_key.Org_CloudTrail_KMS_Key).key_id
+  kms_key_id                 = one(aws_kms_key.Org_CloudTrail_KMS_Key).arn
   enable_log_file_validation = true
 
   # CloudTrail requires the Log Stream wildcard as shown below
