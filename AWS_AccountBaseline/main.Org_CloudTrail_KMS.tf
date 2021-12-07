@@ -16,45 +16,53 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
   policy_id = "Key policy created for Org_CloudTrail_KMS_Key"
 
   statement {
-    sid = "Enable IAM User Permissions"
-
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
     principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${var.account_params.id}:root"
-      ]
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.account_params.id}:root"]
     }
     actions   = ["kms:*"]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
   }
 
   statement {
-    sid = "Allow CloudTrail to encrypt logs"
+    sid    = "Allow CloudTrail to encrypt logs"
+    effect = "Allow"
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
     actions   = ["kms:GenerateDataKey*"]
-    resources = ["*"]
+    resources = ["arn:aws:kms:${local.aws_region}:${var.account_params.id}:key/${aws_kms_key.Org_CloudTrail_KMS_Key.id}"]
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${var.account_params.id}:trail/*"]
     }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:cloudtrail:${local.aws_region}:${var.account_params.id}:trail/${var.org_cloudtrail.name}"]
+    }
   }
 
+  # TODO review this statement; not sure if this is what we want.
   statement {
-    sid = "Allow CloudTrail to describe key"
+    sid    = "Allow CloudTrail to describe key"
+    effect = "Allow"
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
     actions   = ["kms:DescribeKey"]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
   }
 
+  # TODO review this statement; not sure if this is what we want.
   statement {
-    sid = "Allow principals in the account to decrypt log files"
+    sid    = "Allow principals in the account to decrypt log files"
+    effect = "Allow"
     principals {
       type        = "AWS"
       identifiers = ["*"]
@@ -63,7 +71,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       "kms:Decrypt",
       "kms:ReEncryptFrom"
     ]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
@@ -76,14 +84,16 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
     }
   }
 
+  # TODO review this statement; not sure if this is what we want.
   statement {
-    sid = "Allow alias creation during setup"
+    sid    = "Allow alias creation during setup"
+    effect = "Allow"
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["*"] # TODO all principals?
     }
     actions   = ["kms:CreateAlias"]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
@@ -96,17 +106,19 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
     }
   }
 
+  # TODO review this statement; not sure if this is what we want.
   statement {
-    sid = "Enable cross account log decryption"
+    sid    = "Enable cross account log decryption"
+    effect = "Allow"
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["*"] # TODO all principals?
     }
     actions = [
       "kms:Decrypt",
       "kms:ReEncryptFrom"
     ]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
@@ -119,18 +131,27 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
     }
   }
 
-  # https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-permissions-for-sns-notifications.html
+  # CloudWatch Log Group:
   statement {
-    sid = "Allow CloudTrail to send notifications to the encrypted SNS topic"
+    sid    = ""
+    effect = "Allow"
     principals {
       type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
+      identifiers = ["logs.${local.aws_region}.amazonaws.com"]
     }
     actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:Decrypt"
+      "kms:Describe*"
     ]
-    resources = ["*"]
+    resources = ["*"] # TODO all resources?
+    condition {
+      test     = "ArnEquals"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["arn:aws:logs:${local.aws_region}:${var.account_params.id}:log-group:${local.cw_log_grp.name}"]
+    }
   }
 }
 
