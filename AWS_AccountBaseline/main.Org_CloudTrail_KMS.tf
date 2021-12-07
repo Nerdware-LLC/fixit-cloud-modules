@@ -33,8 +33,12 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-    actions   = ["kms:GenerateDataKey*"]
-    resources = ["arn:aws:kms:${local.aws_region}:${var.account_params.id}:key/${aws_kms_key.Org_CloudTrail_KMS_Key.id}"]
+    actions = ["kms:GenerateDataKey*"]
+
+    # TODO Below change was made to fix circular dep issue; update key policy later.
+    # resources = ["arn:aws:kms:${local.aws_region}:${var.account_params.id}:key/${aws_kms_key.Org_CloudTrail_KMS_Key.id}"]
+    resources = ["arn:aws:kms:${local.aws_region}:${var.account_params.id}:key/*"]
+
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
