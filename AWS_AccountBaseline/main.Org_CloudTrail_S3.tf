@@ -120,11 +120,15 @@ resource "aws_s3_bucket_policy" "Org_CloudTrail_S3_Bucket" {
           Sid       = "OnlyAllowOrgCloudTrailWrite"
           Effect    = "Allow"
           Principal = { Service = "cloudtrail.amazonaws.com" }
-          Action    = "s3:PutObject",
-          Resource  = aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn,
+          Action = [
+            "s3:PutObject",
+            "s3:PutObjectAcl",
+            "S3:GetObject"
+          ]
+          Resource = "${aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn}/*"
           Condition = {
             StringEquals = {
-              "aws:SourceArn" = aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn
+              "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${var.account_params.id}:trail/${var.org_cloudtrail.name}"
               "s3:x-amz-acl"  = "bucket-owner-full-control"
             }
           }
