@@ -121,7 +121,7 @@ resource "aws_s3_bucket_policy" "Org_CloudTrail_S3_Bucket" {
           Effect    = "Allow"
           Principal = { Service = "cloudtrail.amazonaws.com" }
           Action    = "s3:PutObject",
-          Resource  = "${aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn}/Org_CloudTrail/*",
+          Resource  = aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn,
           Condition = {
             StringEquals = {
               "aws:SourceArn" = aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn
