@@ -50,9 +50,14 @@ resource "aws_iam_role_policy" "CloudTrail-CloudWatch-Delivery_Policy" {
 }
 
 locals {
-  # This local simply helps to shorten long lines in the below policy doc
-  log_grp_stream_arn = [
-    "arn:aws:logs:${local.aws_region}:${var.account_params.id}:log-group:${local.cw_log_grp.name}:log-stream:*"
+  # These locals simply help to shorten long lines in the below policy doc
+  log_stream_COMMON_PREFIX = (
+    "arn:aws:logs:${local.aws_region}:${var.account_params.id}:log-group:${local.cw_log_grp.name}:log-stream"
+  )
+
+  log_grp_stream_arns = [
+    "${local.log_stream_COMMON_PREFIX}:${var.account_params.id}_CloudTrail_${local.aws_region}*",
+    "${local.log_stream_COMMON_PREFIX}:${data.aws_organizations_organization.this.id}_*",
   ]
 }
 
@@ -61,13 +66,13 @@ data "aws_iam_policy_document" "CloudTrail-CloudWatch-Delivery_Policy" {
   statement {
     sid       = "AWSCloudTrailCreateLogStream"
     actions   = ["logs:CreateLogStream"]
-    resources = local.log_grp_stream_arn
+    resources = local.log_grp_stream_arns
   }
 
   statement {
     sid       = "AWSCloudTrailPutLogEvents"
     actions   = ["logs:PutLogEvents"]
-    resources = local.log_grp_stream_arn
+    resources = local.log_grp_stream_arns
   }
 }
 
