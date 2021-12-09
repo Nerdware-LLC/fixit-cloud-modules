@@ -12,11 +12,7 @@ resource "aws_kms_key" "Org_CloudTrail_KMS_Key" {
   }
 }
 
-locals {
-  # TODO Below change was made to fix circular dep issue; update key policy later.
-  # resources = ["arn:aws:kms:${local.aws_region}:${local.root_account_id}:key/${aws_kms_key.Org_CloudTrail_KMS_Key.id}"]
-  kms_key_resource = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:key/*"
-}
+# NOTE: in KMS key policies, all 'resource' values must = "*" (points to the key itself)
 
 data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
   policy_id = "Key policy created for Org_CloudTrail_KMS_Key"
@@ -32,18 +28,18 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       ]
     }
     actions   = ["kms:*"]
-    resources = ["arn:aws:s3:::${var.org_cloudtrail_s3_bucket.name}"]
+    resources = ["*"]
   }
 
   statement {
-    sid    = "Allow CloudTrail to encrypt logs"
+    sid    = "Allow CloudTrail to encrypt logs with this key"
     effect = "Allow"
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
     actions   = ["kms:GenerateDataKey*"]
-    resources = [local.kms_key_resource]
+    resources = ["*"]
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
@@ -64,7 +60,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       identifiers = ["cloudtrail.amazonaws.com"]
     }
     actions   = ["kms:DescribeKey"]
-    resources = [local.kms_key_resource]
+    resources = ["*"]
   }
 
   statement {
@@ -78,7 +74,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       "kms:Decrypt",
       "kms:ReEncryptFrom"
     ]
-    resources = [local.kms_key_resource]
+    resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
@@ -99,7 +95,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       identifiers = ["*"]
     }
     actions   = ["kms:CreateAlias"]
-    resources = [local.kms_key_resource]
+    resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
@@ -123,7 +119,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       "kms:Decrypt",
       "kms:ReEncryptFrom"
     ]
-    resources = [local.kms_key_resource]
+    resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
@@ -151,7 +147,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       "kms:GenerateDataKey*",
       "kms:Describe*"
     ]
-    resources = ["*"] # TODO all resources?
+    resources = ["*"]
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
