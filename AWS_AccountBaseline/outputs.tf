@@ -1,6 +1,32 @@
 ######################################################################
 ### OUTPUTS
 
+# Account Config Outputs:
+
+output "Account_Password_Policy" {
+  description = "The account's password-policy resource object."
+  value       = aws_iam_account_password_policy.Account_PW_Policy
+}
+
+output "Global_Default_EBS_Encryption" {
+  description = "Resource that ensures all EBS volumes are encrypted by default."
+  value       = aws_ebs_encryption_by_default.Global_EBS_Encyption
+}
+
+#---------------------------------------------------------------------
+### Access Analyzer Output:
+
+output "Org_Access_Analyzer" {
+  description = <<-EOF
+  The Organization's Access Analyzer resource object.
+  (will be 'null' for non-root accounts).
+  EOF
+  value       = one(aws_accessanalyzer_analyzer.this)
+}
+
+#---------------------------------------------------------------------
+### CloudTrail Outputs:
+
 output "Org_CloudTrail" {
   description = "The Organization CloudTrail (will be 'null' for non-root accounts)."
   value       = one(aws_cloudtrail.Org_CloudTrail)

@@ -12,6 +12,20 @@ variable "account_params" {
   })
 }
 
+#---------------------------------------------------------------------
+### Access Analyzer Variables:
+
+variable "org_access_analyzer" {
+  description = "Config object for the Organization's Access Analyzer."
+  type = object({
+    name = string
+    tags = optional(map(string))
+  })
+}
+
+#---------------------------------------------------------------------
+### CloudTrail Variables:
+
 variable "org_cloudtrail" {
   description = "Config object for the Organization CloudTrail."
   type = object({
