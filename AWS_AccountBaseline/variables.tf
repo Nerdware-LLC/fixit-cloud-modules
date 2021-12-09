@@ -4,7 +4,8 @@
 variable "account_params" {
   type = object({
     id                     = string
-    is_log_archive_account = optional(bool)
+    log_archive_account_id = string
+    security_account_id    = string
   })
 }
 

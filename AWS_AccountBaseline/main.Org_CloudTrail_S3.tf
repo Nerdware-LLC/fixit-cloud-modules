@@ -35,6 +35,7 @@ resource "aws_s3_bucket" "Org_CloudTrail_S3_Buckets" {
 
   server_side_encryption_configuration {
     rule {
+      bucket_key_enabled = true
       apply_server_side_encryption_by_default {
         sse_algorithm = "AES256"
       }
@@ -128,10 +129,17 @@ resource "aws_s3_bucket_policy" "Org_CloudTrail_S3_Bucket" {
           Resource = "${aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn}/*"
           Condition = {
             StringEquals = {
-              "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${var.account_params.id}:trail/${var.org_cloudtrail.name}"
+              "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
               "s3:x-amz-acl"  = "bucket-owner-full-control"
             }
           }
+        },
+        {
+          Sid       = "PermitAllToRootAccount"
+          Effect    = "Allow"
+          Principal = { "AWS" = ["${local.root_account_id}"] }
+          Action    = "s3:*"
+          Resource  = "${aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn}"
         }
       ]
     })

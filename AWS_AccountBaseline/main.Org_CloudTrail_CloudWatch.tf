@@ -52,11 +52,11 @@ resource "aws_iam_role_policy" "CloudTrail-CloudWatch-Delivery_Policy" {
 locals {
   # These locals simply help to shorten long lines in the below policy doc
   log_stream_COMMON_PREFIX = (
-    "arn:aws:logs:${local.aws_region}:${var.account_params.id}:log-group:${local.cw_log_grp.name}:log-stream"
+    "arn:aws:logs:${local.aws_region}:${local.root_account_id}:log-group:${local.cw_log_grp.name}:log-stream"
   )
 
   log_grp_stream_arns = [
-    "${local.log_stream_COMMON_PREFIX}:${var.account_params.id}_CloudTrail_${local.aws_region}*",
+    "${local.log_stream_COMMON_PREFIX}:${local.root_account_id}_CloudTrail_${local.aws_region}*",
     "${local.log_stream_COMMON_PREFIX}:${data.aws_organizations_organization.this.id}_*",
   ]
 }
