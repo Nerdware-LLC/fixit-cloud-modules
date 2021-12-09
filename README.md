@@ -2,28 +2,38 @@
 
 Terraform modules for defining Fixit Cloud architecture.
 
+[![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
+
 **Check out the [fixit-cloud-live][fixit-cloud-live] repo to view the Terragrunt files which implement these modules.**
 
----
+## Developer Setup
 
-### Network ACL Rule Numbering Outline
+TODO expand upon below instructions
 
-| Rules     | Protocol |    Ports     | CIDR Block           | Public Subnets Ingress | Public Subnets Egress | Private Subnets Ingress | Private Subnets Egress | Notes                   |
-| :-------- | :------: | :----------: | :------------------- | :--------------------: | :-------------------: | :---------------------: | :--------------------: | :---------------------- |
-| 100       |   HTTP   |      80      | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |                         |           ✔️           |                         |
-| 101 - 199 |   HTTP   |      80      | Public Subnets       |                        |                       |           ✔️            |                        | Not used in production  |
-| 200       |  HTTPS   |     443      | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |                         |           ✔️           |                         |
-| 201 - 299 |  HTTPS   |     443      | Public Subnets       |                        |                       |           ✔️            |                        |                         |
-| 300       |   SSH    |      22      | EC2 Instance Connect |           ✔️           |                       |                         |                        | Varies between regions  |
-| 301 - 349 |   SSH    |      22      | Administrator IPs    |           ✔️           |                       |                         |                        | Not used in production  |
-| 350       |   SSH    |      22      | Bastion private IP   |                        |                       |           ✔️            |                        | Not used in production  |
-| 351 - 399 |   SSH    |      22      | Private Subnets      |                        |          ✔️           |                         |                        | Not used in production  |
-| 400 - 499 |    -     |      -       | -                    |                        |                       |                         |                        | Reserved for future use |
-| 500       |    -     | 1024 - 65535 | 0.0.0.0/0 (anywhere) |           ✔️           |          ✔️           |           ✔️            |           ✔️           | Ephemeral ports         |
+1. Clone the project into your local filesystem:
+   ```shell
+   git clone git@github.com:Nerdware-LLC/fixit-cloud-modules.git
+   ```
+2. Ensure [**pre-commit**](https://pre-commit.com/#install) is installed locally.
+3. Run `pre-commit install` to ensure local .git hooks are present.
+4. If developing alongside the **fixit-cloud-live** companion repo (recommended), install relevant binaries:
+   - TFLint:
+   ```shell
+   curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+   ```
+   - TFSec:
+   ```shell
+   wget https://github.com/aquasecurity/tfsec/releases/download/v0.63.1/tfsec-linux-amd64
+   ```
+5. Profit 💰💰💰
 
-> Note: SSH rules are only used in non-production VPCs that utilize ["pet" instances][pets-meme].
+TFLint Rules Docs
+https://github.com/terraform-linters/tflint/tree/master/docs/rules
 
----
+TFSec Docs
+https://github.com/aquasecurity/tfsec
+
+Note: All custom TFSec custom rules must end in `_tfchecks.yaml/json`
 
 ## License
 
@@ -40,7 +50,12 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.Anderson
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
 [fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
 [pets-meme]: https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/
 [linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
+
+```
+
+```
