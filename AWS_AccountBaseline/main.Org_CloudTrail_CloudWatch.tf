@@ -3,9 +3,8 @@
 
 locals {
   # Flatten some references to nested var properties -
-  cw_log_grp         = var.cloudtrail-to-cloudwatch-config.cloudwatch_log_group
-  cw_svc_role        = var.cloudtrail-to-cloudwatch-config.iam_service_role
-  cw_svc_role_policy = var.cloudtrail-to-cloudwatch-config.iam_role_policy
+  cw_log_grp  = var.cloudtrail-to-cloudwatch-config.cloudwatch_log_group
+  cw_svc_role = var.cloudtrail-to-cloudwatch-config.iam_service_role
 }
 
 # This CW log group accepts the Org's CloudTrail event stream
@@ -44,7 +43,7 @@ data "aws_iam_policy_document" "CloudWatch-Delivery_AssumeRole_Policy" {
 resource "aws_iam_role_policy" "CloudTrail-CloudWatch-Delivery_Policy" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name   = local.cw_svc_role_policy.name
+  name   = coalesce(local.cw_svc_role.policy_name, "${local.cw_svc_role.name}-Policy")
   role   = one(aws_iam_role.CloudWatch-Delivery_Role).id
   policy = data.aws_iam_policy_document.CloudTrail-CloudWatch-Delivery_Policy.json
 }
