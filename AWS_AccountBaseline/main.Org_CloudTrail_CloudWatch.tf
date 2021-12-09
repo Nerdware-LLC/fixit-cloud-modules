@@ -7,6 +7,7 @@ locals {
   cw_svc_role = var.cloudtrail-to-cloudwatch-config.iam_service_role
 }
 
+#---------------------------------------------------------------------
 # This CW log group accepts the Org's CloudTrail event stream
 
 resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
@@ -18,6 +19,7 @@ resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
   tags              = local.cw_log_grp.tags
 }
 
+#---------------------------------------------------------------------
 # IAM Service Role to deliver CloudTrail Events to the CloudWatch Log Group:
 
 resource "aws_iam_role" "CloudWatch-Delivery_Role" {
@@ -38,6 +40,7 @@ data "aws_iam_policy_document" "CloudWatch-Delivery_AssumeRole_Policy" {
   }
 }
 
+#---------------------------------------------------------------------
 # The IAM policy allowing the service role to deliver CloudTrail events to the CW log group:
 
 resource "aws_iam_role_policy" "CloudTrail-CloudWatch-Delivery_Policy" {
