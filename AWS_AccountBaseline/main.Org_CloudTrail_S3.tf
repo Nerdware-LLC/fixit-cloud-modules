@@ -102,7 +102,7 @@ resource "aws_s3_bucket_policy" "Org_CloudTrail_S3_Bucket" {
             aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn,
             "${aws_s3_bucket.Org_CloudTrail_S3_Buckets[count.index].arn}/*"
           ]
-          Condition = { Bool = { "aws:SecureTransport" = false } }
+          Condition = { Bool = { "aws:SecureTransport" = tobool(false) } }
         }
       ]
     })

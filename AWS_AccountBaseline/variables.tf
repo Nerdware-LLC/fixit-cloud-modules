@@ -24,6 +24,32 @@ variable "org_access_analyzer" {
 }
 
 #---------------------------------------------------------------------
+### Default VPC Component Variables:
+
+variable "default_vpc_component_tags" {
+  description = <<-EOF
+  In accordance with best practices, this module locks down the default VPC and all
+  its components to ensure all ingress/egress traffic only uses infrastructure with
+  purposefully-designed rules and configs. This variable allows you to customize the
+  tags on these "default" network components; defaults will be used if not provided.
+  EOF
+  type = object({
+    default_vpc            = optional(map(string))
+    default_subnet         = optional(map(string))
+    default_route_table    = optional(map(string))
+    default_network_acl    = optional(map(string))
+    default_security_group = optional(map(string))
+  })
+  default = {
+    default_vpc            = null
+    default_subnet         = null
+    default_route_table    = null
+    default_network_acl    = null
+    default_security_group = null
+  }
+}
+
+#---------------------------------------------------------------------
 ### CloudTrail Variables:
 
 variable "org_cloudtrail" {
