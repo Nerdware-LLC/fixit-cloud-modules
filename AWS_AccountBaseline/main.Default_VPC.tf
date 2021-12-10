@@ -5,8 +5,8 @@ locals {
   default_resource_tags = {
     for default_resource, tags in var.default_vpc_component_tags : default_resource => coalesce(
       tags,
-      { Name = "${join("_", [for sub-str in split("_", default_resource) : title(sub-str)])}-DO_NOT_USE" }
-      # The above line converts "default_subnet" to "Default_Subnet-DO_NOT_USE"
+      { Name = join("_", [for sub-str in split("_", default_resource) : title(sub-str)]) }
+      # The above line converts "default_security_group" to "Default_Security_Group"
     )
   }
 }
