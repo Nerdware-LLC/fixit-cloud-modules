@@ -30,7 +30,8 @@ output "Org_Access_Analyzer" {
 /* NOTE RE DEFAULT VPC COMPONENTS:
     VPC         - Each account gets 1 default VPC, with 3 default subnets. If the
                   default VPC is deleted, it cannot be re-created.
-    Subnets     - Default subnets cannot be created in non-default VPCs.
+    Subnets     - Default subnets cannot be created in non-default VPCs. These
+                  must be deleted manually.
     Sec Grp     - Can't be deleted.
     Route Table - "Main" route table can't be deleted.
     Net ACL     - Can't be deleted.
@@ -39,11 +40,6 @@ output "Org_Access_Analyzer" {
 output "Default_VPC" {
   description = "The account's default VPC resource."
   value       = aws_default_vpc.this
-}
-
-output "Default_Subnets" {
-  description = "A map of the account's default subnets (1/AZ)."
-  value       = aws_default_subnet.map
 }
 
 output "Default_RouteTable" {

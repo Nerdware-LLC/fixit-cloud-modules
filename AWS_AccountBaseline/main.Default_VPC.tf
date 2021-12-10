@@ -18,19 +18,6 @@ resource "aws_default_vpc" "this" {
 }
 
 #---------------------------------------------------------------------
-### Default Subnet:
-
-data "aws_availability_zones" "all" {}
-
-resource "aws_default_subnet" "map" {
-  for_each = toset(data.aws_availability_zones.all.names)
-
-  availability_zone       = each.key
-  map_public_ip_on_launch = false
-  tags                    = local.default_resource_tags["default_subnet"]
-}
-
-#---------------------------------------------------------------------
 ### Default Route Table:
 
 resource "aws_default_route_table" "this" {
