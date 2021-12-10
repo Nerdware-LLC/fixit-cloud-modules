@@ -19,14 +19,16 @@ locals {
   log_archive_account_id = var.account_params.log_archive_account_id
   security_account_id    = var.account_params.security_account_id
 
+  caller_account_id = data.aws_caller_identity.current.account_id
+
   # root (Owns the org's CloudTrail trail)
-  IS_ROOT_ACCOUNT = data.aws_caller_identity.account_id == local.root_account_id
+  IS_ROOT_ACCOUNT = local.caller_account_id == local.root_account_id
 
   # Log-Archive (Owns the S3 to which all logs are sent/aggregated)
-  IS_LOG_ARCHIVE_ACCOUNT = data.aws_caller_identity.account_id == local.log_archive_account_id
+  IS_LOG_ARCHIVE_ACCOUNT = local.caller_account_id == local.log_archive_account_id
 
   # Security (Master GuardDuty account)
-  IS_SECURITY_ACCOUNT = data.aws_caller_identity.account_id == local.security_account_id
+  IS_SECURITY_ACCOUNT = local.caller_account_id == local.security_account_id
 }
 
 ######################################################################
