@@ -2,11 +2,18 @@
 ### Default VPC Components
 
 locals {
+  DEFAULT_RESOURCE_NAMES = {
+    default_vpc            = "Default_VPC"
+    default_route_table    = "Default_Route_Table"
+    default_network_acl    = "Default_Network_ACL"
+    default_security_group = "Default_Security_Group"
+  }
+
   default_resource_tags = {
-    for default_resource, tags in var.default_vpc_component_tags : default_resource => coalesce(
-      tags,
-      { Name = join("_", [for sub-str in split("_", default_resource) : title(sub-str)]) }
-      # The above line converts "default_security_group" to "Default_Security_Group"
+    for resource, tags in var.default_vpc_component_tags : resource => (
+      tags != null
+      ? tags
+      : { Name = local.DEFAULT_RESOURCE_NAMES[resource] }
     )
   }
 }
