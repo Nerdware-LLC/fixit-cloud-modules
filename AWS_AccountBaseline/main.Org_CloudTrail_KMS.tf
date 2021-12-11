@@ -4,17 +4,17 @@
 resource "aws_kms_key" "Org_CloudTrail_KMS_Key" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  description         = "A KMS key to encrypt Org_CloudTrail events."
+  description         = var.org_cloudtrail_kms_key.description
   policy              = data.aws_iam_policy_document.Org_CloudTrail_KMS_Key.json
   enable_key_rotation = true
-  tags = {
-    Name = "Org_CloudTrail_KMS_Key"
-  }
+  tags                = var.org_cloudtrail_kms_key.tags
 }
 
 # NOTE: in KMS key policies, all 'resource' values must = "*" (points to the key itself)
 
 data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
   policy_id = "Key policy created for Org_CloudTrail_KMS_Key"
 
   statement {

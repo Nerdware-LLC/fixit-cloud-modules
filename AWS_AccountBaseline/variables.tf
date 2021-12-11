@@ -59,6 +59,13 @@ variable "org_cloudtrail" {
   })
 }
 
+variable "org_cloudtrail_kms_key" {
+  type = object({
+    description = string
+    tags        = optional(map(string))
+  })
+}
+
 variable "org_cloudtrail_s3_bucket" {
   description = "Configs for the S3 bucket used to store logs from the Org CloudTrail."
   type = object({
