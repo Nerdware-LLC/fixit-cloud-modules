@@ -1,31 +1,51 @@
 ######################################################################
-### Org CloudTrail KMS Key
+### Organization Services KMS Key
 
-resource "aws_kms_key" "Org_CloudTrail_KMS_Key" {
+resource "aws_kms_key" "Org_KMS_Key" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  description         = var.org_cloudtrail_kms_key.description
-  policy              = data.aws_iam_policy_document.Org_CloudTrail_KMS_Key.json
+  description = coalesce(
+    var.org_kms_key.description,
+    "A KMS key to encrypt Log-Archive files, as well as data streams for services like CloudTrail, CloudWatch, and SNS."
+  )
+  policy              = one(data.aws_iam_policy_document.Org_KMS_Key_Policy).json
+  multi_region        = true
   enable_key_rotation = true
-  tags                = var.org_cloudtrail_kms_key.tags
+  tags                = var.org_kms_key.tags
 }
+
+#---------------------------------------------------------------------
+### Org Services KMS Key ALIAS
+
+locals {
+  org_kms_key_alias = "alias/${var.org_kms_key.alias_name}"
+}
+
+/* The key's alias makes it easier for the Log-Archive account to use
+the key (necessary for CloudWatch Logs and S3 log bucket encryption) */
+resource "aws_kms_alias" "Org_KMS_Key" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
+  name          = local.org_kms_key_alias
+  target_key_id = one(aws_kms_key.Org_KMS_Key).key_id
+}
+
+#---------------------------------------------------------------------
+### Org Services KMS Key POLICY
 
 # NOTE: in KMS key policies, all 'resource' values must = "*" (points to the key itself)
 
-data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
+data "aws_iam_policy_document" "Org_KMS_Key_Policy" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  policy_id = "Key policy created for Org_CloudTrail_KMS_Key"
+  policy_id = var.org_kms_key.key_policy_id
 
   statement {
     sid    = "Enable IAM User Permissions"
     effect = "Allow"
     principals {
-      type = "AWS"
-      identifiers = [
-        local.root_account_id,
-        local.log_archive_account_id
-      ]
+      type        = "AWS"
+      identifiers = [local.root_account_id, var.log_archive_account_id]
     }
     actions   = ["kms:*"]
     resources = ["*"]
@@ -41,12 +61,12 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
     actions   = ["kms:GenerateDataKey*"]
     resources = ["*"]
     condition {
-      test     = "StringLike"
+      test     = "ArnLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${local.root_account_id}:trail/*"]
     }
     condition {
-      test     = "StringEquals"
+      test     = "ArnEquals"
       variable = "aws:SourceArn"
       values   = ["arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"]
     }
@@ -70,15 +90,12 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "kms:Decrypt",
-      "kms:ReEncryptFrom"
-    ]
+    actions   = ["kms:Decrypt", "kms:ReEncryptFrom"]
     resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values   = [local.root_account_id]
+      values   = [local.root_account_id, var.log_archive_account_id]
     }
     condition {
       test     = "StringLike"
@@ -104,7 +121,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values   = [local.root_account_id]
+      values   = [local.root_account_id, var.log_archive_account_id]
     }
   }
 
@@ -115,18 +132,15 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "kms:Decrypt",
-      "kms:ReEncryptFrom"
-    ]
+    actions   = ["kms:Decrypt", "kms:ReEncryptFrom"]
     resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values   = [local.root_account_id, local.log_archive_account_id]
+      values   = [local.root_account_id, var.log_archive_account_id]
     }
     condition {
-      test     = "StringLike"
+      test     = "StringLikeIfExists"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${local.root_account_id}:trail/*"]
     }
@@ -134,7 +148,7 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
 
   # CloudWatch Log Group:
   statement {
-    sid    = ""
+    sid    = "CloudWatch_KMS_Policy"
     effect = "Allow"
     principals {
       type        = "Service"
@@ -152,6 +166,23 @@ data "aws_iam_policy_document" "Org_CloudTrail_KMS_Key" {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
       values   = ["arn:aws:logs:${local.aws_region}:${local.root_account_id}:log-group:${local.cw_log_grp.name}"]
+    }
+  }
+
+  # AWS-Config:
+  statement {
+    sid    = "AWS-Config_KMS_Policy"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["config.amazonaws.com"]
+    }
+    actions   = ["kms:Decrypt", "kms:GenerateDataKey*"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalOrgID"
+      values   = [local.org_id]
     }
   }
 }
