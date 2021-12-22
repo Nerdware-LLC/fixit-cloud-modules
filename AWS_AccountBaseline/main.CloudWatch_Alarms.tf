@@ -52,28 +52,24 @@ resource "aws_sns_topic" "CloudWatch_Alarms" {
 resource "aws_sns_topic_policy" "CloudWatch_Alarms" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
-  arn    = one(aws_sns_topic.CloudWatch_Alarms).arn
-  policy = one(data.aws_iam_policy_document.CloudWatch_Alarms_SNS_Policy).json
-}
-
-data "aws_iam_policy_document" "CloudWatch_Alarms_SNS_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
-
-  statement {
-    actions   = ["sns:Publish"]
-    resources = [one(aws_sns_topic.CloudWatch_Alarms).arn]
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudwatch.amazonaws.com"]
-    }
-
-    condition {
-      test     = "ArnLike"
-      variable = "AWS:SourceArn"
-      values   = ["arn:aws:cloudwatch:${local.aws_region}:${var.log_archive_account_id}:alarm:*"]
-    }
-  }
+  arn = one(aws_sns_topic.CloudWatch_Alarms).arn
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "CloudWatch_Alarms_SNS_Policy"
+        Effect    = "Allow"
+        Principal = { Service = "cloudwatch.amazonaws.com" }
+        Action    = "sns:Publish"
+        Resource  = one(aws_sns_topic.CloudWatch_Alarms).arn
+        Condition = {
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:cloudwatch:${local.aws_region}:${var.log_archive_account_id}:alarm:*"
+          }
+        }
+      }
+    ]
+  })
 }
 
 #---------------------------------------------------------------------
