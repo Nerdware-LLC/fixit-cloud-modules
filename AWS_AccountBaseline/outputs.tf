@@ -25,46 +25,7 @@ output "Global_Default_EBS_Encryption" {
 }
 
 #---------------------------------------------------------------------
-### CloudWatch Alarms Outputs:
-
-output "CloudWatch_Metric_Alarms" {
-  description = "A map of CloudWatch Metric Alarm resources."
-  value       = aws_cloudwatch_metric_alarm.map
-}
-
-output "CloudWatch_Metric_Filters" {
-  description = "A map of CloudWatch Metric Filter resources."
-  value       = aws_cloudwatch_log_metric_filter.map
-}
-
-output "CloudWatch_Alarms_SNS_Topic" {
-  description = "The SNS Topic associated with CloudWatch Metric Alarms."
-  value       = one(aws_sns_topic.CloudWatch_Alarms)
-}
-
-output "CloudWatch_Alarms_SNS_Topic_Policy" {
-  description = "The SNS Topic Policy associated with CloudWatch Metric Alarms."
-  value       = one(aws_sns_topic_policy.CloudWatch_Alarms)
-}
-
-#---------------------------------------------------------------------
 ### AWS Config Outputs:
-
-output "Org_Config_Recorder" {
-  description = <<-EOF
-  The Organization's AWS-Config recorder resource (will be "null" for non-root
-  accounts).
-  EOF
-  value       = one(aws_config_configuration_recorder.Org_Config_Recorder)
-}
-
-output "Org_Config_Recorder_Status" {
-  description = <<-EOF
-  The Org's AWS-Config recorder's STATUS resource (will be "null" for non-root
-  accounts).
-  EOF
-  value       = one(aws_config_configuration_recorder_status.Org_Config_Recorder_Status)
-}
 
 output "Org_Config_Aggregator" {
   description = <<-EOF
@@ -100,9 +61,101 @@ output "Org_Config_SNS_Topic_Policy" {
   value       = one(aws_sns_topic_policy.Org_Config_SNS_Topic_Policy)
 }
 
-output "Org_Config_Delivery_Channel" {
-  description = "The Org's AWS-Config Delivery Channel (will be \"null\" for non-root accounts)."
-  value       = one(aws_config_delivery_channel.Org_Config_Delivery_Channel)
+output "Regional_Config_Resources_BY_REGION" {
+  description = "A map of AWS-Config RECORDER and DELIVERY CHANNEL resources, organized by region."
+  value = {
+    "ap-northeast-1" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-northeast-1)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-1)
+    }
+    "ap-northeast-2" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-northeast-2)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-2)
+    }
+    "ap-northeast-3" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-northeast-3)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-3)
+    }
+    "ap-south-1" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-south-1)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-south-1)
+    }
+    "ap-southeast-1" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-southeast-1)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-southeast-1)
+    }
+    "ap-southeast-2" = {
+      Recorder         = one(aws_config_configuration_recorder.ap-southeast-2)
+      Delivery_Channel = one(aws_config_delivery_channel.ap-southeast-2)
+    }
+    "ca-central-1" = {
+      Recorder         = one(aws_config_configuration_recorder.ca-central-1)
+      Delivery_Channel = one(aws_config_delivery_channel.ca-central-1)
+    }
+    "eu-north-1" = {
+      Recorder         = one(aws_config_configuration_recorder.eu-north-1)
+      Delivery_Channel = one(aws_config_delivery_channel.eu-north-1)
+    }
+    "eu-central-1" = {
+      Recorder         = one(aws_config_configuration_recorder.eu-central-1)
+      Delivery_Channel = one(aws_config_delivery_channel.eu-central-1)
+    }
+    "eu-west-1" = {
+      Recorder         = one(aws_config_configuration_recorder.eu-west-1)
+      Delivery_Channel = one(aws_config_delivery_channel.eu-west-1)
+    }
+    "eu-west-2" = {
+      Recorder         = one(aws_config_configuration_recorder.eu-west-2)
+      Delivery_Channel = one(aws_config_delivery_channel.eu-west-2)
+    }
+    "eu-west-3" = {
+      Recorder         = one(aws_config_configuration_recorder.eu-west-3)
+      Delivery_Channel = one(aws_config_delivery_channel.eu-west-3)
+    }
+    "sa-east-1" = {
+      Recorder         = one(aws_config_configuration_recorder.sa-east-1)
+      Delivery_Channel = one(aws_config_delivery_channel.sa-east-1)
+    }
+    "us-east-1" = {
+      Recorder         = one(aws_config_configuration_recorder.us-east-1)
+      Delivery_Channel = one(aws_config_delivery_channel.us-east-1)
+    }
+    "us-east-2" = {
+      Recorder         = one(aws_config_configuration_recorder.us-east-2)
+      Delivery_Channel = one(aws_config_delivery_channel.us-east-2)
+    }
+    "us-west-1" = {
+      Recorder         = one(aws_config_configuration_recorder.us-west-1)
+      Delivery_Channel = one(aws_config_delivery_channel.us-west-1)
+    }
+    "us-west-2" = {
+      Recorder         = one(aws_config_configuration_recorder.us-west-2)
+      Delivery_Channel = one(aws_config_delivery_channel.us-west-2)
+    }
+  }
+}
+
+#---------------------------------------------------------------------
+### CloudWatch Alarms Outputs:
+
+output "CloudWatch_Metric_Alarms" {
+  description = "A map of CloudWatch Metric Alarm resources."
+  value       = aws_cloudwatch_metric_alarm.map
+}
+
+output "CloudWatch_Metric_Filters" {
+  description = "A map of CloudWatch Metric Filter resources."
+  value       = aws_cloudwatch_log_metric_filter.map
+}
+
+output "CloudWatch_Alarms_SNS_Topic" {
+  description = "The SNS Topic associated with CloudWatch Metric Alarms."
+  value       = one(aws_sns_topic.CloudWatch_Alarms)
+}
+
+output "CloudWatch_Alarms_SNS_Topic_Policy" {
+  description = "The SNS Topic Policy associated with CloudWatch Metric Alarms."
+  value       = one(aws_sns_topic_policy.CloudWatch_Alarms)
 }
 
 #---------------------------------------------------------------------
@@ -260,7 +313,7 @@ output "Org_CloudTrail" {
 output "CloudWatch_LogGroup" {
   description = <<-EOF
   The CloudWatch Logs log group resource which receives an event stream from the
-  Organization's CloudTrail (will be "null" for non-root accounts).
+  Organization's CloudTrail (will be "null" for all accounts except Log-Archive).
   EOF
   value       = one(aws_cloudwatch_log_group.CloudTrail_Events)
 }
@@ -268,7 +321,7 @@ output "CloudWatch_LogGroup" {
 output "CloudWatch-Delivery_Role" {
   description = <<-EOF
   The IAM Service Role that permits delivery of Organization CloudTrail events
-  to the CloudWatch_LogGroup (will be "null" for non-root accounts).
+  to the CloudWatch_LogGroup (will be "null" for all accounts except Log-Archive).
   EOF
   value       = one(aws_iam_role.CloudWatch-Delivery_Role)
 }
@@ -276,7 +329,7 @@ output "CloudWatch-Delivery_Role" {
 output "CloudWatch-Delivery_Role_Policy" {
   description = <<-EOF
   The IAM policy for "CloudWatch-Delivery_Role" that permits delivery of the Organization's
-  CloudTrail events to the CloudWatch Logs log group (will be "null" for non-root accounts).
+  CloudTrail events to the CloudWatch Logs log group (will be "null" for all accounts except Log-Archive).
   EOF
   value       = one(aws_iam_role_policy.CloudWatch-Delivery_Role_Policy)
 }
