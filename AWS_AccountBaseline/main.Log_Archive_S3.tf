@@ -90,118 +90,90 @@ resource "aws_s3_bucket_policy" "list" {
 
   # index 0 = access_logs_s3    index 1 = Org_Log_Archive logs
   policy = (count.index == 0
-    ? one(data.aws_iam_policy_document.Access_Logs_S3_Bucket_Policy).json
-    : one(data.aws_iam_policy_document.Org_Log_Archive_S3_Bucket_Policy).json
+    ? jsonencode(local.Access_Logs_S3_Bucket_Policy)
+    : jsonencode(local.Org_Log_Archive_S3_Bucket_Policy)
   )
 }
 
-data "aws_iam_policy_document" "Org_Log_Archive_S3_Bucket_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
-
-  policy_id = "Org_Log_Archive_S3_Bucket_Policy"
-  version   = "2012-10-17"
-
-  statement {
-    sid    = "OnlyAllowOrgServicesAclCheck"
-    effect = "Allow"
-    principals {
-      type = "Service"
-      identifiers = [
-        "cloudtrail.amazonaws.com",
-        "config.amazonaws.com"
-      ]
-    }
-    actions   = ["s3:GetBucketAcl"]
-    resources = [aws_s3_bucket.list[0].arn]
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceAccount"
-      values   = [local.root_account_id]
-    }
-  }
-
-  statement {
-    sid    = "AWSConfigBucketExistenceCheck"
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["config.amazonaws.com"]
-    }
-    actions   = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.list[0].arn]
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceAccount"
-      values   = [local.root_account_id]
-    }
-  }
-
-  statement {
-    sid    = "AllowOrgCloudTrailWrite"
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-    actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.list[0].arn}/*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = ["arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-      values   = ["bucket-owner-full-control"]
-    }
-  }
-
-  statement {
-    sid    = "AllowOrgConfigServiceWrite"
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["config.amazonaws.com"]
-    }
-    actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.list[0].arn}/*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceAccount"
-      values   = [local.root_account_id]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-      values   = ["bucket-owner-full-control"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "Access_Logs_S3_Bucket_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
-
-  policy_id = "Org_Log_Archive_S3_Access_Logs_Bucket_Policy"
-  version   = "2012-10-17"
-
-  statement {
-    sid    = "OnlyAllowWritesFromOrgLogArchiveS3"
-    effect = "Deny"
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    actions = ["s3:*"]
-    resources = [
-      aws_s3_bucket.list[0].arn,
-      "${aws_s3_bucket.list[0].arn}/*"
+locals {
+  Org_Log_Archive_S3_Bucket_Policy = {
+    Id      = "Org_Log_Archive_S3_Bucket_Policy"
+    Version = "2012-10-17"
+    Statement = [
+      # S3 BUCKET POLICY --> CloudTrail
+      {
+        Sid       = "OnlyAllowOrgServicesAclCheck"
+        Effect    = "Allow"
+        Principal = { Service = "cloudtrail.amazonaws.com" }
+        Action    = "s3:GetBucketAcl"
+        Resource  = aws_s3_bucket.list[1].arn
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.root_account_id
+          }
+        }
+      },
+      {
+        Sid       = "AllowOrgCloudTrailWrite"
+        Effect    = "Allow"
+        Principal = { Service = "cloudtrail.amazonaws.com" }
+        Action    = "s3:PutObject"
+        Resource  = "${aws_s3_bucket.list[1].arn}/*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
+          }
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      },
+      # S3 BUCKET POLICY --> Config
+      {
+        Sid       = "AWSConfigCheckBucketExistenceAndPerms"
+        Effect    = "Allow"
+        Principal = { AWS = local.config_iam_role_arn }
+        Action    = ["s3:ListBucket", "s3:GetBucketAcl"]
+        Resource  = aws_s3_bucket.list[1].arn
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalOrgID" = local.org_id
+          }
+        }
+      },
+      {
+        Sid       = "AWSConfigWrite"
+        Effect    = "Allow"
+        Principal = { AWS = local.config_iam_role_arn }
+        Action    = "s3:PutObject"
+        Resource  = "${aws_s3_bucket.list[1].arn}/*"
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalOrgID" = local.org_id
+          }
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
     ]
-    condition {
-      test     = "Bool"
-      variable = "aws:SecureTransport"
-      values   = [tobool(false)]
-    }
+  }
+
+  Access_Logs_S3_Bucket_Policy = {
+    Id      = "Org_Log_Archive_S3_Access_Logs_Bucket_Policy"
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "OnlyAllowWritesFromOrgLogArchiveS3"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource  = [aws_s3_bucket.list[0].arn, "${aws_s3_bucket.list[0].arn}/*"]
+        Condition = {
+          Bool = { "aws:SecureTransport" = "false" }
+        }
+      }
+    ]
   }
 }
 
