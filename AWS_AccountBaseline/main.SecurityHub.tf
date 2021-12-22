@@ -59,8 +59,9 @@ locals {
   }
 }
 
-### REGION-SPECIFIC SECURITY HUB RESOURCES:
 ######################################################################
+### REGION-SPECIFIC SECURITY HUB RESOURCES
+#---------------------------------------------------------------------
 ### SecurityHub - us-east-2 (HOME REGION USES IMPLICIT/DEFAULT PROVIDER)
 
 resource "aws_securityhub_account" "us-east-2" {}
