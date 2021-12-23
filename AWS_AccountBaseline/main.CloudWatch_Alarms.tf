@@ -57,7 +57,7 @@ resource "aws_sns_topic_policy" "CloudWatch_Alarms" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "CloudWatch_Alarms_SNS_Policy"
+        Sid       = "CloudWatchAlarmsSNSPolicy"
         Effect    = "Allow"
         Principal = { Service = "cloudwatch.amazonaws.com" }
         Action    = "sns:Publish"
