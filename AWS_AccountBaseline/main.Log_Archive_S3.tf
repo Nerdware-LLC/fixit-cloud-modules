@@ -121,7 +121,7 @@ locals {
         Resource  = "${aws_s3_bucket.list[1].arn}/*"
         Condition = {
           StringEquals = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${var.log_archive_account_id}:trail/${var.org_cloudtrail.name}"
           }
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -130,11 +130,13 @@ locals {
       },
       # S3 BUCKET POLICY --> Config
       {
-        Sid       = "AWSConfigCheckBucketExistenceAndPerms"
-        Effect    = "Allow"
-        Principal = { AWS = local.config_iam_role_arn }
-        Action    = ["s3:ListBucket", "s3:GetBucketAcl"]
-        Resource  = aws_s3_bucket.list[1].arn
+        Sid    = "AWSConfigCheckBucketExistenceAndPerms"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+        }
+        Action   = ["s3:ListBucket", "s3:GetBucketAcl"]
+        Resource = aws_s3_bucket.list[1].arn
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id
@@ -142,11 +144,13 @@ locals {
         }
       },
       {
-        Sid       = "AWSConfigWrite"
-        Effect    = "Allow"
-        Principal = { AWS = local.config_iam_role_arn }
-        Action    = "s3:PutObject"
-        Resource  = "${aws_s3_bucket.list[1].arn}/*"
+        Sid    = "AWSConfigWrite"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.list[1].arn}/*"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id

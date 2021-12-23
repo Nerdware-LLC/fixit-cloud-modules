@@ -87,11 +87,13 @@ resource "aws_kms_key" "Org_KMS_Key" {
       },
       # KEY POLICIES --> AWS-Config
       {
-        Sid       = "AWSConfigKMSPolicy"
-        Effect    = "Allow"
-        Principal = { AWS = local.config_iam_role_arn } # NOT the service, since we have Config assume an IAM role.
-        Action    = ["kms:Decrypt", "kms:GenerateDataKey*"]
-        Resource  = "*"
+        Sid    = "AWSConfigKMSPolicy"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+        }
+        Action   = ["kms:Decrypt", "kms:GenerateDataKey*"]
+        Resource = "*"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = [local.org_id]

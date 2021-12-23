@@ -25,8 +25,8 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   enable_log_file_validation = true
 
   # CloudTrail requires the Log Stream wildcard as shown below
-  cloud_watch_logs_group_arn = "${one(data.aws_cloudwatch_log_group.CloudTrail_Events).arn}:*"
-  cloud_watch_logs_role_arn  = one(data.aws_iam_role.CloudWatch-Delivery_Role).arn
+  cloud_watch_logs_group_arn = "arn:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}:*"
+  cloud_watch_logs_role_arn  = "arn:aws:iam::${var.log_archive_account_id}:role/${var.org_cloudtrail_cloudwatch_logs_group.iam_service_role.name}"
 
   event_selector {
     read_write_type           = "All"
@@ -38,43 +38,34 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   tags = var.org_cloudtrail.tags
 }
 
-/* These data blocks ensure "root" doesn't have to explicitly provide
-the Log-Archive-owned CW Log Grp and its Role as input variables.  */
-
-data "aws_cloudwatch_log_group" "CloudTrail_Events" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
-  name = local.cw_log_grp.name
-}
-
-data "aws_iam_role" "CloudWatch-Delivery_Role" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
-  name = local.cw_svc_role.name
-}
-
 #---------------------------------------------------------------------
 ### Org CloudTrail --> CloudWatchLogs Log Group
 
 locals {
-  # Flatten some references to nested var properties -
-  cw_log_grp  = var.org_cloudtrail.cloudwatch_config.log_group
-  cw_svc_role = var.org_cloudtrail.cloudwatch_config.iam_service_role
+  # Shorten long variable ref
+  retention_in_days = coalesce(
+    var.org_cloudtrail_cloudwatch_logs_group.log_group.retention_in_days,
+    365
+  )
 }
 
-#---------------------------------------------------------------------
 # This CW log group accepts the Org's CloudTrail event stream
 
 resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
-  name              = local.cw_log_grp.name
-  retention_in_days = coalesce(local.cw_log_grp.retention_in_days, 365)
-  tags              = local.cw_log_grp.tags
+  name              = var.org_cloudtrail_cloudwatch_logs_group.log_group.name
+  retention_in_days = local.retention_in_days
+  tags              = var.org_cloudtrail_cloudwatch_logs_group.log_group.tags
 }
 
 #---------------------------------------------------------------------
 # IAM Service Role to deliver CloudTrail Events to the CloudWatch Log Group:
+
+locals {
+  # Shorten long variable ref
+  cw_svc_role = var.org_cloudtrail_cloudwatch_logs_group.iam_service_role
+}
 
 resource "aws_iam_role" "CloudWatch-Delivery_Role" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
