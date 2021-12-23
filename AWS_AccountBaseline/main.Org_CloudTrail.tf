@@ -38,12 +38,19 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   tags = var.org_cloudtrail.tags
 }
 
-/* This data block ensures the "root" account doesn't have to explicitly
-provide the Log-Archive-owned cw log grp as an input variable.  */
+/* These data blocks ensure "root" doesn't have to explicitly provide
+the Log-Archive-owned CW Log Grp and its Role as input variables.  */
+
 data "aws_cloudwatch_log_group" "CloudTrail_Events" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   name = local.cw_log_grp.name
+}
+
+data "aws_iam_role" "CloudWatch-Delivery_Role" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
+  name = local.cw_svc_role.name
 }
 
 #---------------------------------------------------------------------
