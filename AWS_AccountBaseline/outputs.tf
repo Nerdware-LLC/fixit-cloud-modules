@@ -65,72 +65,72 @@ output "Regional_Config_Resources_BY_REGION" {
   description = "A map of AWS-Config RECORDER and DELIVERY CHANNEL resources, organized by region."
   value = {
     "ap-northeast-1" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-northeast-1)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-1)
+      Recorder         = aws_config_configuration_recorder.ap-northeast-1
+      Delivery_Channel = aws_config_delivery_channel.ap-northeast-1
     }
     "ap-northeast-2" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-northeast-2)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-2)
+      Recorder         = aws_config_configuration_recorder.ap-northeast-2
+      Delivery_Channel = aws_config_delivery_channel.ap-northeast-2
     }
     "ap-northeast-3" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-northeast-3)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-northeast-3)
+      Recorder         = aws_config_configuration_recorder.ap-northeast-3
+      Delivery_Channel = aws_config_delivery_channel.ap-northeast-3
     }
     "ap-south-1" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-south-1)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-south-1)
+      Recorder         = aws_config_configuration_recorder.ap-south-1
+      Delivery_Channel = aws_config_delivery_channel.ap-south-1
     }
     "ap-southeast-1" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-southeast-1)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-southeast-1)
+      Recorder         = aws_config_configuration_recorder.ap-southeast-1
+      Delivery_Channel = aws_config_delivery_channel.ap-southeast-1
     }
     "ap-southeast-2" = {
-      Recorder         = one(aws_config_configuration_recorder.ap-southeast-2)
-      Delivery_Channel = one(aws_config_delivery_channel.ap-southeast-2)
+      Recorder         = aws_config_configuration_recorder.ap-southeast-2
+      Delivery_Channel = aws_config_delivery_channel.ap-southeast-2
     }
     "ca-central-1" = {
-      Recorder         = one(aws_config_configuration_recorder.ca-central-1)
-      Delivery_Channel = one(aws_config_delivery_channel.ca-central-1)
+      Recorder         = aws_config_configuration_recorder.ca-central-1
+      Delivery_Channel = aws_config_delivery_channel.ca-central-1
     }
     "eu-north-1" = {
-      Recorder         = one(aws_config_configuration_recorder.eu-north-1)
-      Delivery_Channel = one(aws_config_delivery_channel.eu-north-1)
+      Recorder         = aws_config_configuration_recorder.eu-north-1
+      Delivery_Channel = aws_config_delivery_channel.eu-north-1
     }
     "eu-central-1" = {
-      Recorder         = one(aws_config_configuration_recorder.eu-central-1)
-      Delivery_Channel = one(aws_config_delivery_channel.eu-central-1)
+      Recorder         = aws_config_configuration_recorder.eu-central-1
+      Delivery_Channel = aws_config_delivery_channel.eu-central-1
     }
     "eu-west-1" = {
-      Recorder         = one(aws_config_configuration_recorder.eu-west-1)
-      Delivery_Channel = one(aws_config_delivery_channel.eu-west-1)
+      Recorder         = aws_config_configuration_recorder.eu-west-1
+      Delivery_Channel = aws_config_delivery_channel.eu-west-1
     }
     "eu-west-2" = {
-      Recorder         = one(aws_config_configuration_recorder.eu-west-2)
-      Delivery_Channel = one(aws_config_delivery_channel.eu-west-2)
+      Recorder         = aws_config_configuration_recorder.eu-west-2
+      Delivery_Channel = aws_config_delivery_channel.eu-west-2
     }
     "eu-west-3" = {
-      Recorder         = one(aws_config_configuration_recorder.eu-west-3)
-      Delivery_Channel = one(aws_config_delivery_channel.eu-west-3)
+      Recorder         = aws_config_configuration_recorder.eu-west-3
+      Delivery_Channel = aws_config_delivery_channel.eu-west-3
     }
     "sa-east-1" = {
-      Recorder         = one(aws_config_configuration_recorder.sa-east-1)
-      Delivery_Channel = one(aws_config_delivery_channel.sa-east-1)
+      Recorder         = aws_config_configuration_recorder.sa-east-1
+      Delivery_Channel = aws_config_delivery_channel.sa-east-1
     }
     "us-east-1" = {
-      Recorder         = one(aws_config_configuration_recorder.us-east-1)
-      Delivery_Channel = one(aws_config_delivery_channel.us-east-1)
+      Recorder         = aws_config_configuration_recorder.us-east-1
+      Delivery_Channel = aws_config_delivery_channel.us-east-1
     }
     "us-east-2" = {
-      Recorder         = one(aws_config_configuration_recorder.us-east-2)
-      Delivery_Channel = one(aws_config_delivery_channel.us-east-2)
+      Recorder         = aws_config_configuration_recorder.us-east-2
+      Delivery_Channel = aws_config_delivery_channel.us-east-2
     }
     "us-west-1" = {
-      Recorder         = one(aws_config_configuration_recorder.us-west-1)
-      Delivery_Channel = one(aws_config_delivery_channel.us-west-1)
+      Recorder         = aws_config_configuration_recorder.us-west-1
+      Delivery_Channel = aws_config_delivery_channel.us-west-1
     }
     "us-west-2" = {
-      Recorder         = one(aws_config_configuration_recorder.us-west-2)
-      Delivery_Channel = one(aws_config_delivery_channel.us-west-2)
+      Recorder         = aws_config_configuration_recorder.us-west-2
+      Delivery_Channel = aws_config_delivery_channel.us-west-2
     }
   }
 }
