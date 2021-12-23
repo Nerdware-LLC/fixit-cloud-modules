@@ -72,11 +72,22 @@ variable "org_aws_config" {
     aggregator = object({
       name = string
       tags = optional(map(string))
+      service_role = object({
+        name        = string
+        description = optional(string)
+        tags        = optional(map(string))
+      })
     })
     service_role = object({
       name        = string
-      policy_name = string
+      description = optional(string)
       tags        = optional(map(string))
+      policy = object({
+        name        = string
+        description = optional(string)
+        path        = optional(string)
+        tags        = optional(map(string))
+      })
     })
     sns_topic = object({
       name         = string

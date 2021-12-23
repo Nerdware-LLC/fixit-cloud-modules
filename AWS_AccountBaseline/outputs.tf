@@ -33,27 +33,23 @@ output "Account-Level_S3_Public_Access_Block" {
 ### AWS Config Outputs:
 
 output "Org_Config_Aggregator" {
-  description = <<-EOF
-  The Org's AWS-Config recorder's aggregator resource (will be "null" for non-root
-  accounts).
-  EOF
+  description = "The Config Aggregator resource (will be \"null\" for non-root accounts)."
   value       = one(aws_config_configuration_aggregator.Org_Config_Aggregator)
 }
 
+output "Org_Config_Aggregator_Role" {
+  description = "The Config Aggregator Role resource (will be \"null\" for non-root accounts)."
+  value       = one(aws_iam_role.Org_Config_Aggregator_Role)
+}
+
 output "Org_Config_Role" {
-  description = <<-EOF
-  The IAM Service Role that permits read/write requests to/from the Config delivery
-  channel resource (will be "null" for non-root accounts).
-  EOF
-  value       = one(aws_iam_role.Org_Config_Role)
+  description = "The AWS-Config IAM service role."
+  value       = aws_iam_role.Org_Config_Role
 }
 
 output "Org_Config_Role_Policy" {
-  description = <<-EOF
-  The IAM policy for "Org_Config_Role" that permits read/write requests to/from the
-  Config delivery channel resource (will be "null" for non-root accounts).
-  EOF
-  value       = one(aws_iam_role_policy.Org_Config_Role_Policy)
+  description = "The IAM policy for \"Org_Config_Role\" (will be \"null\" for non-root accounts)."
+  value       = one(aws_iam_policy.Org_Config_Role_Policy)
 }
 
 output "Org_Config_SNS_Topic" {

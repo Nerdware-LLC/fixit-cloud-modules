@@ -11,23 +11,18 @@ resource "aws_config_configuration_aggregator" "Org_Config_Aggregator" {
 
   organization_aggregation_source {
     all_regions = true
-    role_arn    = one(aws_iam_role.Org_Config_Role).arn
+    role_arn    = one(aws_iam_role.Org_Config_Aggregator_Role).arn
   }
 
-  depends_on = [aws_iam_role_policy.Org_Config_Role_Policy]
+  depends_on = [aws_iam_role_policy_attachment.Org_Config_Aggregator_Role_Policy]
 }
 
-#---------------------------------------------------------------------
-### AWS Config - IAM Service Role
-
-/* This role is used to make read or write requests to the delivery
-channel and to describe the AWS resources associated with the account */
-resource "aws_iam_role" "Org_Config_Role" {
+resource "aws_iam_role" "Org_Config_Aggregator_Role" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name                = var.org_aws_config.service_role.name
-  managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"]
-  tags                = var.org_aws_config.service_role.tags
+  name        = var.org_aws_config.aggregator.service_role.name
+  description = var.org_aws_config.aggregator.service_role.description
+  tags        = var.org_aws_config.aggregator.service_role.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -41,11 +36,42 @@ resource "aws_iam_role" "Org_Config_Role" {
   })
 }
 
-resource "aws_iam_role_policy" "Org_Config_Role_Policy" {
+resource "aws_iam_role_policy_attachment" "Org_Config_Aggregator_Role_Policy" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name = var.org_aws_config.service_role.policy_name
-  role = one(aws_iam_role.Org_Config_Role).id
+  role       = one(aws_iam_role.Org_Config_Aggregator_Role).name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRoleForOrganizations"
+}
+
+#---------------------------------------------------------------------
+### AWS Config - IAM Service Role
+
+/* This role is used to make read or write requests to the delivery
+channel and to describe the AWS resources associated with the account */
+resource "aws_iam_role" "Org_Config_Role" {
+  name        = var.org_aws_config.service_role.name
+  description = var.org_aws_config.service_role.description
+  tags        = var.org_aws_config.service_role.tags
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowConfigServiceAssumeRole"
+        Effect    = "Allow"
+        Principal = { Service = "config.amazonaws.com" }
+        Action    = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "Org_Config_Role_Policy" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
+  name        = var.org_aws_config.service_role.policy.name
+  description = var.org_aws_config.service_role.policy.description
+  path        = var.org_aws_config.service_role.policy.path
+  tags        = var.org_aws_config.service_role.policy.tags
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -79,6 +105,16 @@ resource "aws_iam_role_policy" "Org_Config_Role_Policy" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
+  for_each = {
+    "${var.org_aws_config.service_role.policy.name}" = "arn:aws:iam::${local.root_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
+    AWS_ConfigRole                                   = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+  }
+
+  role       = aws_iam_role.Org_Config_Role.name
+  policy_arn = each.value
+}
+
 #---------------------------------------------------------------------
 ### AWS Config - SNS Topic
 
@@ -99,10 +135,15 @@ resource "aws_sns_topic_policy" "Org_Config_SNS_Topic_Policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = { AWS = one(aws_iam_role.Org_Config_Role).arn }
-        Action    = ["sns:Publish"]
-        Resource  = one(aws_sns_topic.Org_Config_SNS_Topic).arn
+        Effect = "Allow"
+        Principal = {
+          AWS = [
+            "arn:aws:iam::*:role/${var.org_aws_config.service_role.name}",
+            one(aws_iam_role.Org_Config_Aggregator_Role).arn
+          ]
+        }
+        Action   = ["sns:Publish"]
+        Resource = one(aws_sns_topic.Org_Config_SNS_Topic).arn
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = [local.org_id]
@@ -128,7 +169,7 @@ locals {
 
 resource "aws_config_configuration_recorder" "us-east-2" {
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -164,7 +205,7 @@ resource "aws_config_configuration_recorder" "ap-northeast-1" {
   provider = aws.ap-northeast-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -204,7 +245,7 @@ resource "aws_config_configuration_recorder" "ap-northeast-2" {
   provider = aws.ap-northeast-2
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -244,7 +285,7 @@ resource "aws_config_configuration_recorder" "ap-northeast-3" {
   provider = aws.ap-northeast-3
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -284,7 +325,7 @@ resource "aws_config_configuration_recorder" "ap-south-1" {
   provider = aws.ap-south-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -324,7 +365,7 @@ resource "aws_config_configuration_recorder" "ap-southeast-1" {
   provider = aws.ap-southeast-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -364,7 +405,7 @@ resource "aws_config_configuration_recorder" "ap-southeast-2" {
   provider = aws.ap-southeast-2
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -404,7 +445,7 @@ resource "aws_config_configuration_recorder" "ca-central-1" {
   provider = aws.ca-central-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -444,7 +485,7 @@ resource "aws_config_configuration_recorder" "eu-north-1" {
   provider = aws.eu-north-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -484,7 +525,7 @@ resource "aws_config_configuration_recorder" "eu-central-1" {
   provider = aws.eu-central-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -524,7 +565,7 @@ resource "aws_config_configuration_recorder" "eu-west-1" {
   provider = aws.eu-west-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -564,7 +605,7 @@ resource "aws_config_configuration_recorder" "eu-west-2" {
   provider = aws.eu-west-2
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -604,7 +645,7 @@ resource "aws_config_configuration_recorder" "eu-west-3" {
   provider = aws.eu-west-3
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -644,7 +685,7 @@ resource "aws_config_configuration_recorder" "sa-east-1" {
   provider = aws.sa-east-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -684,7 +725,7 @@ resource "aws_config_configuration_recorder" "us-east-1" {
   provider = aws.us-east-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -724,7 +765,7 @@ resource "aws_config_configuration_recorder" "us-west-1" {
   provider = aws.us-west-1
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
@@ -764,7 +805,7 @@ resource "aws_config_configuration_recorder" "us-west-2" {
   provider = aws.us-west-2
 
   name     = var.org_aws_config.recorder_name
-  role_arn = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
+  role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
     all_supported                 = true
