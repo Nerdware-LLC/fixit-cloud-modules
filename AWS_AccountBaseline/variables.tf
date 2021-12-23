@@ -219,13 +219,15 @@ variable "org_cloudtrail_cloudwatch_logs_group" {
 variable "org_kms_key" {
   description = <<-EOF
   Config object for the KMS key used to encrypt Log-Archive files, as well as
-  data streams from CloudTrail, CloudWatch, SNS, etc.
+  data streams from CloudTrail, CloudWatch, SNS, etc. The "replica_key_tags"
+  property will be added to the "tags" field of all replica keys.
   EOF
   type = object({
-    alias_name    = string
-    description   = optional(string)
-    key_policy_id = optional(string)
-    tags          = optional(map(string))
+    alias_name       = string
+    description      = optional(string)
+    key_policy_id    = optional(string)
+    tags             = optional(map(string))
+    replica_key_tags = optional(map(string))
   })
 }
 

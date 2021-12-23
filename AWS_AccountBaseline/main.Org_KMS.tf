@@ -116,6 +116,7 @@ resource "aws_kms_replica_key" "ap-northeast-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -128,6 +129,7 @@ resource "aws_kms_replica_key" "ap-northeast-2" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -140,6 +142,7 @@ resource "aws_kms_replica_key" "ap-northeast-3" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -152,6 +155,7 @@ resource "aws_kms_replica_key" "ap-south-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -164,6 +168,7 @@ resource "aws_kms_replica_key" "ap-southeast-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -176,6 +181,7 @@ resource "aws_kms_replica_key" "ap-southeast-2" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -188,6 +194,7 @@ resource "aws_kms_replica_key" "ca-central-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -200,6 +207,7 @@ resource "aws_kms_replica_key" "eu-north-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -212,6 +220,7 @@ resource "aws_kms_replica_key" "eu-central-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -224,6 +233,7 @@ resource "aws_kms_replica_key" "eu-west-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -236,6 +246,7 @@ resource "aws_kms_replica_key" "eu-west-2" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -248,6 +259,7 @@ resource "aws_kms_replica_key" "eu-west-3" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -260,6 +272,7 @@ resource "aws_kms_replica_key" "sa-east-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -272,6 +285,7 @@ resource "aws_kms_replica_key" "us-east-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -284,6 +298,7 @@ resource "aws_kms_replica_key" "us-west-1" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 #---------------------------------------------------------------------
@@ -296,6 +311,7 @@ resource "aws_kms_replica_key" "us-west-2" {
   primary_key_arn         = one(aws_kms_key.Org_KMS_Key).arn
   description             = local.key_description
   deletion_window_in_days = 7
+  tags                    = var.org_kms_key.replica_key_tags
 }
 
 ######################################################################
