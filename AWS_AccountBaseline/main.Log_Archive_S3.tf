@@ -105,7 +105,7 @@ locals {
         Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
         Action    = "s3:GetBucketAcl"
-        Resource  = aws_s3_bucket.list[1].arn
+        Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.root_account_id
@@ -117,7 +117,7 @@ locals {
         Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
         Action    = "s3:PutObject"
-        Resource  = "${aws_s3_bucket.list[1].arn}/*"
+        Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
           StringEquals = {
             "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${var.log_archive_account_id}:trail/${var.org_cloudtrail.name}"
@@ -135,7 +135,7 @@ locals {
           AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
         }
         Action   = ["s3:ListBucket", "s3:GetBucketAcl"]
-        Resource = aws_s3_bucket.list[1].arn
+        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id
@@ -149,7 +149,7 @@ locals {
           AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
         }
         Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.list[1].arn}/*"
+        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id
@@ -171,7 +171,10 @@ locals {
         Effect    = "Deny"
         Principal = "*"
         Action    = "s3:*"
-        Resource  = [aws_s3_bucket.list[0].arn, "${aws_s3_bucket.list[0].arn}/*"]
+        Resource = [
+          "arn:aws:s3:::${var.org_log_archive_s3_bucket.access_logs_s3.name}",
+          "arn:aws:s3:::${var.org_log_archive_s3_bucket.access_logs_s3.name}/*"
+        ]
         Condition = {
           Bool = { "aws:SecureTransport" = "false" }
         }
