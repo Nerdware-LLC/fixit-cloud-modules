@@ -30,8 +30,7 @@ resource "aws_s3_bucket" "list" {
   acl    = "private"
 
   versioning {
-    enabled    = true
-    mfa_delete = true
+    enabled = true
   }
 
   server_side_encryption_configuration {
