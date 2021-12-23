@@ -26,6 +26,27 @@ variable "security_account_id" {
   type        = string
 }
 
+variable "s3_public_access_blocks" {
+  description = <<-EOF
+  Config object for account-level rules regarding S3 public access.
+  By default, all S3 buckets/objects should be strictly PRIVATE. Only
+  provide this variable with an override set to "false" if you know
+  what you're doing and it's absolutely necessary.
+  EOF
+  type = object({
+    block_public_acls       = optional(bool)
+    block_public_policy     = optional(bool)
+    ignore_public_acls      = optional(bool)
+    restrict_public_buckets = optional(bool)
+  })
+  default = {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+}
+
 #---------------------------------------------------------------------
 ### Access Analyzer Variables:
 

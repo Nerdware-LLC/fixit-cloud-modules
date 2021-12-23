@@ -24,6 +24,11 @@ output "Global_Default_EBS_Encryption" {
   value       = aws_ebs_encryption_by_default.this
 }
 
+output "Account-Level_S3_Public_Access_Block" {
+  description = "Account-level S3 public access block resource."
+  value       = aws_s3_account_public_access_block.this
+}
+
 #---------------------------------------------------------------------
 ### AWS Config Outputs:
 
