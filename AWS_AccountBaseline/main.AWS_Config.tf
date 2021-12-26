@@ -105,9 +105,16 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
   })
 }
 
+locals {
+  config_role_policy_arn_suffix = (var.org_aws_config.service_role.policy.path != null
+    ? "${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
+    : "${var.org_aws_config.service_role.policy.name}"
+  )
+}
+
 resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
   for_each = {
-    "${var.org_aws_config.service_role.policy.name}" = "arn:aws:iam::${local.root_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
+    "${var.org_aws_config.service_role.policy.name}" = "arn:aws:iam::${local.root_account_id}:policy/${local.config_role_policy_arn_suffix}"
     AWS_ConfigRole                                   = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
   }
 
@@ -177,7 +184,7 @@ resource "aws_sns_topic_policy" "us-east-2" {
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
     sns_topic_arn                = one(aws_sns_topic.us-east-2).arn
     config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "us-east-2"
+    region                       = "us-east-2" # TODO this arg is currently unused in the template; consider rm'ing
     root_account_id              = local.root_account_id
     org_id                       = local.org_id
   })
