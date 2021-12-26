@@ -4,7 +4,10 @@ ${jsonencode({
       {
         Effect = "Allow"
         Principal = {
-          AWS = ["arn:aws:iam::${root_account_id}:role/${config_iam_service_role_name}"]
+          AWS = [
+            "arn:aws:iam::${root_account_id}:root",
+            "arn:aws:iam::${root_account_id}:role/${config_iam_service_role_name}"
+          ]
         }
         Action   = ["sns:Publish"]
         Resource = "${sns_topic_arn}"
