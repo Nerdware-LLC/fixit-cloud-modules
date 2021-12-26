@@ -1,13 +1,6 @@
 ######################################################################
 ### CloudTrail
 
-/* When you create an organization trail, each member account receives
-two related resources:
-    1) A trail of the same name.
-    2) A service-linked role called "AWSServiceRoleForCloudTrail"
-       that performs logging tasks.
-*/
-
 resource "aws_cloudtrail" "Org_CloudTrail" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
@@ -26,7 +19,7 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
 
   # CloudTrail requires the Log Stream wildcard as shown below
   cloud_watch_logs_group_arn = "arn:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}:*"
-  cloud_watch_logs_role_arn  = "arn:aws:iam::${var.log_archive_account_id}:role/${var.org_cloudtrail_cloudwatch_logs_group.iam_service_role.name}"
+  cloud_watch_logs_role_arn  = one(aws_iam_role.CloudWatch-Delivery_Role).arn
 
   event_selector {
     read_write_type           = "All"
@@ -42,11 +35,9 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
 ### Org CloudTrail --> CloudWatchLogs Log Group
 
 locals {
-  # Shorten long variable ref
-  retention_in_days = coalesce(
-    var.org_cloudtrail_cloudwatch_logs_group.log_group.retention_in_days,
-    365
-  )
+  # Shorten long variable refs
+  cw_log_grp  = var.org_cloudtrail_cloudwatch_logs_group.log_group
+  cw_svc_role = var.org_cloudtrail_cloudwatch_logs_group.iam_service_role
 }
 
 # This CW log group accepts the Org's CloudTrail event stream
@@ -54,21 +45,16 @@ locals {
 resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
-  name              = var.org_cloudtrail_cloudwatch_logs_group.log_group.name
-  retention_in_days = local.retention_in_days
-  tags              = var.org_cloudtrail_cloudwatch_logs_group.log_group.tags
+  name              = local.cw_log_grp.name
+  retention_in_days = coalesce(local.cw_log_grp.retention_in_days, 365)
+  tags              = local.cw_log_grp.tags
 }
 
 #---------------------------------------------------------------------
 # IAM Service Role to deliver CloudTrail Events to the CloudWatch Log Group:
 
-locals {
-  # Shorten long variable ref
-  cw_svc_role = var.org_cloudtrail_cloudwatch_logs_group.iam_service_role
-}
-
 resource "aws_iam_role" "CloudWatch-Delivery_Role" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   name = local.cw_svc_role.name
   tags = local.cw_svc_role.tags
@@ -88,8 +74,18 @@ resource "aws_iam_role" "CloudWatch-Delivery_Role" {
 #---------------------------------------------------------------------
 # The IAM policy allowing the service role to deliver CloudTrail events to the CW log group:
 
+/* CloudWatch Resource ARN Formats:
+Log group     arn:aws:logs:REGION:ACCOUNT_ID:log-group:LOG_GRP_NAME
+Log stream    arn:aws:logs:REGION:ACCOUNT_ID:log-group:LOG_GRP_NAME:log-stream:LOG_STREAM_NAME
+Destination   arn:aws:logs:REGION:ACCOUNT_ID:destination:DEST_NAME
+*/
+
+locals {
+  cw_log_grp_arn = "aws:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${local.cw_log_grp.name}"
+}
+
 resource "aws_iam_policy" "CloudWatch-Delivery_Role_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   name        = coalesce(local.cw_svc_role.policy.name, "${local.cw_svc_role.name}_Policy")
   description = local.cw_svc_role.policy.description
@@ -99,17 +95,20 @@ resource "aws_iam_policy" "CloudWatch-Delivery_Role_Policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid      = "AllowCloudTrailCreateLogStreamAndPutLogEvents"
-        Effect   = "Allow"
-        Action   = ["logs:CreateLogStream", "logs:PutLogEvents"]
-        Resource = "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:log-stream:*"
+        Sid    = "AllowCloudTrailCreateLogStreamAndPutLogEvents"
+        Effect = "Allow"
+        Action = ["logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = [
+          "${local.cw_log_grp_arn}:log-stream:*_CloudTrail_*",
+          "${local.cw_log_grp_arn}:log-stream:${local.org_id}_*"
+        ]
       }
     ]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "CloudWatch-Delivery_Role_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   role       = one(aws_iam_role.CloudWatch-Delivery_Role).name
   policy_arn = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy).arn
