@@ -151,8 +151,8 @@ resource "aws_config_delivery_channel" "us-east-2" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:us-east-2:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:us-east-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -213,8 +213,8 @@ resource "aws_config_delivery_channel" "ap-northeast-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-northeast-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -277,8 +277,8 @@ resource "aws_config_delivery_channel" "ap-northeast-2" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-northeast-2:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -341,8 +341,8 @@ resource "aws_config_delivery_channel" "ap-northeast-3" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-northeast-3:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-3:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -405,8 +405,8 @@ resource "aws_config_delivery_channel" "ap-south-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-south-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-south-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -469,8 +469,8 @@ resource "aws_config_delivery_channel" "ap-southeast-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-southeast-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-southeast-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -533,8 +533,8 @@ resource "aws_config_delivery_channel" "ap-southeast-2" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ap-southeast-2:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ap-southeast-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -597,8 +597,8 @@ resource "aws_config_delivery_channel" "ca-central-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:ca-central-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:ca-central-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -661,8 +661,8 @@ resource "aws_config_delivery_channel" "eu-north-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:eu-north-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:eu-north-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -725,8 +725,8 @@ resource "aws_config_delivery_channel" "eu-central-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:eu-central-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:eu-central-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -789,8 +789,8 @@ resource "aws_config_delivery_channel" "eu-west-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:eu-west-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -853,8 +853,8 @@ resource "aws_config_delivery_channel" "eu-west-2" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:eu-west-2:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -917,8 +917,8 @@ resource "aws_config_delivery_channel" "eu-west-3" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:eu-west-3:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-3:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -981,8 +981,8 @@ resource "aws_config_delivery_channel" "sa-east-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:sa-east-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:sa-east-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1045,8 +1045,8 @@ resource "aws_config_delivery_channel" "us-east-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:us-east-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:us-east-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1109,8 +1109,8 @@ resource "aws_config_delivery_channel" "us-west-1" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:us-west-1:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:us-west-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1173,8 +1173,8 @@ resource "aws_config_delivery_channel" "us-west-2" {
   name           = var.org_aws_config.delivery_channel.name
   s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
   s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
-  s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  s3_kms_key_arn = "arn:aws:kms:us-west-2:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
+  sns_topic_arn  = "arn:aws:sns:us-west-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
