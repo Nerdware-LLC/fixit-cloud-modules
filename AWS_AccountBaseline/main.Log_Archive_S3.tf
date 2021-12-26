@@ -148,7 +148,7 @@ locals {
         Principal = {
           AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
         }
-        Action   = "s3:PutObject"
+        Action   = ["s3:PutObject", "s3:PutObjectAcl"]
         Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
           StringEquals = {
