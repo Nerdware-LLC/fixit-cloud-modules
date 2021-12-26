@@ -70,7 +70,7 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
 
   name        = var.org_aws_config.service_role.policy.name
   description = var.org_aws_config.service_role.policy.description
-  path        = var.org_aws_config.service_role.policy.path
+  path        = coalesce(var.org_aws_config.service_role.policy.path, "/")
   tags        = var.org_aws_config.service_role.policy.tags
   policy = jsonencode({
     Version = "2012-10-17"
