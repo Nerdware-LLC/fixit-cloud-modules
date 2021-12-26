@@ -88,24 +88,31 @@ resource "aws_iam_role" "CloudWatch-Delivery_Role" {
 #---------------------------------------------------------------------
 # The IAM policy allowing the service role to deliver CloudTrail events to the CW log group:
 
-resource "aws_iam_role_policy" "CloudWatch-Delivery_Role_Policy" {
+resource "aws_iam_policy" "CloudWatch-Delivery_Role_Policy" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
-  name = coalesce(local.cw_svc_role.policy_name, "${local.cw_svc_role.name}_Policy")
-  role = one(aws_iam_role.CloudWatch-Delivery_Role).id
+  name        = coalesce(local.cw_svc_role.policy.name, "${local.cw_svc_role.name}_Policy")
+  description = local.cw_svc_role.policy.description
+  path        = coalesce(local.cw_svc_role.policy.path, "/")
+  tags        = local.cw_svc_role.policy.tags
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowCloudTrailCreateLogStreamAndPutLogEvents"
-        Action = ["logs:CreateLogStream", "logs:PutLogEvents"]
-        Resource = [
-          "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:log-stream:*_CloudTrail_*",
-          "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:log-stream:${local.org_id}_*",
-        ]
+        Sid      = "AllowCloudTrailCreateLogStreamAndPutLogEvents"
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:log-stream:*"
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "CloudWatch-Delivery_Role_Policy" {
+  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
+
+  role       = one(aws_iam_role.CloudWatch-Delivery_Role).name
+  policy_arn = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy).arn
 }
 
 ######################################################################
