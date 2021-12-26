@@ -1,0 +1,21 @@
+jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          AWS = [
+            "arn:aws:iam::*:role/${config_iam_service_role_name}",
+            "arn:aws:config:${region}:${root_account_id}:config-aggregator/config-aggregator-*"
+          ]
+        }
+        Action   = ["sns:Publish"]
+        Resource = "${sns_topic_arn}"
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalOrgID" = ["${org_id}"]
+          }
+        }
+      }
+    ]
+  })

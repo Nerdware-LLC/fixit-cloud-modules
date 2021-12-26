@@ -52,86 +52,110 @@ output "Org_Config_Role_Policy" {
   value       = one(aws_iam_policy.Org_Config_Role_Policy)
 }
 
-output "Org_Config_SNS_Topic" {
-  description = "The Org's AWS-Config SNS Topic (will be \"null\" for non-root accounts)."
-  value       = one(aws_sns_topic.Org_Config_SNS_Topic)
-}
-
-output "Org_Config_SNS_Topic_Policy" {
-  description = "The Org's AWS-Config SNS Topic Policy (will be \"null\" for non-root accounts)."
-  value       = one(aws_sns_topic_policy.Org_Config_SNS_Topic_Policy)
-}
-
 output "Regional_Config_Resources_BY_REGION" {
   description = "A map of AWS-Config RECORDER and DELIVERY CHANNEL resources, organized by region."
   value = {
     "ap-northeast-1" = {
       Recorder         = aws_config_configuration_recorder.ap-northeast-1
       Delivery_Channel = aws_config_delivery_channel.ap-northeast-1
+      SNS_Topic        = one(aws_sns_topic.ap-northeast-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-1)
     }
     "ap-northeast-2" = {
       Recorder         = aws_config_configuration_recorder.ap-northeast-2
       Delivery_Channel = aws_config_delivery_channel.ap-northeast-2
+      SNS_Topic        = one(aws_sns_topic.ap-northeast-2)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-2)
     }
     "ap-northeast-3" = {
       Recorder         = aws_config_configuration_recorder.ap-northeast-3
       Delivery_Channel = aws_config_delivery_channel.ap-northeast-3
+      SNS_Topic        = one(aws_sns_topic.ap-northeast-3)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-3)
     }
     "ap-south-1" = {
       Recorder         = aws_config_configuration_recorder.ap-south-1
       Delivery_Channel = aws_config_delivery_channel.ap-south-1
+      SNS_Topic        = one(aws_sns_topic.ap-south-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-south-1)
     }
     "ap-southeast-1" = {
       Recorder         = aws_config_configuration_recorder.ap-southeast-1
       Delivery_Channel = aws_config_delivery_channel.ap-southeast-1
+      SNS_Topic        = one(aws_sns_topic.ap-southeast-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-southeast-1)
     }
     "ap-southeast-2" = {
       Recorder         = aws_config_configuration_recorder.ap-southeast-2
       Delivery_Channel = aws_config_delivery_channel.ap-southeast-2
+      SNS_Topic        = one(aws_sns_topic.ap-southeast-2)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-southeast-2)
     }
     "ca-central-1" = {
       Recorder         = aws_config_configuration_recorder.ca-central-1
       Delivery_Channel = aws_config_delivery_channel.ca-central-1
+      SNS_Topic        = one(aws_sns_topic.ca-central-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.ca-central-1)
     }
     "eu-north-1" = {
       Recorder         = aws_config_configuration_recorder.eu-north-1
       Delivery_Channel = aws_config_delivery_channel.eu-north-1
+      SNS_Topic        = one(aws_sns_topic.eu-north-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-north-1)
     }
     "eu-central-1" = {
       Recorder         = aws_config_configuration_recorder.eu-central-1
       Delivery_Channel = aws_config_delivery_channel.eu-central-1
+      SNS_Topic        = one(aws_sns_topic.eu-central-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-central-1)
     }
     "eu-west-1" = {
       Recorder         = aws_config_configuration_recorder.eu-west-1
       Delivery_Channel = aws_config_delivery_channel.eu-west-1
+      SNS_Topic        = one(aws_sns_topic.eu-west-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-1)
     }
     "eu-west-2" = {
       Recorder         = aws_config_configuration_recorder.eu-west-2
       Delivery_Channel = aws_config_delivery_channel.eu-west-2
+      SNS_Topic        = one(aws_sns_topic.eu-west-2)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-2)
     }
     "eu-west-3" = {
       Recorder         = aws_config_configuration_recorder.eu-west-3
       Delivery_Channel = aws_config_delivery_channel.eu-west-3
+      SNS_Topic        = one(aws_sns_topic.eu-west-3)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-3)
     }
     "sa-east-1" = {
       Recorder         = aws_config_configuration_recorder.sa-east-1
       Delivery_Channel = aws_config_delivery_channel.sa-east-1
+      SNS_Topic        = one(aws_sns_topic.sa-east-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.sa-east-1)
     }
     "us-east-1" = {
       Recorder         = aws_config_configuration_recorder.us-east-1
       Delivery_Channel = aws_config_delivery_channel.us-east-1
+      SNS_Topic        = one(aws_sns_topic.us-east-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.us-east-1)
     }
     "us-east-2" = {
       Recorder         = aws_config_configuration_recorder.us-east-2
       Delivery_Channel = aws_config_delivery_channel.us-east-2
+      SNS_Topic        = one(aws_sns_topic.us-east-2)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.us-east-2)
     }
     "us-west-1" = {
       Recorder         = aws_config_configuration_recorder.us-west-1
       Delivery_Channel = aws_config_delivery_channel.us-west-1
+      SNS_Topic        = one(aws_sns_topic.us-west-1)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.us-west-1)
     }
     "us-west-2" = {
       Recorder         = aws_config_configuration_recorder.us-west-2
       Delivery_Channel = aws_config_delivery_channel.us-west-2
+      SNS_Topic        = one(aws_sns_topic.us-west-2)
+      SNS_Topic_Policy = one(aws_sns_topic_policy.us-west-2)
     }
   }
 }

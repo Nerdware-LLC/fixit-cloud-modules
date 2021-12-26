@@ -99,7 +99,7 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
       {
         Effect   = "Allow"
         Action   = ["sns:Publish"]
-        Resource = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+        Resource = "arn:aws:sns:*:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
       }
     ]
   })
@@ -117,50 +117,11 @@ resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
   depends_on = [aws_iam_policy.Org_Config_Role_Policy] # For root account
 }
 
-#---------------------------------------------------------------------
-### AWS Config - SNS Topic
-
-resource "aws_sns_topic" "Org_Config_SNS_Topic" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
-  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
-}
-
-resource "aws_sns_topic_policy" "Org_Config_SNS_Topic_Policy" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
-  arn = one(aws_sns_topic.Org_Config_SNS_Topic).arn
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          AWS = [
-            "arn:aws:iam::*:role/${var.org_aws_config.service_role.name}",
-            one(aws_iam_role.Org_Config_Aggregator_Role).arn
-          ]
-        }
-        Action   = ["sns:Publish"]
-        Resource = one(aws_sns_topic.Org_Config_SNS_Topic).arn
-        Condition = {
-          StringEquals = {
-            "aws:PrincipalOrgID" = [local.org_id]
-          }
-        }
-      }
-    ]
-  })
-}
-
 ######################################################################
 ### REGION-SPECIFIC CONFIG RESOURCES
 
 locals {
-  delivery_frequency = coalesce(
+  delivery_channel_snapshot_frequency = coalesce(
     var.org_aws_config.delivery_channel.snapshot_frequency,
     "TwentyFour_Hours"
   )
@@ -194,10 +155,32 @@ resource "aws_config_delivery_channel" "us-east-2" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.us-east-2]
+}
+
+resource "aws_sns_topic" "us-east-2" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "us-east-2" {
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+
+  arn = one(aws_sns_topic.us-east-2).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.us-east-2).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "us-east-2"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -234,10 +217,34 @@ resource "aws_config_delivery_channel" "ap-northeast-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-northeast-1]
+}
+
+resource "aws_sns_topic" "ap-northeast-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-northeast-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-1
+
+  arn = one(aws_sns_topic.ap-northeast-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-northeast-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-northeast-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -274,10 +281,34 @@ resource "aws_config_delivery_channel" "ap-northeast-2" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-northeast-2]
+}
+
+resource "aws_sns_topic" "ap-northeast-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-2
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-northeast-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-2
+
+  arn = one(aws_sns_topic.ap-northeast-2).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-northeast-2).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-northeast-2"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -314,10 +345,34 @@ resource "aws_config_delivery_channel" "ap-northeast-3" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-northeast-3]
+}
+
+resource "aws_sns_topic" "ap-northeast-3" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-3
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-northeast-3" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-northeast-3
+
+  arn = one(aws_sns_topic.ap-northeast-3).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-northeast-3).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-northeast-3"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -354,10 +409,34 @@ resource "aws_config_delivery_channel" "ap-south-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-south-1]
+}
+
+resource "aws_sns_topic" "ap-south-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-south-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-south-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-south-1
+
+  arn = one(aws_sns_topic.ap-south-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-south-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-south-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -394,10 +473,34 @@ resource "aws_config_delivery_channel" "ap-southeast-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-southeast-1]
+}
+
+resource "aws_sns_topic" "ap-southeast-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-southeast-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-southeast-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-southeast-1
+
+  arn = one(aws_sns_topic.ap-southeast-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-southeast-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-southeast-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -434,10 +537,34 @@ resource "aws_config_delivery_channel" "ap-southeast-2" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ap-southeast-2]
+}
+
+resource "aws_sns_topic" "ap-southeast-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-southeast-2
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ap-southeast-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ap-southeast-2
+
+  arn = one(aws_sns_topic.ap-southeast-2).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ap-southeast-2).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ap-southeast-2"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -474,10 +601,34 @@ resource "aws_config_delivery_channel" "ca-central-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.ca-central-1]
+}
+
+resource "aws_sns_topic" "ca-central-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ca-central-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "ca-central-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.ca-central-1
+
+  arn = one(aws_sns_topic.ca-central-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.ca-central-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "ca-central-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -514,10 +665,34 @@ resource "aws_config_delivery_channel" "eu-north-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.eu-north-1]
+}
+
+resource "aws_sns_topic" "eu-north-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-north-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "eu-north-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-north-1
+
+  arn = one(aws_sns_topic.eu-north-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.eu-north-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "eu-north-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -554,10 +729,34 @@ resource "aws_config_delivery_channel" "eu-central-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.eu-central-1]
+}
+
+resource "aws_sns_topic" "eu-central-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-central-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "eu-central-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-central-1
+
+  arn = one(aws_sns_topic.eu-central-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.eu-central-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "eu-central-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -594,10 +793,34 @@ resource "aws_config_delivery_channel" "eu-west-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.eu-west-1]
+}
+
+resource "aws_sns_topic" "eu-west-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "eu-west-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-1
+
+  arn = one(aws_sns_topic.eu-west-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.eu-west-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "eu-west-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -634,10 +857,34 @@ resource "aws_config_delivery_channel" "eu-west-2" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.eu-west-2]
+}
+
+resource "aws_sns_topic" "eu-west-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-2
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "eu-west-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-2
+
+  arn = one(aws_sns_topic.eu-west-2).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.eu-west-2).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "eu-west-2"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -674,10 +921,34 @@ resource "aws_config_delivery_channel" "eu-west-3" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.eu-west-3]
+}
+
+resource "aws_sns_topic" "eu-west-3" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-3
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "eu-west-3" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.eu-west-3
+
+  arn = one(aws_sns_topic.eu-west-3).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.eu-west-3).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "eu-west-3"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -714,10 +985,34 @@ resource "aws_config_delivery_channel" "sa-east-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.sa-east-1]
+}
+
+resource "aws_sns_topic" "sa-east-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.sa-east-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "sa-east-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.sa-east-1
+
+  arn = one(aws_sns_topic.sa-east-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.sa-east-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "sa-east-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -754,10 +1049,34 @@ resource "aws_config_delivery_channel" "us-east-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.us-east-1]
+}
+
+resource "aws_sns_topic" "us-east-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-east-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "us-east-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-east-1
+
+  arn = one(aws_sns_topic.us-east-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.us-east-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "us-east-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -794,10 +1113,34 @@ resource "aws_config_delivery_channel" "us-west-1" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.us-west-1]
+}
+
+resource "aws_sns_topic" "us-west-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-west-1
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "us-west-1" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-west-1
+
+  arn = one(aws_sns_topic.us-west-1).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.us-west-1).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "us-west-1"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 #---------------------------------------------------------------------
@@ -834,10 +1177,34 @@ resource "aws_config_delivery_channel" "us-west-2" {
   sns_topic_arn  = "arn:aws:sns:${local.aws_region}:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
 
   snapshot_delivery_properties {
-    delivery_frequency = local.delivery_frequency
+    delivery_frequency = local.delivery_channel_snapshot_frequency
   }
 
   depends_on = [aws_config_configuration_recorder.us-west-2]
+}
+
+resource "aws_sns_topic" "us-west-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-west-2
+
+  name              = var.org_aws_config.sns_topic.name
+  display_name      = var.org_aws_config.sns_topic.display_name
+  kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
+  tags              = var.org_aws_config.sns_topic.tags
+}
+
+resource "aws_sns_topic_policy" "us-west-2" {
+  count    = local.IS_ROOT_ACCOUNT ? 1 : 0
+  provider = aws.us-west-2
+
+  arn = one(aws_sns_topic.us-west-2).arn
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+    sns_topic_arn                = one(aws_sns_topic.us-west-2).arn
+    config_iam_service_role_name = var.org_aws_config.service_role.name
+    region                       = "us-west-2"
+    root_account_id              = local.root_account_id
+    org_id                       = local.org_id
+  })
 }
 
 ######################################################################
