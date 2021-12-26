@@ -105,17 +105,13 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
   })
 }
 
-locals {
-  config_role_policy_arn_suffix = (var.org_aws_config.service_role.policy.path != null
-    ? "${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
-    : "${var.org_aws_config.service_role.policy.name}"
-  )
-}
-
 resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
   for_each = {
-    "${var.org_aws_config.service_role.policy.name}" = "arn:aws:iam::${local.root_account_id}:policy/${local.config_role_policy_arn_suffix}"
-    AWS_ConfigRole                                   = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+    AWS_ConfigRole = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+    "${var.org_aws_config.service_role.policy.name}" = (var.org_aws_config.service_role.policy.path != null
+      ? "arn:aws:iam::${local.root_account_id}:policy${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
+      : "arn:aws:iam::${local.root_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
+    )
   }
 
   role       = aws_iam_role.Org_Config_Role.name
