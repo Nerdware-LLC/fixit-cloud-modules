@@ -44,8 +44,7 @@ resource "aws_kms_key" "Org_KMS_Key" {
           AWS = [
             local.root_account_arn,
             local.log_archive_account_arn,
-            "arn:aws:iam::${local.root_account_id}:user/Administrator",
-            "arn:aws:iam::${local.root_account_id}:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AdministratorAccess_*"
+            "arn:aws:iam::${local.root_account_id}:user/Administrator"
           ]
         }
         Action   = "kms:*"
