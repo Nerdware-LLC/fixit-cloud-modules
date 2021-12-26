@@ -99,6 +99,22 @@ locals {
     Id      = "Org_Log_Archive_S3_Bucket_Policy"
     Version = "2012-10-17"
     Statement = [
+      # S3 BUCKET POLICY --> IAM Users/Roles
+      {
+        Sid       = "AllowOrgPrincipalsUsage"
+        Effect    = "Allow"
+        Principal = { AWS = "*" }
+        Action    = "s3:*"
+        Resource = [
+          "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}",
+          "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalOrgID" = local.org_id
+          }
+        }
+      },
       # S3 BUCKET POLICY --> CloudTrail
       {
         Sid       = "OnlyAllowOrgServicesAclCheck"
@@ -116,46 +132,46 @@ locals {
         Sid       = "AllowOrgCloudTrailWrite"
         Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
-        Action    = "s3:PutObject"
-        Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
+        Action = [
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ]
+        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
-          StringEquals = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${var.log_archive_account_id}:trail/${var.org_cloudtrail.name}"
+          ArnEquals = {
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
           }
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
           }
         }
       },
-      # S3 BUCKET POLICY --> Config
+      # S3 BUCKET POLICY --> Config SERVICE (the ROLE should be covered by the first statement for Org IAM)
       {
-        Sid    = "AWSConfigCheckBucketExistenceAndPerms"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
-        }
-        Action   = ["s3:ListBucket", "s3:GetBucketAcl"]
+        Sid       = "AWSConfigBucketExistenceAndPermsCheck"
+        Effect    = "Allow"
+        Principal = { Service = "config.amazonaws.com" }
+        Action = [
+          "s3:ListBucket",
+          "s3:GetBucketAcl"
+        ]
         Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
         Condition = {
           StringEquals = {
-            "aws:PrincipalOrgID" = local.org_id
+            "aws:SourceAccount" = var.all_account_ids
           }
         }
       },
       {
-        Sid    = "AWSConfigWrite"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
-        }
-        Action   = ["s3:PutObject", "s3:PutObjectAcl"]
-        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
+        Sid       = "AWSConfigBucketDelivery"
+        Effect    = "Allow"
+        Principal = { Service = "config.amazonaws.com" }
+        Action    = ["s3:PutObject", "s3:PutObjectAcl"]
+        Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
           StringEquals = {
-            "aws:PrincipalOrgID" = local.org_id
-          }
-          StringEquals = {
-            "s3:x-amz-acl" = "bucket-owner-full-control"
+            "aws:SourceAccount" = var.all_account_ids
+            "s3:x-amz-acl"      = "bucket-owner-full-control"
           }
         }
       }
@@ -167,16 +183,18 @@ locals {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "OnlyAllowWritesFromOrgLogArchiveS3"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = [
-          "arn:aws:s3:::${var.org_log_archive_s3_bucket.access_logs_s3.name}",
-          "arn:aws:s3:::${var.org_log_archive_s3_bucket.access_logs_s3.name}/*"
-        ]
+        Sid       = "S3ServerAccessLogsPolicy"
+        Effect    = "Allow"
+        Principal = { Service = "logging.s3.amazonaws.com" }
+        Action    = "s3:PutObject"
+        Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.access_logs_s3.name}/*"
         Condition = {
-          Bool = { "aws:SecureTransport" = "false" }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
+          }
+          StringEquals = {
+            "aws:SourceAccount" = var.all_account_ids
+          }
         }
       }
     ]

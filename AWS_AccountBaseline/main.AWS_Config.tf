@@ -66,8 +66,6 @@ resource "aws_iam_role" "Org_Config_Role" {
 }
 
 resource "aws_iam_policy" "Org_Config_Role_Policy" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
   name        = var.org_aws_config.service_role.policy.name
   description = var.org_aws_config.service_role.policy.description
   path        = coalesce(var.org_aws_config.service_role.policy.path, "/")
@@ -78,27 +76,32 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
       # Config IAM Role Policies --> S3 Bucket
       {
         Effect   = "Allow"
-        Action   = ["s3:PutObject", "s3:PutObjectAcl"]
-        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
-        Condition = {
-          StringLike = { "s3:x-amz-acl" = "bucket-owner-full-control" }
-        }
+        Action   = "s3:GetBucketAcl"
+        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
       },
       {
-        Effect   = "Allow"
-        Action   = ["s3:GetBucketAcl", "s3:ListBucket", "s3:GetBucketLocation"]
-        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ]
+        Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
+        Condition = {
+          StringLike = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
       },
       # Config IAM Role Policies --> KMS Key
       {
         Effect   = "Allow"
         Action   = ["kms:Decrypt", "kms:GenerateDataKey"]
-        Resource = one(aws_kms_key.Org_KMS_Key).arn
+        Resource = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
       },
       # Config IAM Role Policies --> SNS Topic
       {
         Effect   = "Allow"
-        Action   = ["sns:Publish"]
+        Action   = "sns:Publish"
         Resource = "arn:aws:sns:*:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
       }
     ]
@@ -109,15 +112,15 @@ resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
   for_each = {
     AWS_ConfigRole = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
     "${var.org_aws_config.service_role.policy.name}" = (var.org_aws_config.service_role.policy.path != null
-      ? "arn:aws:iam::${local.root_account_id}:policy${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
-      : "arn:aws:iam::${local.root_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
+      ? "arn:aws:iam::${local.caller_account_id}:policy${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
+      : "arn:aws:iam::${local.caller_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
     )
   }
 
   role       = aws_iam_role.Org_Config_Role.name
   policy_arn = each.value
 
-  depends_on = [aws_iam_policy.Org_Config_Role_Policy] # For root account
+  depends_on = [aws_iam_policy.Org_Config_Role_Policy]
 }
 
 ######################################################################
@@ -178,11 +181,9 @@ resource "aws_sns_topic_policy" "us-east-2" {
 
   arn = one(aws_sns_topic.us-east-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.us-east-2).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "us-east-2" # TODO this arg is currently unused in the template; consider rm'ing
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.us-east-2).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -242,11 +243,9 @@ resource "aws_sns_topic_policy" "ap-northeast-1" {
 
   arn = one(aws_sns_topic.ap-northeast-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-northeast-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-northeast-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-northeast-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -306,11 +305,9 @@ resource "aws_sns_topic_policy" "ap-northeast-2" {
 
   arn = one(aws_sns_topic.ap-northeast-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-northeast-2).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-northeast-2"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-northeast-2).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -370,11 +367,9 @@ resource "aws_sns_topic_policy" "ap-northeast-3" {
 
   arn = one(aws_sns_topic.ap-northeast-3).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-northeast-3).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-northeast-3"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-northeast-3).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -434,11 +429,9 @@ resource "aws_sns_topic_policy" "ap-south-1" {
 
   arn = one(aws_sns_topic.ap-south-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-south-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-south-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-south-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -498,11 +491,9 @@ resource "aws_sns_topic_policy" "ap-southeast-1" {
 
   arn = one(aws_sns_topic.ap-southeast-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-southeast-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-southeast-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-southeast-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -562,11 +553,9 @@ resource "aws_sns_topic_policy" "ap-southeast-2" {
 
   arn = one(aws_sns_topic.ap-southeast-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ap-southeast-2).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ap-southeast-2"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ap-southeast-2).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -626,11 +615,9 @@ resource "aws_sns_topic_policy" "ca-central-1" {
 
   arn = one(aws_sns_topic.ca-central-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.ca-central-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "ca-central-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.ca-central-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -690,11 +677,9 @@ resource "aws_sns_topic_policy" "eu-north-1" {
 
   arn = one(aws_sns_topic.eu-north-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.eu-north-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "eu-north-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.eu-north-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -754,11 +739,9 @@ resource "aws_sns_topic_policy" "eu-central-1" {
 
   arn = one(aws_sns_topic.eu-central-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.eu-central-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "eu-central-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.eu-central-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -818,11 +801,9 @@ resource "aws_sns_topic_policy" "eu-west-1" {
 
   arn = one(aws_sns_topic.eu-west-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.eu-west-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "eu-west-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.eu-west-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -882,11 +863,9 @@ resource "aws_sns_topic_policy" "eu-west-2" {
 
   arn = one(aws_sns_topic.eu-west-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.eu-west-2).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "eu-west-2"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.eu-west-2).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -946,11 +925,9 @@ resource "aws_sns_topic_policy" "eu-west-3" {
 
   arn = one(aws_sns_topic.eu-west-3).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.eu-west-3).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "eu-west-3"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.eu-west-3).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -1010,11 +987,9 @@ resource "aws_sns_topic_policy" "sa-east-1" {
 
   arn = one(aws_sns_topic.sa-east-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.sa-east-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "sa-east-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.sa-east-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -1074,11 +1049,9 @@ resource "aws_sns_topic_policy" "us-east-1" {
 
   arn = one(aws_sns_topic.us-east-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.us-east-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "us-east-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.us-east-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -1138,11 +1111,9 @@ resource "aws_sns_topic_policy" "us-west-1" {
 
   arn = one(aws_sns_topic.us-west-1).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.us-west-1).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "us-west-1"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.us-west-1).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 
@@ -1202,11 +1173,9 @@ resource "aws_sns_topic_policy" "us-west-2" {
 
   arn = one(aws_sns_topic.us-west-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
-    sns_topic_arn                = one(aws_sns_topic.us-west-2).arn
-    config_iam_service_role_name = var.org_aws_config.service_role.name
-    region                       = "us-west-2"
-    root_account_id              = local.root_account_id
-    org_id                       = local.org_id
+    sns_topic_arn   = one(aws_sns_topic.us-west-2).arn
+    org_id          = local.org_id
+    all_account_ids = var.all_account_ids
   })
 }
 

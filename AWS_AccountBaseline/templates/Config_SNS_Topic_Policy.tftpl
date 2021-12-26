@@ -2,20 +2,29 @@ ${jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Principal = {
-          AWS = [
-            "arn:aws:iam::${root_account_id}:root",
-            "arn:aws:iam::${root_account_id}:role/${config_iam_service_role_name}"
-          ]
-        }
-        Action   = ["sns:Publish"]
-        Resource = "${sns_topic_arn}"
+        Sid       = "AllowOrgPrincipalsUsage",
+        Effect    = "Allow"
+        Principal = { AWS = "*" }
+        Action    = "sns:Publish"
+        Resource  = "${sns_topic_arn}"
         Condition = {
           StringEquals = {
-            "aws:PrincipalOrgID" = ["${org_id}"]
+            "aws:PrincipalOrgID" = "${org_id}"
+          }
+        }
+      },
+      {
+        Sid       = "AWSConfigServiceSNSPolicy"
+        Effect    = "Allow"
+        Principal = { Service = "config.amazonaws.com" }
+        Action    = "sns:Publish"
+        Resource  = "${sns_topic_arn}"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = [for account_id in all_account_ids : "${account_id}"]
           }
         }
       }
     ]
-  })}
+  }
+)}

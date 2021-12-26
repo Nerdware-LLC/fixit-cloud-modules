@@ -26,6 +26,18 @@ variable "security_account_id" {
   type        = string
 }
 
+variable "all_account_ids" {
+  description = <<-EOF
+  A list of IDs for every account within the Organization. These
+  account IDs will be used in "aws:SourceAccount" Condition keys
+  in IAM policy statements with an AWS Service Principal. For
+  statements with AWS/IAM Principals, the "aws:PrincipalOrgID"
+  Condition key will be used instead, but this key is N/A for
+  actions initiated by Service Principals.
+  EOF
+  type        = list(string)
+}
+
 variable "s3_public_access_blocks" {
   description = <<-EOF
   Config object for account-level rules regarding S3 public access.
@@ -206,9 +218,14 @@ variable "org_cloudtrail_cloudwatch_logs_group" {
       tags              = optional(map(string))
     })
     iam_service_role = object({
-      name        = string
-      policy_name = optional(string)
-      tags        = optional(map(string))
+      name = string
+      tags = optional(map(string))
+      policy = object({
+        name        = string
+        description = optional(string)
+        path        = optional(string)
+        tags        = optional(map(string))
+      })
     })
   })
 }

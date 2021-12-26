@@ -38,35 +38,14 @@ resource "aws_kms_key" "Org_KMS_Key" {
     Statement = [
       # KEY POLICIES --> IAM Users/Roles
       {
-        Sid    = "EnableAdminIAMUserPermissions"
-        Effect = "Allow"
-        Principal = {
-          AWS = [
-            local.root_account_arn,
-            local.log_archive_account_arn,
-            "arn:aws:iam::${local.root_account_id}:user/Administrator"
-          ]
-        }
-        Action   = "kms:*"
-        Resource = "*"
-        Condition = {
-          StringEquals = {
-            "aws:PrincipalOrgID" = [local.org_id]
-          }
-        }
-      },
-      {
-        Sid       = "EnableCrossAccountLogDecryptionAndAliasCreation"
+        Sid       = "EnableOrgPrincipalsUsage"
         Effect    = "Allow"
         Principal = { AWS = "*" }
-        Action    = ["kms:Decrypt", "kms:ReEncryptFrom", "kms:CreateAlias"]
+        Action    = "kms:*"
         Resource  = "*"
         Condition = {
           StringEquals = {
-            "kms:CallerAccount" = [local.root_account_arn, local.log_archive_account_arn]
-          }
-          StringEquals = {
-            "aws:PrincipalOrgID" = [local.org_id]
+            "aws:PrincipalOrgID" = local.org_id
           }
         }
       },
@@ -75,15 +54,12 @@ resource "aws_kms_key" "Org_KMS_Key" {
         Sid       = "AllowCloudTrailEncryptLogsWithKey"
         Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
-        # NOTE: AWS-gen'd Principal here is AWS: ["arn:aws:iam::212415581174:role/aws-service-role/cloudtrail.amazonaws.com/AWSServiceRoleForCloudTrail"]
-        Action   = "kms:GenerateDataKey*"
-        Resource = "*"
+        Action    = "kms:GenerateDataKey*"
+        Resource  = "*"
         Condition = {
           ArnLike = {
-            "kms:EncryptionContext:aws:cloudtrail:arn" = ["arn:aws:cloudtrail:*:${local.root_account_id}:trail/*"]
-          }
-          ArnLike = {
-            "aws:SourceArn" = ["arn:aws:cloudtrail:*:${local.root_account_id}:trail/${var.org_cloudtrail.name}"]
+            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:*:${local.root_account_id}:trail/*"
+            "aws:SourceArn"                            = "arn:aws:cloudtrail:*:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
           }
         }
       },
@@ -94,18 +70,19 @@ resource "aws_kms_key" "Org_KMS_Key" {
         Action    = "kms:DescribeKey"
         Resource  = "*"
       },
-      # KEY POLICIES --> AWS-Config
+      # KEY POLICIES --> AWS-Config SERVICE (the ROLE should be covered by the first statement for Org IAM)
       {
-        Sid    = "AWSConfigKMSPolicy"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${local.root_account_id}:role/${var.org_aws_config.service_role.name}"
-        }
-        Action   = ["kms:Decrypt", "kms:GenerateDataKey*"]
+        Sid       = "AWSConfigKMSPolicy"
+        Effect    = "Allow"
+        Principal = { Service = "config.amazonaws.com" }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:PrincipalOrgID" = [local.org_id]
+            "aws:SourceAccount" = var.all_account_ids
           }
         }
       }

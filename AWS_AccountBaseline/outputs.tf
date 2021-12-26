@@ -48,8 +48,8 @@ output "Org_Config_Role" {
 }
 
 output "Org_Config_Role_Policy" {
-  description = "The IAM policy for \"Org_Config_Role\" (will be \"null\" for non-root accounts)."
-  value       = one(aws_iam_policy.Org_Config_Role_Policy)
+  description = "The IAM policy for \"Org_Config_Role\"."
+  value       = aws_iam_policy.Org_Config_Role_Policy
 }
 
 output "Regional_Config_Resources_BY_REGION" {
@@ -356,7 +356,7 @@ output "CloudWatch-Delivery_Role_Policy" {
   The IAM policy for "CloudWatch-Delivery_Role" that permits delivery of the Organization's
   CloudTrail events to the CloudWatch Logs log group (will be "null" for all accounts except Log-Archive).
   EOF
-  value       = one(aws_iam_role_policy.CloudWatch-Delivery_Role_Policy)
+  value       = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy)
 }
 
 #---------------------------------------------------------------------

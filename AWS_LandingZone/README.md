@@ -8,6 +8,18 @@ Terraform module for defining a multi-account AWS Landing Zone.
 
 TODO add quick paragraph about aws orgs
 
+<!-- Below paragraph is from main.Organizations.tf OUs locals block -->
+
+To avoid CYCLE ERRORs in nested organizational_unit resources,
+we need to have separate resource blocks - one for each nesting depth
+within the organization's structure. AWS allows organizations to have a
+maximum nesting depth of 5, which includes the root account as well as
+account leaf-nodes within the org tree. Therefore, our implementation
+can provide 3 OU nesting levels:
+Level_1 --> OUs that are direct children of root
+Level_2 --> OUs that are direct children of L1 OUs
+Level_3 --> OUs that are direct children of L2 OUs
+
 #### Trusted AWS Service Principals
 
 You can use trusted access to enable a supported AWS service that you specify, called the trusted service, to perform tasks in your organization and its accounts on your behalf. This involves granting permissions to the trusted service but does not otherwise affect the permissions for IAM users or roles. When you enable access, the trusted service can create an IAM role called a service-linked role in every account in your organization whenever that role is needed. That role has a permissions policy that allows the trusted service to do the tasks that are described in that service's documentation. This enables you to specify settings and configuration details that you would like the trusted service to maintain in your organization's accounts on your behalf. The trusted service only creates service-linked roles when it needs to perform management actions on accounts, and not necessarily in all accounts of the organization.
