@@ -122,11 +122,6 @@ locals {
         Principal = { Service = "cloudtrail.amazonaws.com" }
         Action    = "s3:GetBucketAcl"
         Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = local.root_account_id
-          }
-        }
       },
       {
         Sid       = "AllowOrgCloudTrailWrite"
