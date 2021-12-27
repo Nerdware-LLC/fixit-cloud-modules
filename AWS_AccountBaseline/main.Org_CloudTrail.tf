@@ -1,6 +1,12 @@
 ######################################################################
 ### CloudTrail
 
+locals {
+  # Shorten long variable refs
+  cw_log_grp  = var.org_cloudtrail_cloudwatch_logs_group.log_group
+  cw_svc_role = var.org_cloudtrail_cloudwatch_logs_group.iam_service_role
+}
+
 resource "aws_cloudtrail" "Org_CloudTrail" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
@@ -18,8 +24,8 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   enable_log_file_validation = true
 
   # CloudTrail requires the Log Stream wildcard as shown below
-  cloud_watch_logs_group_arn = "arn:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}:*"
-  cloud_watch_logs_role_arn  = "arn:aws:iam::${var.log_archive_account_id}:role/${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}"
+  cloud_watch_logs_group_arn = "arn:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${local.cw_log_grp.name}:*"
+  cloud_watch_logs_role_arn  = "arn:aws:iam::${var.log_archive_account_id}:role/${local.cw_svc_role.name}"
 
   event_selector {
     read_write_type           = "All"
@@ -33,12 +39,6 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
 
 #---------------------------------------------------------------------
 ### Org CloudTrail --> CloudWatchLogs Log Group
-
-locals {
-  # Shorten long variable refs
-  cw_log_grp  = var.org_cloudtrail_cloudwatch_logs_group.log_group
-  cw_svc_role = var.org_cloudtrail_cloudwatch_logs_group.iam_service_role
-}
 
 # This CW log group accepts the Org's CloudTrail event stream
 
