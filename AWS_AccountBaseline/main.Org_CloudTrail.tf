@@ -19,7 +19,7 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
 
   # CloudTrail requires the Log Stream wildcard as shown below
   cloud_watch_logs_group_arn = "arn:aws:logs:${local.aws_region}:${var.log_archive_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}:*"
-  cloud_watch_logs_role_arn  = one(aws_iam_role.CloudWatch-Delivery_Role).arn
+  cloud_watch_logs_role_arn  = "arn:aws:iam::${var.log_archive_account_id}:role/${var.org_cloudtrail_cloudwatch_logs_group.log_group.name}"
 
   event_selector {
     read_write_type           = "All"
@@ -54,7 +54,7 @@ resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
 # IAM Service Role to deliver CloudTrail Events to the CloudWatch Log Group:
 
 resource "aws_iam_role" "CloudWatch-Delivery_Role" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
   name = local.cw_svc_role.name
   tags = local.cw_svc_role.tags
@@ -85,7 +85,7 @@ locals {
 }
 
 resource "aws_iam_policy" "CloudWatch-Delivery_Role_Policy" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
   name        = coalesce(local.cw_svc_role.policy.name, "${local.cw_svc_role.name}_Policy")
   description = local.cw_svc_role.policy.description
@@ -108,7 +108,7 @@ resource "aws_iam_policy" "CloudWatch-Delivery_Role_Policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "CloudWatch-Delivery_Role_Policy" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
+  count = local.IS_LOG_ARCHIVE_ACCOUNT ? 1 : 0
 
   role       = one(aws_iam_role.CloudWatch-Delivery_Role).name
   policy_arn = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy).arn
