@@ -138,11 +138,9 @@ locals {
         ]
         Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
-          ArnEquals = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
-          }
           StringEquals = {
-            "s3:x-amz-acl" = "bucket-owner-full-control"
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.aws_region}:${local.root_account_id}:trail/${var.org_cloudtrail.name}"
+            "s3:x-amz-acl"  = "bucket-owner-full-control"
           }
         }
       },
