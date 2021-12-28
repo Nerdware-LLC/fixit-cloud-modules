@@ -15,7 +15,7 @@ locals {
 resource "aws_guardduty_organization_admin_account" "us-east-2" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 # GuardDuty's main resource
@@ -54,7 +54,7 @@ resource "aws_guardduty_organization_admin_account" "ap-northeast-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-northeast-1" {
@@ -93,7 +93,7 @@ resource "aws_guardduty_organization_admin_account" "ap-northeast-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-2
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-northeast-2" {
@@ -132,7 +132,7 @@ resource "aws_guardduty_organization_admin_account" "ap-northeast-3" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-3
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-northeast-3" {
@@ -171,7 +171,7 @@ resource "aws_guardduty_organization_admin_account" "ap-south-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-south-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-south-1" {
@@ -210,7 +210,7 @@ resource "aws_guardduty_organization_admin_account" "ap-southeast-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-southeast-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-southeast-1" {
@@ -249,7 +249,7 @@ resource "aws_guardduty_organization_admin_account" "ap-southeast-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-southeast-2
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ap-southeast-2" {
@@ -288,7 +288,7 @@ resource "aws_guardduty_organization_admin_account" "ca-central-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ca-central-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "ca-central-1" {
@@ -327,7 +327,7 @@ resource "aws_guardduty_organization_admin_account" "eu-north-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-north-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "eu-north-1" {
@@ -366,7 +366,7 @@ resource "aws_guardduty_organization_admin_account" "eu-central-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-central-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "eu-central-1" {
@@ -405,7 +405,7 @@ resource "aws_guardduty_organization_admin_account" "eu-west-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "eu-west-1" {
@@ -444,7 +444,7 @@ resource "aws_guardduty_organization_admin_account" "eu-west-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-2
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "eu-west-2" {
@@ -483,7 +483,7 @@ resource "aws_guardduty_organization_admin_account" "eu-west-3" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-3
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "eu-west-3" {
@@ -522,7 +522,7 @@ resource "aws_guardduty_organization_admin_account" "sa-east-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.sa-east-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "sa-east-1" {
@@ -561,7 +561,7 @@ resource "aws_guardduty_organization_admin_account" "us-east-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-east-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "us-east-1" {
@@ -600,7 +600,7 @@ resource "aws_guardduty_organization_admin_account" "us-west-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-west-1
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "us-west-1" {
@@ -639,7 +639,7 @@ resource "aws_guardduty_organization_admin_account" "us-west-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-west-2
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_guardduty_detector" "us-west-2" {

@@ -1,41 +1,37 @@
 ######################################################################
 ### INPUT VARIABLES
-
-# Org/Account Variables:
+#---------------------------------------------------------------------
+### Organization/Account Variables:
 
 variable "account_email" {
   description = "The main email address associated with the account."
   type        = string
 }
 
-variable "log_archive_account_id" {
-  description = <<-EOF
-  The ID of the account that will own the log archive S3 used to store
-  logs from Org-wide services like CloudTrail, CloudWatch Logs, and
-  AWS-Config. This is also the account in which CloudWatch metrics
-  are aggregated for Org-wide monitoring.
-  EOF
-  type        = string
-}
-
-variable "security_account_id" {
-  description = <<-EOF
-  The ID of the account that will be designated as the admin account
-  for security-related services like GuardDuty and Security Hub.
-  EOF
-  type        = string
-}
-
-variable "all_account_ids" {
-  description = <<-EOF
-  A list of IDs for every account within the Organization. These
-  account IDs will be used in "aws:SourceAccount" Condition keys
-  in IAM policy statements with an AWS Service Principal. For
-  statements with AWS/IAM Principals, the "aws:PrincipalOrgID"
-  Condition key will be used instead, but this key is N/A for
-  actions initiated by Service Principals.
-  EOF
-  type        = list(string)
+variable "accounts" {
+  type = map(object({
+    id                                                = string
+    is_log_archive_account                            = optional(bool)
+    is_security_account                               = optional(bool)
+    should_enable_cross_account_cloudwatch_sharing    = optional(bool)
+    should_enable_cross_account_cloudwatch_monitoring = optional(bool)
+  }))
+  validation {
+    # Ensure there's exactly 1 account designated as the Log-Archive account:
+    condition = 1 == length([
+      for account in values(var.accounts) : account
+      if lookup(account, "is_log_archive_account", false) == true
+    ])
+    error_message = "Exactly one account must be designated as the Log-Archive account."
+  }
+  # Ensure there's exactly 1 account designated as the Security account:
+  validation {
+    condition = 1 == length([
+      for account in values(var.accounts) : account
+      if lookup(account, "is_security_account", false) == true
+    ])
+    error_message = "Exactly one account must be designated as the Security account."
+  }
 }
 
 variable "s3_public_access_blocks" {
@@ -153,16 +149,13 @@ variable "org_cloudtrail" {
 
 variable "org_cloudtrail_cloudwatch_logs_group" {
   description = <<-EOF
-  Config object for the CloudWatch Logs log group and associated
-  IAM service role used by the Log-Archive account to receive
-  logs from the Organization's CloudTrail.
+  Config object for the CloudWatch Logs log group and its associated IAM
+  service role used to receive logs from the Organization's CloudTrail.
   EOF
   type = object({
-    log_group = object({
-      name              = string
-      retention_in_days = optional(number)
-      tags              = optional(map(string))
-    })
+    name              = string
+    retention_in_days = optional(number)
+    tags              = optional(map(string))
     iam_service_role = object({
       name = string
       tags = optional(map(string))

@@ -1,8 +1,24 @@
 ######################################################################
 ### CloudWatch Alarms
 
-/* NOTE: CloudWatch Alarms are strictly REGIONAL; you can't create an
-alarm in one Region that watches a metric in a different Region.  */
+/* NOTE: All CloudWatch resources can be config'd to have cross-account
+functionality. CW Metrics can also have cross-region functionality,
+however, CW Alarms are strictly REGIONAL; you can't create an Alarm in
+one Region that watches a Metric in a different Region. */
+
+resource "aws_cloudwatch_log_metric_filter" "map" {
+  for_each = local.IS_LOG_ARCHIVE_ACCOUNT ? local.LOG_METRICS : {}
+
+  name           = each.key
+  pattern        = each.value.filter_pattern
+  log_group_name = var.org_cloudtrail_cloudwatch_logs_group.name
+
+  metric_transformation {
+    name      = each.key
+    namespace = var.cloudwatch_alarms.namespace
+    value     = "1" # "1" = count each occurrence of the keywords in the filter
+  }
+}
 
 resource "aws_cloudwatch_metric_alarm" "map" {
   for_each = aws_cloudwatch_log_metric_filter.map
@@ -21,20 +37,6 @@ resource "aws_cloudwatch_metric_alarm" "map" {
   treat_missing_data        = "notBreaching"
   insufficient_data_actions = []
   tags                      = { Name = "${each.key}_CloudWatch_Metric_Alarm" }
-}
-
-resource "aws_cloudwatch_log_metric_filter" "map" {
-  for_each = local.IS_LOG_ARCHIVE_ACCOUNT ? local.LOG_METRICS : {}
-
-  name           = each.key
-  pattern        = each.value.filter_pattern
-  log_group_name = var.org_cloudtrail_cloudwatch_logs_group.log_group.name
-
-  metric_transformation {
-    name      = each.key
-    namespace = var.cloudwatch_alarms.namespace
-    value     = "1" # "1" = count each occurrence of the keywords in the filter
-  }
 }
 
 #---------------------------------------------------------------------
@@ -64,7 +66,7 @@ resource "aws_sns_topic_policy" "CloudWatch_Alarms" {
         Resource  = one(aws_sns_topic.CloudWatch_Alarms).arn
         Condition = {
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:cloudwatch:${local.aws_region}:${var.log_archive_account_id}:alarm:*"
+            "aws:SourceArn" = "arn:aws:cloudwatch:${local.aws_region}:${local.log_archive_account_id}:alarm:*"
           }
         }
       }

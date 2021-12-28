@@ -151,7 +151,7 @@ locals {
         Resource = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
         Condition = {
           StringEquals = {
-            "aws:SourceAccount" = var.all_account_ids
+            "aws:SourceAccount" = local.all_account_ids
           }
         }
       },
@@ -163,7 +163,7 @@ locals {
         Resource  = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}/*"
         Condition = {
           StringEquals = {
-            "aws:SourceAccount" = var.all_account_ids
+            "aws:SourceAccount" = local.all_account_ids
             "s3:x-amz-acl"      = "bucket-owner-full-control"
           }
         }
@@ -186,7 +186,7 @@ locals {
             "aws:SourceArn" = "arn:aws:s3:::${var.org_log_archive_s3_bucket.name}"
           }
           StringEquals = {
-            "aws:SourceAccount" = var.all_account_ids
+            "aws:SourceAccount" = local.all_account_ids
           }
         }
       }

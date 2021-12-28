@@ -82,7 +82,7 @@ resource "aws_kms_key" "Org_KMS_Key" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:SourceAccount" = var.all_account_ids
+            "aws:SourceAccount" = local.all_account_ids
           }
         }
       }
