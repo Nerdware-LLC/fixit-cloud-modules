@@ -141,6 +141,42 @@ variable "config_delivery_channel" {
 }
 
 #---------------------------------------------------------------------
+### CloudTrail Variables:
+
+variable "org_cloudtrail" {
+  description = "Config object for the Organization CloudTrail in the root account."
+  type = object({
+    name = string
+    tags = optional(map(string))
+  })
+}
+
+variable "org_cloudtrail_cloudwatch_logs_group" {
+  description = <<-EOF
+  Config object for the CloudWatch Logs log group and associated
+  IAM service role used by the Log-Archive account to receive
+  logs from the Organization's CloudTrail.
+  EOF
+  type = object({
+    log_group = object({
+      name              = string
+      retention_in_days = optional(number)
+      tags              = optional(map(string))
+    })
+    iam_service_role = object({
+      name = string
+      tags = optional(map(string))
+      policy = object({
+        name        = string
+        description = optional(string)
+        path        = optional(string)
+        tags        = optional(map(string))
+      })
+    })
+  })
+}
+
+#---------------------------------------------------------------------
 ### CloudWatch Alarm Variables:
 
 variable "cloudwatch_alarms" {
@@ -213,42 +249,6 @@ variable "org_log_archive_s3_bucket" {
     access_logs_s3 = object({
       name = string
       tags = optional(map(string))
-    })
-  })
-}
-
-#---------------------------------------------------------------------
-### CloudTrail Variables:
-
-variable "org_cloudtrail" {
-  description = "Config object for the Organization CloudTrail in the root account."
-  type = object({
-    name = string
-    tags = optional(map(string))
-  })
-}
-
-variable "org_cloudtrail_cloudwatch_logs_group" {
-  description = <<-EOF
-  Config object for the CloudWatch Logs log group and associated
-  IAM service role used by the Log-Archive account to receive
-  logs from the Organization's CloudTrail.
-  EOF
-  type = object({
-    log_group = object({
-      name              = string
-      retention_in_days = optional(number)
-      tags              = optional(map(string))
-    })
-    iam_service_role = object({
-      name = string
-      tags = optional(map(string))
-      policy = object({
-        name        = string
-        description = optional(string)
-        path        = optional(string)
-        tags        = optional(map(string))
-      })
     })
   })
 }

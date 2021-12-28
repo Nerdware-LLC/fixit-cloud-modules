@@ -161,6 +161,38 @@ output "Regional_Config_Resources_BY_REGION" {
 }
 
 #---------------------------------------------------------------------
+### CloudTrail Outputs:
+
+output "Org_CloudTrail" {
+  description = "The Organization CloudTrail (will be \"null\" for non-root accounts)."
+  value       = one(aws_cloudtrail.Org_CloudTrail)
+}
+
+output "CloudWatch_LogGroup" {
+  description = <<-EOF
+  The CloudWatch Logs log group resource which receives an event stream from the
+  Organization's CloudTrail (will be "null" for all accounts except Log-Archive).
+  EOF
+  value       = one(aws_cloudwatch_log_group.CloudTrail_Events)
+}
+
+output "CloudWatch-Delivery_Role" {
+  description = <<-EOF
+  The IAM Service Role that permits delivery of Organization CloudTrail events
+  to the CloudWatch_LogGroup (will be "null" for all accounts except Log-Archive).
+  EOF
+  value       = one(aws_iam_role.CloudWatch-Delivery_Role)
+}
+
+output "CloudWatch-Delivery_Role_Policy" {
+  description = <<-EOF
+  The IAM policy for "CloudWatch-Delivery_Role" that permits delivery of the Organization's
+  CloudTrail events to the CloudWatch Logs log group (will be "null" for all accounts except Log-Archive).
+  EOF
+  value       = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy)
+}
+
+#---------------------------------------------------------------------
 ### CloudWatch Alarms Outputs:
 
 output "CloudWatch_Metric_Alarms" {
@@ -325,38 +357,6 @@ output "Org_Log_Archive_S3_Access_Logs_Bucket" {
     ? aws_s3_bucket.list[0]
     : null
   )
-}
-
-#---------------------------------------------------------------------
-### CloudTrail Outputs:
-
-output "Org_CloudTrail" {
-  description = "The Organization CloudTrail (will be \"null\" for non-root accounts)."
-  value       = one(aws_cloudtrail.Org_CloudTrail)
-}
-
-output "CloudWatch_LogGroup" {
-  description = <<-EOF
-  The CloudWatch Logs log group resource which receives an event stream from the
-  Organization's CloudTrail (will be "null" for all accounts except Log-Archive).
-  EOF
-  value       = one(aws_cloudwatch_log_group.CloudTrail_Events)
-}
-
-output "CloudWatch-Delivery_Role" {
-  description = <<-EOF
-  The IAM Service Role that permits delivery of Organization CloudTrail events
-  to the CloudWatch_LogGroup (will be "null" for all accounts except Log-Archive).
-  EOF
-  value       = one(aws_iam_role.CloudWatch-Delivery_Role)
-}
-
-output "CloudWatch-Delivery_Role_Policy" {
-  description = <<-EOF
-  The IAM policy for "CloudWatch-Delivery_Role" that permits delivery of the Organization's
-  CloudTrail events to the CloudWatch Logs log group (will be "null" for all accounts except Log-Archive).
-  EOF
-  value       = one(aws_iam_policy.CloudWatch-Delivery_Role_Policy)
 }
 
 #---------------------------------------------------------------------
