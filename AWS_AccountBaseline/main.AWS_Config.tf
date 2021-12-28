@@ -6,8 +6,8 @@
 resource "aws_config_configuration_aggregator" "Org_Config_Aggregator" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name = var.org_aws_config.aggregator.name
-  tags = var.org_aws_config.aggregator.tags
+  name = var.config_aggregator.name
+  tags = var.config_aggregator.tags
 
   organization_aggregation_source {
     all_regions = true
@@ -20,9 +20,9 @@ resource "aws_config_configuration_aggregator" "Org_Config_Aggregator" {
 resource "aws_iam_role" "Org_Config_Aggregator_Role" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name        = var.org_aws_config.aggregator.service_role.name
-  description = var.org_aws_config.aggregator.service_role.description
-  tags        = var.org_aws_config.aggregator.service_role.tags
+  name        = var.config_aggregator.iam_service_role.name
+  description = var.config_aggregator.iam_service_role.description
+  tags        = var.config_aggregator.iam_service_role.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -49,9 +49,9 @@ resource "aws_iam_role_policy_attachment" "Org_Config_Aggregator_Role_Policy" {
 /* This role is used to make read or write requests to the delivery
 channel and to describe the AWS resources associated with the account */
 resource "aws_iam_role" "Org_Config_Role" {
-  name        = var.org_aws_config.service_role.name
-  description = var.org_aws_config.service_role.description
-  tags        = var.org_aws_config.service_role.tags
+  name        = var.config_iam_service_role.name
+  description = var.config_iam_service_role.description
+  tags        = var.config_iam_service_role.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -66,10 +66,10 @@ resource "aws_iam_role" "Org_Config_Role" {
 }
 
 resource "aws_iam_policy" "Org_Config_Role_Policy" {
-  name        = var.org_aws_config.service_role.policy.name
-  description = var.org_aws_config.service_role.policy.description
-  path        = coalesce(var.org_aws_config.service_role.policy.path, "/")
-  tags        = var.org_aws_config.service_role.policy.tags
+  name        = var.config_iam_service_role.policy.name
+  description = var.config_iam_service_role.policy.description
+  path        = coalesce(var.config_iam_service_role.policy.path, "/")
+  tags        = var.config_iam_service_role.policy.tags
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -102,25 +102,20 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
       {
         Effect   = "Allow"
         Action   = "sns:Publish"
-        Resource = "arn:aws:sns:*:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+        Resource = "arn:aws:sns:*:${local.root_account_id}:${var.config_sns_topic.name}"
       }
     ]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
-  for_each = {
-    AWS_ConfigRole = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
-    "${var.org_aws_config.service_role.policy.name}" = (var.org_aws_config.service_role.policy.path != null
-      ? "arn:aws:iam::${local.caller_account_id}:policy${var.org_aws_config.service_role.policy.path}${var.org_aws_config.service_role.policy.name}"
-      : "arn:aws:iam::${local.caller_account_id}:policy/${var.org_aws_config.service_role.policy.name}"
-    )
-  }
+  for_each = toset([
+    "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole",
+    aws_iam_policy.Org_Config_Role_Policy.arn
+  ])
 
   role       = aws_iam_role.Org_Config_Role.name
-  policy_arn = each.value
-
-  depends_on = [aws_iam_policy.Org_Config_Role_Policy]
+  policy_arn = each.key
 }
 
 ######################################################################
@@ -128,7 +123,7 @@ resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
 
 locals {
   delivery_channel_snapshot_frequency = coalesce(
-    var.org_aws_config.delivery_channel.snapshot_frequency,
+    var.config_delivery_channel.snapshot_frequency,
     "TwentyFour_Hours"
   )
 }
@@ -137,7 +132,7 @@ locals {
 ### Config - us-east-2 (HOME REGION USES IMPLICIT/DEFAULT PROVIDER)
 
 resource "aws_config_configuration_recorder" "us-east-2" {
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -154,11 +149,11 @@ resource "aws_config_configuration_recorder_status" "us-east-2" {
 }
 
 resource "aws_config_delivery_channel" "us-east-2" {
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:us-east-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:us-east-2:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -170,10 +165,10 @@ resource "aws_config_delivery_channel" "us-east-2" {
 resource "aws_sns_topic" "us-east-2" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "us-east-2" {
@@ -193,7 +188,7 @@ resource "aws_sns_topic_policy" "us-east-2" {
 resource "aws_config_configuration_recorder" "ap-northeast-1" {
   provider = aws.ap-northeast-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -214,11 +209,11 @@ resource "aws_config_configuration_recorder_status" "ap-northeast-1" {
 resource "aws_config_delivery_channel" "ap-northeast-1" {
   provider = aws.ap-northeast-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-northeast-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -231,10 +226,10 @@ resource "aws_sns_topic" "ap-northeast-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-northeast-1" {
@@ -255,7 +250,7 @@ resource "aws_sns_topic_policy" "ap-northeast-1" {
 resource "aws_config_configuration_recorder" "ap-northeast-2" {
   provider = aws.ap-northeast-2
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -276,11 +271,11 @@ resource "aws_config_configuration_recorder_status" "ap-northeast-2" {
 resource "aws_config_delivery_channel" "ap-northeast-2" {
   provider = aws.ap-northeast-2
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-northeast-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-2:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -293,10 +288,10 @@ resource "aws_sns_topic" "ap-northeast-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-2
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-northeast-2" {
@@ -317,7 +312,7 @@ resource "aws_sns_topic_policy" "ap-northeast-2" {
 resource "aws_config_configuration_recorder" "ap-northeast-3" {
   provider = aws.ap-northeast-3
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -338,11 +333,11 @@ resource "aws_config_configuration_recorder_status" "ap-northeast-3" {
 resource "aws_config_delivery_channel" "ap-northeast-3" {
   provider = aws.ap-northeast-3
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-northeast-3:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-northeast-3:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -355,10 +350,10 @@ resource "aws_sns_topic" "ap-northeast-3" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-northeast-3
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-northeast-3" {
@@ -379,7 +374,7 @@ resource "aws_sns_topic_policy" "ap-northeast-3" {
 resource "aws_config_configuration_recorder" "ap-south-1" {
   provider = aws.ap-south-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -400,11 +395,11 @@ resource "aws_config_configuration_recorder_status" "ap-south-1" {
 resource "aws_config_delivery_channel" "ap-south-1" {
   provider = aws.ap-south-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-south-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-south-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -417,10 +412,10 @@ resource "aws_sns_topic" "ap-south-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-south-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-south-1" {
@@ -441,7 +436,7 @@ resource "aws_sns_topic_policy" "ap-south-1" {
 resource "aws_config_configuration_recorder" "ap-southeast-1" {
   provider = aws.ap-southeast-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -462,11 +457,11 @@ resource "aws_config_configuration_recorder_status" "ap-southeast-1" {
 resource "aws_config_delivery_channel" "ap-southeast-1" {
   provider = aws.ap-southeast-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-southeast-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-southeast-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -479,10 +474,10 @@ resource "aws_sns_topic" "ap-southeast-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-southeast-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-southeast-1" {
@@ -503,7 +498,7 @@ resource "aws_sns_topic_policy" "ap-southeast-1" {
 resource "aws_config_configuration_recorder" "ap-southeast-2" {
   provider = aws.ap-southeast-2
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -524,11 +519,11 @@ resource "aws_config_configuration_recorder_status" "ap-southeast-2" {
 resource "aws_config_delivery_channel" "ap-southeast-2" {
   provider = aws.ap-southeast-2
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ap-southeast-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ap-southeast-2:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -541,10 +536,10 @@ resource "aws_sns_topic" "ap-southeast-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ap-southeast-2
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ap-southeast-2" {
@@ -565,7 +560,7 @@ resource "aws_sns_topic_policy" "ap-southeast-2" {
 resource "aws_config_configuration_recorder" "ca-central-1" {
   provider = aws.ca-central-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -586,11 +581,11 @@ resource "aws_config_configuration_recorder_status" "ca-central-1" {
 resource "aws_config_delivery_channel" "ca-central-1" {
   provider = aws.ca-central-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:ca-central-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:ca-central-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -603,10 +598,10 @@ resource "aws_sns_topic" "ca-central-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.ca-central-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "ca-central-1" {
@@ -627,7 +622,7 @@ resource "aws_sns_topic_policy" "ca-central-1" {
 resource "aws_config_configuration_recorder" "eu-north-1" {
   provider = aws.eu-north-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -648,11 +643,11 @@ resource "aws_config_configuration_recorder_status" "eu-north-1" {
 resource "aws_config_delivery_channel" "eu-north-1" {
   provider = aws.eu-north-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:eu-north-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:eu-north-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -665,10 +660,10 @@ resource "aws_sns_topic" "eu-north-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-north-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "eu-north-1" {
@@ -689,7 +684,7 @@ resource "aws_sns_topic_policy" "eu-north-1" {
 resource "aws_config_configuration_recorder" "eu-central-1" {
   provider = aws.eu-central-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -710,11 +705,11 @@ resource "aws_config_configuration_recorder_status" "eu-central-1" {
 resource "aws_config_delivery_channel" "eu-central-1" {
   provider = aws.eu-central-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:eu-central-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:eu-central-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -727,10 +722,10 @@ resource "aws_sns_topic" "eu-central-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-central-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "eu-central-1" {
@@ -751,7 +746,7 @@ resource "aws_sns_topic_policy" "eu-central-1" {
 resource "aws_config_configuration_recorder" "eu-west-1" {
   provider = aws.eu-west-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -772,11 +767,11 @@ resource "aws_config_configuration_recorder_status" "eu-west-1" {
 resource "aws_config_delivery_channel" "eu-west-1" {
   provider = aws.eu-west-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:eu-west-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -789,10 +784,10 @@ resource "aws_sns_topic" "eu-west-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "eu-west-1" {
@@ -813,7 +808,7 @@ resource "aws_sns_topic_policy" "eu-west-1" {
 resource "aws_config_configuration_recorder" "eu-west-2" {
   provider = aws.eu-west-2
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -834,11 +829,11 @@ resource "aws_config_configuration_recorder_status" "eu-west-2" {
 resource "aws_config_delivery_channel" "eu-west-2" {
   provider = aws.eu-west-2
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:eu-west-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-2:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -851,10 +846,10 @@ resource "aws_sns_topic" "eu-west-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-2
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "eu-west-2" {
@@ -875,7 +870,7 @@ resource "aws_sns_topic_policy" "eu-west-2" {
 resource "aws_config_configuration_recorder" "eu-west-3" {
   provider = aws.eu-west-3
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -896,11 +891,11 @@ resource "aws_config_configuration_recorder_status" "eu-west-3" {
 resource "aws_config_delivery_channel" "eu-west-3" {
   provider = aws.eu-west-3
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:eu-west-3:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:eu-west-3:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -913,10 +908,10 @@ resource "aws_sns_topic" "eu-west-3" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.eu-west-3
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "eu-west-3" {
@@ -937,7 +932,7 @@ resource "aws_sns_topic_policy" "eu-west-3" {
 resource "aws_config_configuration_recorder" "sa-east-1" {
   provider = aws.sa-east-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -958,11 +953,11 @@ resource "aws_config_configuration_recorder_status" "sa-east-1" {
 resource "aws_config_delivery_channel" "sa-east-1" {
   provider = aws.sa-east-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:sa-east-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:sa-east-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -975,10 +970,10 @@ resource "aws_sns_topic" "sa-east-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.sa-east-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "sa-east-1" {
@@ -999,7 +994,7 @@ resource "aws_sns_topic_policy" "sa-east-1" {
 resource "aws_config_configuration_recorder" "us-east-1" {
   provider = aws.us-east-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -1020,11 +1015,11 @@ resource "aws_config_configuration_recorder_status" "us-east-1" {
 resource "aws_config_delivery_channel" "us-east-1" {
   provider = aws.us-east-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:us-east-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:us-east-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1037,10 +1032,10 @@ resource "aws_sns_topic" "us-east-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-east-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "us-east-1" {
@@ -1061,7 +1056,7 @@ resource "aws_sns_topic_policy" "us-east-1" {
 resource "aws_config_configuration_recorder" "us-west-1" {
   provider = aws.us-west-1
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -1082,11 +1077,11 @@ resource "aws_config_configuration_recorder_status" "us-west-1" {
 resource "aws_config_delivery_channel" "us-west-1" {
   provider = aws.us-west-1
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:us-west-1:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:us-west-1:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1099,10 +1094,10 @@ resource "aws_sns_topic" "us-west-1" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-west-1
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "us-west-1" {
@@ -1123,7 +1118,7 @@ resource "aws_sns_topic_policy" "us-west-1" {
 resource "aws_config_configuration_recorder" "us-west-2" {
   provider = aws.us-west-2
 
-  name     = var.org_aws_config.recorder_name
+  name     = var.config_recorder_name
   role_arn = aws_iam_role.Org_Config_Role.arn
 
   recording_group {
@@ -1144,11 +1139,11 @@ resource "aws_config_configuration_recorder_status" "us-west-2" {
 resource "aws_config_delivery_channel" "us-west-2" {
   provider = aws.us-west-2
 
-  name           = var.org_aws_config.delivery_channel.name
-  s3_bucket_name = var.org_aws_config.delivery_channel.s3_bucket.name
-  s3_key_prefix  = var.org_aws_config.delivery_channel.s3_bucket.key_prefix
+  name           = var.config_delivery_channel.name
+  s3_bucket_name = var.config_delivery_channel.s3_bucket.name
+  s3_key_prefix  = var.config_delivery_channel.s3_bucket.key_prefix
   s3_kms_key_arn = "arn:aws:kms:${local.aws_region}:${local.root_account_id}:alias/${var.org_kms_key.alias_name}"
-  sns_topic_arn  = "arn:aws:sns:us-west-2:${local.root_account_id}:${var.org_aws_config.sns_topic.name}"
+  sns_topic_arn  = "arn:aws:sns:us-west-2:${local.root_account_id}:${var.config_sns_topic.name}"
 
   snapshot_delivery_properties {
     delivery_frequency = local.delivery_channel_snapshot_frequency
@@ -1161,10 +1156,10 @@ resource "aws_sns_topic" "us-west-2" {
   count    = local.IS_ROOT_ACCOUNT ? 1 : 0
   provider = aws.us-west-2
 
-  name              = var.org_aws_config.sns_topic.name
-  display_name      = var.org_aws_config.sns_topic.display_name
+  name              = var.config_sns_topic.name
+  display_name      = var.config_sns_topic.display_name
   kms_master_key_id = one(aws_kms_key.Org_KMS_Key).id
-  tags              = var.org_aws_config.sns_topic.tags
+  tags              = var.config_sns_topic.tags
 }
 
 resource "aws_sns_topic_policy" "us-west-2" {

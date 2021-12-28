@@ -73,46 +73,69 @@ variable "org_access_analyzer" {
 #---------------------------------------------------------------------
 ### AWS Config Variables:
 
-variable "org_aws_config" {
+variable "config_recorder_name" {
+  description = "The name to assign to the AWS-Config Recorder in each region."
+  type        = string
+  default     = "Org_Config_Recorder"
+}
+
+variable "config_aggregator" {
   description = <<-EOF
-  Config object for the Organization's AWS-Config service. Allowed values
-  for "delivery_channel.snapshot_frequency" are "One_Hour", "Three_Hours",
-  "Six_Hours", "Twelve_Hours", or "TwentyFour_Hours" (default).
+  Config object for the AWS-Config Aggregator resource and its associated IAM
+  service role, the lone policy for which is "AWSConfigRoleForOrganizations",
+  an AWS-managed policy.
   EOF
   type = object({
-    recorder_name = string
-    aggregator = object({
-      name = string
-      tags = optional(map(string))
-      service_role = object({
-        name        = string
-        description = optional(string)
-        tags        = optional(map(string))
-      })
-    })
-    service_role = object({
+    name = string
+    tags = optional(map(string))
+    iam_service_role = object({
       name        = string
       description = optional(string)
       tags        = optional(map(string))
-      policy = object({
-        name        = string
-        description = optional(string)
-        path        = optional(string)
-        tags        = optional(map(string))
-      })
     })
-    sns_topic = object({
-      name         = string
-      display_name = optional(string)
-      tags         = optional(map(string))
+  })
+}
+
+variable "config_iam_service_role" {
+  description = <<-EOF
+  Config object for IAM Service Role resource which allows the AWS-Config
+  service to write findings/logs to the Organization's log-archive S3,
+  use the Org's KMS key, and publish to the Config SNS Topic.
+  EOF
+  type = object({
+    name        = string
+    description = optional(string)
+    tags        = optional(map(string))
+    policy = object({
+      name        = string
+      description = optional(string)
+      path        = optional(string)
+      tags        = optional(map(string))
     })
-    delivery_channel = object({
-      name               = string
-      snapshot_frequency = optional(string)
-      s3_bucket = object({
-        name       = string
-        key_prefix = optional(string)
-      })
+  })
+}
+
+variable "config_sns_topic" {
+  description = "Config object for the AWS-Config SNS Topic resource."
+  type = object({
+    name         = string
+    display_name = optional(string)
+    tags         = optional(map(string))
+  })
+}
+
+variable "config_delivery_channel" {
+  description = <<-EOF
+  Config object for AWS-Config Delivery Channel resource. Allowed values
+  for "snapshot_frequency" are "One_Hour", "Three_Hours", "Six_Hours",
+  "Twelve_Hours", or "TwentyFour_Hours" (default).
+  EOF
+  type = object({
+    name               = string
+    snapshot_frequency = optional(string)
+    s3_bucket = object({
+      name       = string
+      key_prefix = optional(string)
     })
   })
 }
