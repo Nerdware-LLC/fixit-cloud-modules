@@ -5,9 +5,9 @@
 Members must subscribe to standards/controls on their own, however.  */
 
 resource "aws_securityhub_organization_admin_account" "Org_Admin_Account" {
-  count = local.IS_SECURITY_ACCOUNT ? 1 : 0
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  admin_account_id = var.security_account_id
+  admin_account_id = local.security_account_id
 }
 
 resource "aws_securityhub_organization_configuration" "Org_Config" {
@@ -22,7 +22,7 @@ resource "aws_securityhub_organization_configuration" "Org_Config" {
 resource "aws_securityhub_member" "Member_Account" {
   count = local.IS_SECURITY_ACCOUNT == false ? 1 : 0
 
-  # account_id from resource avoids having to use depends_on
+  # account_id from resource avoids having to use depends_on as shown in TFR docs
   account_id = aws_securityhub_account.us-east-2.id
   email      = var.account_email
   invite     = false
