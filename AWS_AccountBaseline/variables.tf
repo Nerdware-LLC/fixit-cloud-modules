@@ -4,7 +4,7 @@
 ### Organization/Account Variables:
 
 variable "account_email" {
-  description = "The main email address associated with the account."
+  description = "The main email address associated with the calling account."
   type        = string
 }
 
@@ -262,6 +262,18 @@ variable "org_kms_key" {
     tags             = optional(map(string))
     replica_key_tags = optional(map(string))
   })
+}
+
+#---------------------------------------------------------------------
+### IAM Hardening Variables
+
+variable "administrator_ip_addresses" {
+  description = "A list of administrator IP Addresses for \"aws:SourceIp\" conditions in IAM policies."
+  type        = list(string)
+  validation {
+    condition     = alltrue([for ip in var.administrator_ip_addresses : can(cidrnetmask("${ip}/32"))])
+    error_message = "All included strings must be valid 32-bit host IP addresses."
+  }
 }
 
 ######################################################################
