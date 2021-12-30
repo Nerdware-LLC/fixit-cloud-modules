@@ -14,6 +14,11 @@ locals {
   org_id            = data.aws_organizations_organization.this.id
   caller_account_id = data.aws_caller_identity.current.account_id
 
+  # Account params obj for the current account
+  caller_account_configs = one([
+    for account in values(var.accounts) : account if account.id == local.caller_account_id
+  ])
+
   # root (Owns the org's CloudTrail trail)
   root_account_id = data.aws_organizations_organization.this.master_account_id
 
