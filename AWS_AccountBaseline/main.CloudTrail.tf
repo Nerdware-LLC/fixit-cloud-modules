@@ -133,7 +133,7 @@ resource "aws_cloudwatch_metric_alarm" "map" {
   metric_name       = each.value.id
   alarm_name        = each.key
   alarm_description = local.CIS_LOG_METRIC_FILTERS[each.key].alarm_description
-  alarm_actions     = [one(aws_sns_topic.CloudWatch_Alarms).arn]
+  alarm_actions     = [one(aws_sns_topic.CloudWatch_CIS_Alarms).arn]
 
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   statistic                 = "Sum"
@@ -157,10 +157,10 @@ resource "aws_sns_topic" "CloudWatch_CIS_Alarms" {
   tags              = var.cloudwatch_alarms.sns_topic.tags
 }
 
-resource "aws_sns_topic_policy" "CloudWatch_Alarms" {
+resource "aws_sns_topic_policy" "CloudWatch_CIS_Alarms" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
-  arn = one(aws_sns_topic.CloudWatch_Alarms).arn
+  arn = one(aws_sns_topic.CloudWatch_CIS_Alarms).arn
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -169,7 +169,7 @@ resource "aws_sns_topic_policy" "CloudWatch_Alarms" {
         Effect    = "Allow"
         Principal = { Service = "cloudwatch.amazonaws.com" }
         Action    = "sns:Publish"
-        Resource  = one(aws_sns_topic.CloudWatch_Alarms).arn
+        Resource  = one(aws_sns_topic.CloudWatch_CIS_Alarms).arn
         Condition = {
           ArnLike = {
             "aws:SourceArn" = "arn:aws:cloudwatch:${local.aws_region}:${local.log_archive_account_id}:alarm:*"

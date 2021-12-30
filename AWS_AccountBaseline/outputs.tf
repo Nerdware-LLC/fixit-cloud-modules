@@ -169,14 +169,14 @@ output "CloudWatch_Metric_Filters" {
   value       = aws_cloudwatch_log_metric_filter.map
 }
 
-output "CloudWatch_Alarms_SNS_Topic" {
-  description = "The SNS Topic associated with CloudWatch Metric Alarms."
-  value       = one(aws_sns_topic.CloudWatch_Alarms)
+output "CloudWatch_CIS_Alarms_SNS_Topic" {
+  description = "The SNS Topic associated with the CloudWatch Metric Alarms defined in CIS Benchmarks."
+  value       = one(aws_sns_topic.CloudWatch_CIS_Alarms)
 }
 
-output "CloudWatch_Alarms_SNS_Topic_Policy" {
-  description = "The SNS Topic Policy associated with CloudWatch Metric Alarms."
-  value       = one(aws_sns_topic_policy.CloudWatch_Alarms)
+output "CloudWatch_CIS_Alarms_SNS_Topic_Policy" {
+  description = "The SNS Topic Policy associated with the CloudWatch Metric Alarms defined in CIS Benchmarks."
+  value       = one(aws_sns_topic_policy.CloudWatch_CIS_Alarms)
 }
 
 #---------------------------------------------------------------------
