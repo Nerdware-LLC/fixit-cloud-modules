@@ -52,112 +52,76 @@ output "Org_Config_Role_Policy" {
   value       = aws_iam_policy.Org_Config_Role_Policy
 }
 
-output "Regional_Config_Resources_BY_REGION" {
-  description = "A map of AWS-Config RECORDER and DELIVERY CHANNEL resources, organized by region."
+output "Config_Recorders" {
+  description = "A map of AWS-Config Recorders by region."
   value = {
-    "ap-northeast-1" = {
-      Recorder         = aws_config_configuration_recorder.ap-northeast-1
-      Delivery_Channel = aws_config_delivery_channel.ap-northeast-1
-      SNS_Topic        = one(aws_sns_topic.ap-northeast-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-1)
-    }
-    "ap-northeast-2" = {
-      Recorder         = aws_config_configuration_recorder.ap-northeast-2
-      Delivery_Channel = aws_config_delivery_channel.ap-northeast-2
-      SNS_Topic        = one(aws_sns_topic.ap-northeast-2)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-2)
-    }
-    "ap-northeast-3" = {
-      Recorder         = aws_config_configuration_recorder.ap-northeast-3
-      Delivery_Channel = aws_config_delivery_channel.ap-northeast-3
-      SNS_Topic        = one(aws_sns_topic.ap-northeast-3)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-northeast-3)
-    }
-    "ap-south-1" = {
-      Recorder         = aws_config_configuration_recorder.ap-south-1
-      Delivery_Channel = aws_config_delivery_channel.ap-south-1
-      SNS_Topic        = one(aws_sns_topic.ap-south-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-south-1)
-    }
-    "ap-southeast-1" = {
-      Recorder         = aws_config_configuration_recorder.ap-southeast-1
-      Delivery_Channel = aws_config_delivery_channel.ap-southeast-1
-      SNS_Topic        = one(aws_sns_topic.ap-southeast-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-southeast-1)
-    }
-    "ap-southeast-2" = {
-      Recorder         = aws_config_configuration_recorder.ap-southeast-2
-      Delivery_Channel = aws_config_delivery_channel.ap-southeast-2
-      SNS_Topic        = one(aws_sns_topic.ap-southeast-2)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ap-southeast-2)
-    }
-    "ca-central-1" = {
-      Recorder         = aws_config_configuration_recorder.ca-central-1
-      Delivery_Channel = aws_config_delivery_channel.ca-central-1
-      SNS_Topic        = one(aws_sns_topic.ca-central-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.ca-central-1)
-    }
-    "eu-north-1" = {
-      Recorder         = aws_config_configuration_recorder.eu-north-1
-      Delivery_Channel = aws_config_delivery_channel.eu-north-1
-      SNS_Topic        = one(aws_sns_topic.eu-north-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-north-1)
-    }
-    "eu-central-1" = {
-      Recorder         = aws_config_configuration_recorder.eu-central-1
-      Delivery_Channel = aws_config_delivery_channel.eu-central-1
-      SNS_Topic        = one(aws_sns_topic.eu-central-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-central-1)
-    }
-    "eu-west-1" = {
-      Recorder         = aws_config_configuration_recorder.eu-west-1
-      Delivery_Channel = aws_config_delivery_channel.eu-west-1
-      SNS_Topic        = one(aws_sns_topic.eu-west-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-1)
-    }
-    "eu-west-2" = {
-      Recorder         = aws_config_configuration_recorder.eu-west-2
-      Delivery_Channel = aws_config_delivery_channel.eu-west-2
-      SNS_Topic        = one(aws_sns_topic.eu-west-2)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-2)
-    }
-    "eu-west-3" = {
-      Recorder         = aws_config_configuration_recorder.eu-west-3
-      Delivery_Channel = aws_config_delivery_channel.eu-west-3
-      SNS_Topic        = one(aws_sns_topic.eu-west-3)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.eu-west-3)
-    }
-    "sa-east-1" = {
-      Recorder         = aws_config_configuration_recorder.sa-east-1
-      Delivery_Channel = aws_config_delivery_channel.sa-east-1
-      SNS_Topic        = one(aws_sns_topic.sa-east-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.sa-east-1)
-    }
-    "us-east-1" = {
-      Recorder         = aws_config_configuration_recorder.us-east-1
-      Delivery_Channel = aws_config_delivery_channel.us-east-1
-      SNS_Topic        = one(aws_sns_topic.us-east-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.us-east-1)
-    }
-    "us-east-2" = {
-      Recorder         = aws_config_configuration_recorder.us-east-2
-      Delivery_Channel = aws_config_delivery_channel.us-east-2
-      SNS_Topic        = one(aws_sns_topic.us-east-2)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.us-east-2)
-    }
-    "us-west-1" = {
-      Recorder         = aws_config_configuration_recorder.us-west-1
-      Delivery_Channel = aws_config_delivery_channel.us-west-1
-      SNS_Topic        = one(aws_sns_topic.us-west-1)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.us-west-1)
-    }
-    "us-west-2" = {
-      Recorder         = aws_config_configuration_recorder.us-west-2
-      Delivery_Channel = aws_config_delivery_channel.us-west-2
-      SNS_Topic        = one(aws_sns_topic.us-west-2)
-      SNS_Topic_Policy = one(aws_sns_topic_policy.us-west-2)
-    }
+    "ap-northeast-1" = aws_config_configuration_recorder.ap-northeast-1
+    "ap-northeast-2" = aws_config_configuration_recorder.ap-northeast-2
+    "ap-northeast-3" = aws_config_configuration_recorder.ap-northeast-3
+    "ap-south-1"     = aws_config_configuration_recorder.ap-south-1
+    "ap-southeast-1" = aws_config_configuration_recorder.ap-southeast-1
+    "ap-southeast-2" = aws_config_configuration_recorder.ap-southeast-2
+    "ca-central-1"   = aws_config_configuration_recorder.ca-central-1
+    "eu-north-1"     = aws_config_configuration_recorder.eu-north-1
+    "eu-central-1"   = aws_config_configuration_recorder.eu-central-1
+    "eu-west-1"      = aws_config_configuration_recorder.eu-west-1
+    "eu-west-2"      = aws_config_configuration_recorder.eu-west-2
+    "eu-west-3"      = aws_config_configuration_recorder.eu-west-3
+    "sa-east-1"      = aws_config_configuration_recorder.sa-east-1
+    "us-east-1"      = aws_config_configuration_recorder.us-east-1
+    "us-east-2"      = aws_config_configuration_recorder.us-east-2
+    "us-west-1"      = aws_config_configuration_recorder.us-west-1
+    "us-west-2"      = aws_config_configuration_recorder.us-west-2
   }
+}
+
+output "Config_Delivery_Channels" {
+  description = "A map of AWS-Config Delivery Channels by region."
+  value = {
+    "ap-northeast-1" = aws_config_delivery_channel.ap-northeast-1
+    "ap-northeast-2" = aws_config_delivery_channel.ap-northeast-2
+    "ap-northeast-3" = aws_config_delivery_channel.ap-northeast-3
+    "ap-south-1"     = aws_config_delivery_channel.ap-south-1
+    "ap-southeast-1" = aws_config_delivery_channel.ap-southeast-1
+    "ap-southeast-2" = aws_config_delivery_channel.ap-southeast-2
+    "ca-central-1"   = aws_config_delivery_channel.ca-central-1
+    "eu-north-1"     = aws_config_delivery_channel.eu-north-1
+    "eu-central-1"   = aws_config_delivery_channel.eu-central-1
+    "eu-west-1"      = aws_config_delivery_channel.eu-west-1
+    "eu-west-2"      = aws_config_delivery_channel.eu-west-2
+    "eu-west-3"      = aws_config_delivery_channel.eu-west-3
+    "sa-east-1"      = aws_config_delivery_channel.sa-east-1
+    "us-east-1"      = aws_config_delivery_channel.us-east-1
+    "us-east-2"      = aws_config_delivery_channel.us-east-2
+    "us-west-1"      = aws_config_delivery_channel.us-west-1
+    "us-west-2"      = aws_config_delivery_channel.us-west-2
+  }
+}
+
+output "Org_Config_SNS_Topics" {
+  description = "A map of AWS-Config SNS Topics by region (will be \"null\" for non-root accounts)."
+  value = (local.IS_ROOT_ACCOUNT == false
+    ? null
+    : {
+      "ap-northeast-1" = one(aws_sns_topic.ap-northeast-1)
+      "ap-northeast-2" = one(aws_sns_topic.ap-northeast-2)
+      "ap-northeast-3" = one(aws_sns_topic.ap-northeast-3)
+      "ap-south-1"     = one(aws_sns_topic.ap-south-1)
+      "ap-southeast-1" = one(aws_sns_topic.ap-southeast-1)
+      "ap-southeast-2" = one(aws_sns_topic.ap-southeast-2)
+      "ca-central-1"   = one(aws_sns_topic.ca-central-1)
+      "eu-north-1"     = one(aws_sns_topic.eu-north-1)
+      "eu-central-1"   = one(aws_sns_topic.eu-central-1)
+      "eu-west-1"      = one(aws_sns_topic.eu-west-1)
+      "eu-west-2"      = one(aws_sns_topic.eu-west-2)
+      "eu-west-3"      = one(aws_sns_topic.eu-west-3)
+      "sa-east-1"      = one(aws_sns_topic.sa-east-1)
+      "us-east-1"      = one(aws_sns_topic.us-east-1)
+      "us-east-2"      = one(aws_sns_topic.us-east-2)
+      "us-west-1"      = one(aws_sns_topic.us-west-1)
+      "us-west-2"      = one(aws_sns_topic.us-west-2)
+    }
+  )
 }
 
 #---------------------------------------------------------------------
@@ -242,94 +206,100 @@ output "Default_SecurityGroup" {
 ### GuardDuty Outputs:
 
 output "GuardDuty_BY_REGION" {
-  description = "A map of all GuardDuty resources, organized by region."
-  value = {
-    "ap-northeast-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-1)
-      Detector          = one(aws_guardduty_detector.ap-northeast-1)
+  description = <<-EOF
+  A map of all GuardDuty resources, organized by region (will be "null"
+  for all accounts except for "root" and "Security").
+  EOF
+  value = (local.IS_ROOT_ACCOUNT == false && local.IS_SECURITY_ACCOUNT == false
+    ? null
+    : {
+      "ap-northeast-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-1)
+        Detector          = one(aws_guardduty_detector.ap-northeast-1)
+      }
+      "ap-northeast-2" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-2)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-2)
+        Detector          = one(aws_guardduty_detector.ap-northeast-2)
+      }
+      "ap-northeast-3" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-3)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-3)
+        Detector          = one(aws_guardduty_detector.ap-northeast-3)
+      }
+      "ap-south-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-south-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-south-1)
+        Detector          = one(aws_guardduty_detector.ap-south-1)
+      }
+      "ap-southeast-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-southeast-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-southeast-1)
+        Detector          = one(aws_guardduty_detector.ap-southeast-1)
+      }
+      "ap-southeast-2" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-southeast-2)
+        Org_Config        = one(aws_guardduty_organization_configuration.ap-southeast-2)
+        Detector          = one(aws_guardduty_detector.ap-southeast-2)
+      }
+      "ca-central-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.ca-central-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.ca-central-1)
+        Detector          = one(aws_guardduty_detector.ca-central-1)
+      }
+      "eu-north-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-north-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.eu-north-1)
+        Detector          = one(aws_guardduty_detector.eu-north-1)
+      }
+      "eu-central-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-central-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.eu-central-1)
+        Detector          = one(aws_guardduty_detector.eu-central-1)
+      }
+      "eu-west-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.eu-west-1)
+        Detector          = one(aws_guardduty_detector.eu-west-1)
+      }
+      "eu-west-2" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-2)
+        Org_Config        = one(aws_guardduty_organization_configuration.eu-west-2)
+        Detector          = one(aws_guardduty_detector.eu-west-2)
+      }
+      "eu-west-3" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-3)
+        Org_Config        = one(aws_guardduty_organization_configuration.eu-west-3)
+        Detector          = one(aws_guardduty_detector.eu-west-3)
+      }
+      "sa-east-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.sa-east-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.sa-east-1)
+        Detector          = one(aws_guardduty_detector.sa-east-1)
+      }
+      "us-east-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-east-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.us-east-1)
+        Detector          = one(aws_guardduty_detector.us-east-1)
+      }
+      "us-east-2" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-east-2)
+        Org_Config        = one(aws_guardduty_organization_configuration.us-east-2)
+        Detector          = one(aws_guardduty_detector.us-east-2)
+      }
+      "us-west-1" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-west-1)
+        Org_Config        = one(aws_guardduty_organization_configuration.us-west-1)
+        Detector          = one(aws_guardduty_detector.us-west-1)
+      }
+      "us-west-2" = {
+        Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-west-2)
+        Org_Config        = one(aws_guardduty_organization_configuration.us-west-2)
+        Detector          = one(aws_guardduty_detector.us-west-2)
+      }
     }
-    "ap-northeast-2" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-2)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-2)
-      Detector          = one(aws_guardduty_detector.ap-northeast-2)
-    }
-    "ap-northeast-3" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-northeast-3)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-northeast-3)
-      Detector          = one(aws_guardduty_detector.ap-northeast-3)
-    }
-    "ap-south-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-south-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-south-1)
-      Detector          = one(aws_guardduty_detector.ap-south-1)
-    }
-    "ap-southeast-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-southeast-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-southeast-1)
-      Detector          = one(aws_guardduty_detector.ap-southeast-1)
-    }
-    "ap-southeast-2" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ap-southeast-2)
-      Org_Config        = one(aws_guardduty_organization_configuration.ap-southeast-2)
-      Detector          = one(aws_guardduty_detector.ap-southeast-2)
-    }
-    "ca-central-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.ca-central-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.ca-central-1)
-      Detector          = one(aws_guardduty_detector.ca-central-1)
-    }
-    "eu-north-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-north-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.eu-north-1)
-      Detector          = one(aws_guardduty_detector.eu-north-1)
-    }
-    "eu-central-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-central-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.eu-central-1)
-      Detector          = one(aws_guardduty_detector.eu-central-1)
-    }
-    "eu-west-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.eu-west-1)
-      Detector          = one(aws_guardduty_detector.eu-west-1)
-    }
-    "eu-west-2" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-2)
-      Org_Config        = one(aws_guardduty_organization_configuration.eu-west-2)
-      Detector          = one(aws_guardduty_detector.eu-west-2)
-    }
-    "eu-west-3" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.eu-west-3)
-      Org_Config        = one(aws_guardduty_organization_configuration.eu-west-3)
-      Detector          = one(aws_guardduty_detector.eu-west-3)
-    }
-    "sa-east-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.sa-east-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.sa-east-1)
-      Detector          = one(aws_guardduty_detector.sa-east-1)
-    }
-    "us-east-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-east-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.us-east-1)
-      Detector          = one(aws_guardduty_detector.us-east-1)
-    }
-    "us-east-2" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-east-2)
-      Org_Config        = one(aws_guardduty_organization_configuration.us-east-2)
-      Detector          = one(aws_guardduty_detector.us-east-2)
-    }
-    "us-west-1" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-west-1)
-      Org_Config        = one(aws_guardduty_organization_configuration.us-west-1)
-      Detector          = one(aws_guardduty_detector.us-west-1)
-    }
-    "us-west-2" = {
-      Org_Admin_Account = one(aws_guardduty_organization_admin_account.us-west-2)
-      Org_Config        = one(aws_guardduty_organization_configuration.us-west-2)
-      Detector          = one(aws_guardduty_detector.us-west-2)
-    }
-  }
+  )
 }
 
 #---------------------------------------------------------------------
@@ -368,6 +338,14 @@ output "Org_Services_KMS_Key" {
   related to Organization-wide services like CloudTrail and CloudWatch.
   EOF
   value       = one(aws_kms_key.Org_KMS_Key)
+}
+
+#---------------------------------------------------------------------
+### OrganizationAccountAccessRole Outputs:
+
+output "OrganizationAccountAccessRole" {
+  description = "The hardened role used by Administrators to manage AWS resources in Terraform/Terragrunt configs."
+  value       = aws_iam_role.OrganizationAccountAccessRole
 }
 
 #---------------------------------------------------------------------
