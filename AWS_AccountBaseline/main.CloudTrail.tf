@@ -22,8 +22,9 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   cloud_watch_logs_role_arn  = one(aws_iam_role.CloudWatch-Delivery_Role).arn
 
   event_selector {
-    read_write_type           = "All"
-    include_management_events = true
+    read_write_type                  = "All"
+    include_management_events        = true
+    exclude_management_event_sources = ["kms.amazonaws.com"]
   }
 
   # TODO add CloudTrail Insights for API call rate and API error rate
