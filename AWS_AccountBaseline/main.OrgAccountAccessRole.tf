@@ -14,9 +14,13 @@ resource "aws_iam_role" "OrganizationAccountAccessRole" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = { AWS = "arn:aws:iam::${local.root_account_id}:root" }
-        Action    = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = [
+            for admin_username in keys(var.administrators) : "arn:aws:iam::${local.root_account_id}:user/${admin_username}"
+          ]
+        }
+        Action = "sts:AssumeRole"
         Condition = {
           IpAddress = { "aws:SourceIp" = var.administrator_ip_addresses }
         }

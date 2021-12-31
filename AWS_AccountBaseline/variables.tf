@@ -267,12 +267,15 @@ variable "org_kms_key" {
 #---------------------------------------------------------------------
 ### IAM Hardening Variables
 
-variable "administrator_ip_addresses" {
-  description = "A list of administrator IP Addresses for \"aws:SourceIp\" conditions in IAM policies."
-  type        = list(string)
+variable "administrators" {
+  description = <<-EOF
+  Map administrator IAM User names to their respective IP addresses; these
+  values are used to restrict usage of admin-related Policies.
+  EOF
+  type        = map(string)
   validation {
-    condition     = alltrue([for ip in var.administrator_ip_addresses : can(cidrnetmask("${ip}/32"))])
-    error_message = "All included strings must be valid 32-bit host IP addresses."
+    condition     = alltrue([for ip in values(var.administrators) : can(cidrnetmask("${ip}/32"))])
+    error_message = "All values must be valid 32-bit host IP address strings."
   }
 }
 
