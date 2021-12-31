@@ -70,6 +70,25 @@ resource "aws_kms_key" "Org_KMS_Key" {
         Action    = "kms:DescribeKey"
         Resource  = "*"
       },
+      # KEY POLICIES --> CloudWatch Logs
+      {
+        Sid       = "AllowCloudWatchLogs---"
+        Effect    = "Allow"
+        Principal = { Service = "logs.${local.aws_region}.amazonaws.com" }
+        Action = [
+          "kms:Encrypt*",
+          "kms:Decrypt*",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:Describe*"
+        ]
+        Resource = "*"
+        Condition = {
+          ArnEquals = {
+            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:${local.aws_region}:${local.root_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.name}"
+          }
+        }
+      },
       # KEY POLICIES --> AWS-Config SERVICE (the ROLE should be covered by the first statement for Org IAM)
       {
         Sid       = "AWSConfigKMSPolicy"
