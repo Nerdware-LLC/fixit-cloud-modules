@@ -20,17 +20,6 @@ resource "aws_iam_role" "OrganizationAccountAccessRole" {
             AWS = "arn:aws:iam::${local.root_account_id}:user/${admin_user}"
           }
           Action = "sts:AssumeRole"
-        },
-        {
-          Effect = "Deny"
-          Principal = {
-            AWS = "arn:aws:iam::${local.root_account_id}:user/${admin_user}"
-          }
-          Action = "sts:AssumeRole"
-          Condition = {
-            NotIpAddress = { "aws:SourceIp" = admin_ips }
-            Bool         = { "aws:ViaAWSService" = "false" }
-          }
         }
       ]
     ])
