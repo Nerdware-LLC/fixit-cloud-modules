@@ -368,7 +368,7 @@ output "SecurityHub_Member_Account" {
 
 output "SecurityHub_Finding_Aggregator" {
   description = "The SecurityHub Finding Aggregator resource."
-  value       = aws_securityhub_finding_aggregator.All_Regions
+  value       = one(aws_securityhub_finding_aggregator.All_Regions)
 }
 
 output "SecurityHub_Subscriptions_BY_REGION" {

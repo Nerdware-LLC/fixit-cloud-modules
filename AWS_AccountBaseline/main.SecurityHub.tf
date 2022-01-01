@@ -34,12 +34,17 @@ resource "aws_securityhub_member" "Member_Accounts" {
   invite     = false
 
   /* TFR docs recommend using depends_on with the aws_securityhub_account
-  resource(s) here, but our use case would be cross-account, which isn't
-  implemented at this time. This opens the possibility of 'apply' errors
-  if the Security-account tries to add a new SecurityHub member account
-  via this block before said account activates SecurityHub via its own
-  aws_securityhub_account resource blocks (1/region). To address this
-  problem, we need a 'dependency' block in the FCL repo.  */
+  resource(s) here, which is implemented below, but note that the current
+  depends_on only points to the aws_securityhub_account resource for the
+  Security account - and none of the other accounts. Since our use case
+  is for cross-account dependency, the current impl opens the possibility
+  of 'apply' errors if the Security-account tries to add a new SecurityHub
+  member account via this block before said account activates SecurityHub
+  via its own aws_securityhub_account resource blocks. To address this
+  problem, we need Terragrunt 'dependency' blocks in the FCL repo.
+  TODO rm this comment block once above-described fix has been completed. */
+
+  depends_on = [aws_securityhub_account.us-east-2]
 }
 
 #---------------------------------------------------------------------
@@ -49,7 +54,20 @@ resource "aws_securityhub_member" "Member_Accounts" {
 in a region before its aggregator can collect findings from there.  */
 
 resource "aws_securityhub_finding_aggregator" "All_Regions" {
+  count = local.IS_SECURITY_ACCOUNT ? 1 : 0
+
   linking_mode = "ALL_REGIONS"
+
+  /* TFR docs recommend using depends_on with the aws_securityhub_account
+  resource(s) here, which is implemented below, but note that the current
+  depends_on only points to the aws_securityhub_account resource for the
+  Security account - and none of the other accounts. Since our use case
+  is for cross-account dependency, the current impl opens the possibility
+  of 'apply' errors if the Security-account tries to add a new SecurityHub
+  member account via this block before said account activates SecurityHub
+  via its own aws_securityhub_account resource blocks. To address this
+  problem, we need Terragrunt 'dependency' blocks in the FCL repo.
+  TODO rm this comment block once above-described fix has been completed. */
 
   depends_on = [aws_securityhub_account.us-east-2]
 }
