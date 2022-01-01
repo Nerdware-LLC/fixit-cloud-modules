@@ -116,6 +116,8 @@ resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
 
   role       = aws_iam_role.Org_Config_Role.name
   policy_arn = each.key
+
+  depends_on = [aws_iam_policy.Org_Config_Role_Policy]
 }
 
 ######################################################################
