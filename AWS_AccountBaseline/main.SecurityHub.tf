@@ -29,8 +29,8 @@ locals {
 resource "aws_securityhub_member" "Member_Accounts" {
   for_each = local.IS_SECURITY_ACCOUNT ? local.securityhub_member_accounts : {}
 
-  account_id = each.id
-  email      = each.email
+  account_id = each.value.id
+  email      = each.value.email
   invite     = false
 
   /* TFR docs recommend using depends_on with the aws_securityhub_account
