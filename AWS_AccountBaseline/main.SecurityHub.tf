@@ -32,19 +32,6 @@ resource "aws_securityhub_member" "Member_Accounts" {
   account_id = each.value.id
   email      = each.value.email
   invite     = false
-
-  /* TFR docs recommend using depends_on with the aws_securityhub_account
-  resource(s) here, which is implemented below, but note that the current
-  depends_on only points to the aws_securityhub_account resource for the
-  Security account - and none of the other accounts. Since our use case
-  is for cross-account dependency, the current impl opens the possibility
-  of 'apply' errors if the Security-account tries to add a new SecurityHub
-  member account via this block before said account activates SecurityHub
-  via its own aws_securityhub_account resource blocks. To address this
-  problem, we need Terragrunt 'dependency' blocks in the FCL repo.
-  TODO rm this comment block once above-described fix has been completed. */
-
-  depends_on = [aws_securityhub_account.us-east-2]
 }
 
 #---------------------------------------------------------------------
@@ -57,19 +44,6 @@ resource "aws_securityhub_finding_aggregator" "All_Regions" {
   count = local.IS_SECURITY_ACCOUNT ? 1 : 0
 
   linking_mode = "ALL_REGIONS"
-
-  /* TFR docs recommend using depends_on with the aws_securityhub_account
-  resource(s) here, which is implemented below, but note that the current
-  depends_on only points to the aws_securityhub_account resource for the
-  Security account - and none of the other accounts. Since our use case
-  is for cross-account dependency, the current impl opens the possibility
-  of 'apply' errors if the Security-account tries to add a new SecurityHub
-  member account via this block before said account activates SecurityHub
-  via its own aws_securityhub_account resource blocks. To address this
-  problem, we need Terragrunt 'dependency' blocks in the FCL repo.
-  TODO rm this comment block once above-described fix has been completed. */
-
-  depends_on = [aws_securityhub_account.us-east-2]
 }
 
 #---------------------------------------------------------------------
@@ -96,13 +70,10 @@ locals {
 #---------------------------------------------------------------------
 ### SecurityHub - us-east-2 (HOME REGION USES IMPLICIT/DEFAULT PROVIDER)
 
-resource "aws_securityhub_account" "us-east-2" {}
-
 resource "aws_securityhub_standards_subscription" "us-east-2" {
   for_each = local.STANDARDS_ARNS_BY_REGION.us-east-2
 
   standards_arn = each.value
-  depends_on    = [aws_securityhub_account.us-east-2]
 }
 
 #---------------------------------------------------------------------
