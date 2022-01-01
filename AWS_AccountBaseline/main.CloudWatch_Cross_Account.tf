@@ -4,13 +4,13 @@
 # Docs: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html
 
 locals {
-  cloudwatch_SHARING_account_ids = [
-    for account in values(var.accounts) : account.id
+  cloudwatch_SHARING_account_arns = [
+    for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_sharing", false) == true
   ]
 
-  cloudwatch_MONITORING_account_ids = [
-    for account in values(var.accounts) : account.id
+  cloudwatch_MONITORING_account_arns = [
+    for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_monitoring", false) == true
   ]
 }
@@ -44,7 +44,7 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharingRole" {
     Statement = [
       {
         Effect    = "Allow"
-        Principal = { AWS = local.cloudwatch_SHARING_account_ids }
+        Principal = { AWS = local.cloudwatch_SHARING_account_arns }
         Action    = "sts:AssumeRole"
         Condition = {
           StringEquals = {
@@ -84,7 +84,7 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharing-ListAccountsRole" {
     Statement = [
       {
         Effect    = "Allow"
-        Principal = { AWS = local.cloudwatch_MONITORING_account_ids }
+        Principal = { AWS = local.cloudwatch_MONITORING_account_arns }
         Action    = "sts:AssumeRole"
         Condition = {
           StringEquals = {
