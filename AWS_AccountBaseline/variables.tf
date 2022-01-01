@@ -1,16 +1,12 @@
 ######################################################################
 ### INPUT VARIABLES
 #---------------------------------------------------------------------
-### Organization/Account Variables:
-
-variable "account_email" {
-  description = "The main email address associated with the calling account."
-  type        = string
-}
+### Organization Variables:
 
 variable "accounts" {
   type = map(object({
     id                                                = string
+    email                                             = string
     is_log_archive_account                            = optional(bool)
     is_security_account                               = optional(bool)
     should_enable_cross_account_cloudwatch_sharing    = optional(bool)
@@ -33,6 +29,9 @@ variable "accounts" {
     error_message = "Exactly one account must be designated as the Security account."
   }
 }
+
+#---------------------------------------------------------------------
+### Account Settings Variables:
 
 variable "s3_public_access_blocks" {
   description = <<-EOF

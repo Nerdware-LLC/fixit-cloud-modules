@@ -19,13 +19,27 @@ resource "aws_securityhub_organization_configuration" "Org_Config" {
 #---------------------------------------------------------------------
 ### SecurityHub Member Accounts
 
-resource "aws_securityhub_member" "Member_Account" {
-  count = local.IS_SECURITY_ACCOUNT == false ? 1 : 0
+locals {
+  securityhub_member_accounts = {
+    for account_name, account_params in var.accounts : account_name => account_params
+    if account_params.id != local.security_account_id
+  }
+}
 
-  # account_id from resource avoids having to use depends_on as shown in TFR docs
-  account_id = aws_securityhub_account.us-east-2.id
-  email      = var.account_email
+resource "aws_securityhub_member" "Member_Accounts" {
+  for_each = local.IS_SECURITY_ACCOUNT ? local.securityhub_member_accounts : {}
+
+  account_id = each.id
+  email      = each.email
   invite     = false
+
+  /* TFR docs recommend using depends_on with the aws_securityhub_account
+  resource(s) here, but our use case would be cross-account, which isn't
+  implemented at this time. This opens the possibility of 'apply' errors
+  if the Security-account tries to add a new SecurityHub member account
+  via this block before said account activates SecurityHub via its own
+  aws_securityhub_account resource blocks (1/region). To address this
+  problem, we need a 'dependency' block in the FCL repo.  */
 }
 
 #---------------------------------------------------------------------

@@ -362,8 +362,8 @@ output "SecurityHub_Org_Config" {
 }
 
 output "SecurityHub_Member_Account" {
-  description = "A SecurityHub Member Account resource."
-  value       = one(aws_securityhub_member.Member_Account)
+  description = "A SecurityHub Member Account resource (will be \"null\" for non-Security accounts)."
+  value       = local.IS_SECURITY_ACCOUNT ? aws_securityhub_member.Member_Accounts : null
 }
 
 output "SecurityHub_Finding_Aggregator" {
