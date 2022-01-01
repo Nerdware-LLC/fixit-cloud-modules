@@ -109,15 +109,13 @@ resource "aws_iam_policy" "Org_Config_Role_Policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "Org_Config_Role_Policies" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole",
-    aws_iam_policy.Org_Config_Role_Policy.arn
-  ])
+  for_each = {
+    AWS_ConfigRole         = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+    Org_Config_Role_Policy = aws_iam_policy.Org_Config_Role_Policy.arn
+  }
 
   role       = aws_iam_role.Org_Config_Role.name
-  policy_arn = each.key
-
-  depends_on = [aws_iam_policy.Org_Config_Role_Policy]
+  policy_arn = each.value
 }
 
 ######################################################################
