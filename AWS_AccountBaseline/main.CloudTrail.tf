@@ -22,6 +22,15 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   cloud_watch_logs_role_arn  = one(aws_iam_role.CloudWatch-Delivery_Role).arn
 
   tags = var.org_cloudtrail.tags
+
+  lifecycle {
+    /* As of 1/2/22, a constant diff was being shown for an advanced_event_selector
+    that AWS auto-generates that seems to be intended to capture MANAGEMENT events,
+    even though TFR docs for aws_cloudtrail make it clear that the event selector
+    blocks are only for capturing DATA events. Since we don't collect data events
+    at this time, they've been ignored to kill the persistent erroneous diff msg. */
+    ignore_changes = [event_selector, advanced_event_selector]
+  }
 }
 
 #---------------------------------------------------------------------
