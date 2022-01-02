@@ -139,6 +139,13 @@ resource "aws_config_configuration_recorder" "us-east-2" {
     all_supported                 = true
     include_global_resource_types = local.IS_ROOT_ACCOUNT == true # Only in us-east-2
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "us-east-2" {
@@ -194,6 +201,13 @@ resource "aws_config_configuration_recorder" "ap-northeast-1" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -257,6 +271,13 @@ resource "aws_config_configuration_recorder" "ap-northeast-2" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "ap-northeast-2" {
@@ -318,6 +339,13 @@ resource "aws_config_configuration_recorder" "ap-northeast-3" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -381,6 +409,13 @@ resource "aws_config_configuration_recorder" "ap-south-1" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "ap-south-1" {
@@ -442,6 +477,13 @@ resource "aws_config_configuration_recorder" "ap-southeast-1" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -505,6 +547,13 @@ resource "aws_config_configuration_recorder" "ap-southeast-2" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "ap-southeast-2" {
@@ -566,6 +615,13 @@ resource "aws_config_configuration_recorder" "ca-central-1" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -629,6 +685,13 @@ resource "aws_config_configuration_recorder" "eu-north-1" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "eu-north-1" {
@@ -690,6 +753,13 @@ resource "aws_config_configuration_recorder" "eu-central-1" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -753,6 +823,13 @@ resource "aws_config_configuration_recorder" "eu-west-1" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "eu-west-1" {
@@ -814,6 +891,13 @@ resource "aws_config_configuration_recorder" "eu-west-2" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -877,6 +961,13 @@ resource "aws_config_configuration_recorder" "eu-west-3" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "eu-west-3" {
@@ -938,6 +1029,13 @@ resource "aws_config_configuration_recorder" "sa-east-1" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
@@ -1001,6 +1099,13 @@ resource "aws_config_configuration_recorder" "us-east-1" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "us-east-1" {
@@ -1063,6 +1168,13 @@ resource "aws_config_configuration_recorder" "us-west-1" {
     all_supported                 = true
     include_global_resource_types = false
   }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
+  }
 }
 
 resource "aws_config_configuration_recorder_status" "us-west-1" {
@@ -1124,6 +1236,13 @@ resource "aws_config_configuration_recorder" "us-west-2" {
   recording_group {
     all_supported                 = true
     include_global_resource_types = false
+  }
+
+  lifecycle {
+    /* As of 1/2/22, TF plans constantly showed a diff for the below attribute
+    (shows live version has resource_types = []), which is NOT included bc TFR
+    docs say it conflicts with recording_group's other 2 attrs, which we use. */
+    ignore_changes = [recording_group.resource_types]
   }
 }
 
