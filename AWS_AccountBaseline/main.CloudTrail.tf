@@ -21,12 +21,6 @@ resource "aws_cloudtrail" "Org_CloudTrail" {
   cloud_watch_logs_group_arn = "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:*"
   cloud_watch_logs_role_arn  = one(aws_iam_role.CloudWatch-Delivery_Role).arn
 
-  event_selector {
-    read_write_type                  = "All"
-    include_management_events        = true
-    exclude_management_event_sources = ["kms.amazonaws.com"]
-  }
-
   tags = var.org_cloudtrail.tags
 }
 
