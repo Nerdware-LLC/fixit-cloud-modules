@@ -3,16 +3,19 @@
 
 # Docs: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html
 
+/* In the locals below, the sort fn is used to ensure the values are always in the
+same order, to prevent potential TF diffs caused by varying/uncertain order.  */
+
 locals {
-  cloudwatch_SHARING_account_arns = [
+  cloudwatch_SHARING_account_arns = sort([
     for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_sharing", false) == true
-  ]
+  ])
 
-  cloudwatch_MONITORING_account_arns = [
+  cloudwatch_MONITORING_account_arns = sort([
     for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_monitoring", false) == true
-  ]
+  ])
 }
 
 #---------------------------------------------------------------------
@@ -33,19 +36,21 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharingRole" {
   to look deeper into your account and view your account's data in the consoles
   of other AWS services.". This managed policy was excluded from the below list
   due to security concerns regarding the large number of actions it permits.  */
-  managed_policy_arns = [
+  managed_policy_arns = sort([
     "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess",
     "arn:aws:iam::aws:policy/CloudWatchAutomaticDashboardsAccess",
     "arn:aws:iam::aws:policy/AWSXrayReadOnlyAccess"
-  ]
+  ])
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = { AWS = local.cloudwatch_SHARING_account_arns }
-        Action    = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = local.cloudwatch_SHARING_account_arns
+        }
+        Action = "sts:AssumeRole"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id
@@ -83,9 +88,11 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharing-ListAccountsRole" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = { AWS = local.cloudwatch_MONITORING_account_arns }
-        Action    = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = local.cloudwatch_MONITORING_account_arns
+        }
+        Action = "sts:AssumeRole"
         Condition = {
           StringEquals = {
             "aws:PrincipalOrgID" = local.org_id
