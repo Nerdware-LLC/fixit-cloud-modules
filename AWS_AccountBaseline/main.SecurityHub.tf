@@ -32,6 +32,12 @@ resource "aws_securityhub_member" "Member_Accounts" {
   account_id = each.value.id
   email      = each.value.email
   invite     = false
+
+  lifecycle {
+    /* This block was added bc TF erroneously keeps wanting to replace
+    these resources due to perceived changes in these property values. */
+    ignore_changes = [email, invite]
+  }
 }
 
 #---------------------------------------------------------------------
