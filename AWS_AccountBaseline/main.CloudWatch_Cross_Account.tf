@@ -3,19 +3,26 @@
 
 # Docs: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Cross-Account-Cross-Region.html
 
-/* In the locals below, the sort fn is used to ensure the values are always in the
-same order, to prevent potential TF diffs caused by varying/uncertain order.  */
+/* As of 1/2/22, the two IAM role resources listed below show a constant erroneous
+diff on the Principal list element of their respective assume_role_policy values.
+- CloudWatch-CrossAccountSharingRole                (Principals are accounts that SHARE CloudWatch data)
+- CloudWatch-CrossAccountSharing-ListAccountsRole   (Principals are accounts that MONITOR CloudWatch data shared by sharing accounts)
+
+The problem is caused by the fact that AWS does not maintain the same order in the
+Principals list that the user submits, even when submitted via the console. We don't
+want to put assume_role_policy in ignore_changes, so until a fix can be found we'll
+just have to ignore the "hey this stuff changed" msg during Terragrunt plans/applies. */
 
 locals {
-  cloudwatch_SHARING_account_arns = sort([
+  cloudwatch_SHARING_account_arns = [
     for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_sharing", false) == true
-  ])
+  ]
 
-  cloudwatch_MONITORING_account_arns = sort([
+  cloudwatch_MONITORING_account_arns = [
     for account in values(var.accounts) : "arn:aws:iam::${account.id}:root"
     if lookup(account, "should_enable_cross_account_cloudwatch_monitoring", false) == true
-  ])
+  ]
 }
 
 #---------------------------------------------------------------------
