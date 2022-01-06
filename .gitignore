@@ -1,5 +1,7 @@
-##################################################
-# Terraform gitignore 👉 https://github.com/github/gitignore/blob/master/Terraform.gitignore
+######################################################################
+### GIT IGNORE
+#---------------------------------------------------------------------
+### Terraform gitignore 👉 https://github.com/github/gitignore/blob/master/Terraform.gitignore
 
 # Local .terraform directories
 **/.terraform
@@ -34,8 +36,8 @@ terraform.rc
 # Terragrunt docs recommend adding this to gitignore
 .terragrunt-cache
 
-##################################################
-# NERDWARE gitignore ENTRIES:
+#---------------------------------------------------------------------
+### NERDWARE gitignore ENTRIES:
 
 # Notes
 TODO*
@@ -84,8 +86,10 @@ pids
 *.seed
 *.pid.lock
 
-##################################################
-# Project-Specific gitignore ENTRIES:
+#---------------------------------------------------------------------
+### Project-Specific gitignore ENTRIES:
 
 # Necessary to override above exclusion of *.env pattern:
 !local.envoy_image.tf
+
+######################################################################
