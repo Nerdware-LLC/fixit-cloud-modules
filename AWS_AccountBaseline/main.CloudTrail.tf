@@ -42,7 +42,7 @@ resource "aws_cloudwatch_log_group" "CloudTrail_Events" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   name              = var.org_cloudtrail_cloudwatch_logs_group.name
-  retention_in_days = coalesce(var.org_cloudtrail_cloudwatch_logs_group.retention_in_days, 365)
+  retention_in_days = coalesce(var.org_cloudtrail_cloudwatch_logs_group.retention_in_days, 400)
   kms_key_id        = one(aws_kms_key.Org_KMS_Key).arn
   tags              = var.org_cloudtrail_cloudwatch_logs_group.tags
 }
