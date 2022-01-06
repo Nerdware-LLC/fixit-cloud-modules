@@ -72,7 +72,7 @@ resource "aws_kms_key" "Org_KMS_Key" {
       },
       # KEY POLICIES --> CloudWatch Logs
       {
-        Sid       = "AllowCloudWatchLogs---"
+        Sid       = "AllowCloudWatchLogs"
         Effect    = "Allow"
         Principal = { Service = "logs.${local.aws_region}.amazonaws.com" }
         Action = [
@@ -84,8 +84,10 @@ resource "aws_kms_key" "Org_KMS_Key" {
         ]
         Resource = "*"
         Condition = {
-          ArnEquals = {
-            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:${local.aws_region}:${local.root_account_id}:log-group:${var.org_cloudtrail_cloudwatch_logs_group.name}"
+          ArnLike = {
+            "kms:EncryptionContext:aws:logs:arn" = [
+              for account_id in local.all_account_ids : "arn:aws:logs:${local.aws_region}:${account_id}:log-group:*" # wildcard = LOG_GRP_NAME
+            ]
           }
         }
       },
