@@ -83,3 +83,9 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+##################################################
+# Project-Specific gitignore ENTRIES:
+
+# Necessary to override above exclusion of *.env pattern:
+!local.envoy_image.tf
