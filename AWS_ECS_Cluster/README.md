@@ -1,4 +1,4 @@
-# Fixit Cloud Module: AWS ECS Cluster
+# Fixit Cloud ☁️ MODULE: AWS ECS Cluster
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
