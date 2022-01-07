@@ -37,6 +37,6 @@ repos:
       - id: terraform_tfsec
       - id: terraform_docs
         args:
-          - "--hook-config=--path-to-file=README.md"
-          - "--hook-config=--add-to-existing-file=true"
-          - "--hook-config=--create-file-if-not-exist=true"
+          - --hook-config=--path-to-file=README.md
+          - --hook-config=--add-to-existing-file=true
+          - --hook-config=--create-file-if-not-exist=true
