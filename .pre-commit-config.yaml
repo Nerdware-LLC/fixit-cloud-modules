@@ -36,6 +36,8 @@ repos:
     hooks:
       - id: terraform_tfsec
       - id: terraform_docs
+        # DOCS:       https://terraform-docs.io/user-guide/configuration/
+        # HOOK DOCS:  https://github.com/antonbabenko/pre-commit-terraform#terraform_docs
         args:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
