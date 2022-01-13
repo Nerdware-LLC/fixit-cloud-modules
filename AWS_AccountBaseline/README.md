@@ -1,6 +1,6 @@
 # Fixit Cloud ☁️ MODULE: AWS Account Baseline
 
-TODO add AccountBaseline module info here
+Terraform module for hardening individual AWS accounts with an AWS Organization.
 
 ### Enabling REGIONAL Services in All Regions
 
