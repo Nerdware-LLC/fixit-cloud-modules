@@ -1,5 +1,7 @@
 # Fixit Cloud ☁️ MODULE: AWS ECS Cluster
 
+Terraform module for defining an ECS Cluster with related resources.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
