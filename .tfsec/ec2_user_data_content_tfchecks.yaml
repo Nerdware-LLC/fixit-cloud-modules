@@ -1,9 +1,10 @@
 checks:
   - code: NO_INIT_LOCKING_CMDS_IN_USER_DATA
-    # The systemd units for both the ECS and Docker services have a directive to wait for cloud-init to
-    # finish before starting both services. The cloud-init process is not considered finished until the
-    # user_data has finished running. Therefore, starting ECS or Docker via user_data may cause a deadlock.
-    description: Custom check to ensure user data scripts don't break EC2 init processes
+    description: <
+      Custom check to ensure user data scripts don't break EC2 init processes. The systemd units for both
+      the ECS and Docker services have a directive to wait for cloud-init to finish before starting both
+      services. The cloud-init process is not considered finished until the user_data has finished running.
+      Therefore, starting ECS or Docker via user_data may cause a deadlock.
     impact: <
       By starting either the Docker or ECS services via EC2 user data, the cloud-init process may deadlock
     resolution: <
@@ -14,19 +15,18 @@ checks:
     requiredLabels:
       - aws_instance
       - aws_launch_template
-    severity: ERROR
+    severity: CRITICAL
     matchSpec:
       name: user_data
       action: or
       predicateMatchSpec:
-        # User data does not contain "systemctl enable ecs.service"
-        - name: SERVICE_NOT_ENABLED_IN_USER_DATA
+        - name: SERVICE_NOT_ENABLED_IN_USER_DATA # User data does not contain "systemctl enable ecs.service"
           action: not
           predicateMatchSpec:
-            action: regexMatches
-            value: "systemctl enable.* (docker|ecs)(\\.service)?"
-        # OR if it DOES, the cmd contains "--no-block"
-        - name: SERVICE_ENABLED_WITH_NO_BLOCK_FLAG
+            - name: SERVICE_NOT_ENABLED_IN_USER_DATA_regex
+              action: regexMatches
+              value: "systemctl enable.* (docker|ecs)(\\.service)?"
+        - name: SERVICE_ENABLED_WITH_NO_BLOCK_FLAG # OR if it DOES, the cmd contains "--no-block"
           action: regexMatches
           value: "systemctl enable .*--no-block.* (docker|ecs)(\\.service)?"
           # Notes regarding the above regex:
