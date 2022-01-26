@@ -1,0 +1,37 @@
+checks:
+  - code: NO_INIT_LOCKING_CMDS_IN_USER_DATA
+    # The systemd units for both the ECS and Docker services have a directive to wait for cloud-init to
+    # finish before starting both services. The cloud-init process is not considered finished until the
+    # user_data has finished running. Therefore, starting ECS or Docker via user_data may cause a deadlock.
+    description: Custom check to ensure user data scripts don't break EC2 init processes
+    impact: <
+      By starting either the Docker or ECS services via EC2 user data, the cloud-init process may deadlock
+    resolution: <
+      Either add the "--no-block" flag to the relevant line in the user data script (e.g., "systemctl
+      enable --now --no-block ecs.service"), or move the offending startup commands to a systemd unit file.
+    requiredTypes:
+      - resource
+    requiredLabels:
+      - aws_instance
+      - aws_launch_template
+    severity: ERROR
+    matchSpec:
+      name: user_data
+      action: or
+      predicateMatchSpec:
+        # User data does not contain "systemctl enable ecs.service"
+        - name: SERVICE_NOT_ENABLED_IN_USER_DATA
+          action: not
+          predicateMatchSpec:
+            action: regexMatches
+            value: "systemctl enable.* (docker|ecs)(\\.service)?"
+        # OR if it DOES, the cmd contains "--no-block"
+        - name: SERVICE_ENABLED_WITH_NO_BLOCK_FLAG
+          action: regexMatches
+          value: "systemctl enable .*--no-block.* (docker|ecs)(\\.service)?"
+          # Notes regarding the above regex:
+          #   --no-block is surrounded by .* for possible other flags (e.g., --now)
+          #   (\\.service)? accounts for impl's that use either "ecs" OR "ecs.service"
+    errorMessage: User data scripts must not start the Docker or ECS service without the "--no-block" flag.
+    relatedLinks:
+      - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-install.html # See first "Note" block.
