@@ -42,3 +42,11 @@ repos:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
           - --hook-config=--create-file-if-not-exist=true
+
+  - repo: local
+    hooks:
+      - id: validate-custom-tfsec-checks
+        name: validate-custom-tfsec-checks
+        entry: /bin/bash -c 'for file in .tfsec/*; do tfsec-checkgen validate "$file"; done'
+        language: script
+        files: ^.tfsec/
