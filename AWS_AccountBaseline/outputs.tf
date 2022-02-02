@@ -188,6 +188,35 @@ output "CloudWatch_CIS_Alarms_SNS_Topic_Policy" {
 }
 
 #---------------------------------------------------------------------
+### CloudWatch Cross-Account IAM Outputs:
+
+output "CloudWatch-CrossAccountSharingRole" {
+  description = "The CloudWatch Role that allows CloudWatch data to be shared with monitoring accounts."
+  value       = one(aws_iam_role.CloudWatch-Cross-AccountSharingRole)
+}
+
+output "AWSServiceRoleForCloudWatchCrossAccount" {
+  description = "The CloudWatch service-linked Role that allows monitoring accounts to view CloudWatch data from sharing accounts."
+  value       = one(aws_iam_service_linked_role.AWSServiceRoleForCloudWatchCrossAccount)
+}
+
+output "CloudWatch_Agent_Server_Role_RECEIVER" {
+  description = <<-EOF
+  The CloudWatch Role that EC2 CloudWatch-Agents in other accounts within the same
+  AWS Organization can assume to send logs and metrics to the Log-Archive account.
+  EOF
+  value       = one(aws_iam_role.CloudWatch_Agent_Server_Role_RECEIVER)
+}
+
+output "CloudWatch_Agent_Server_Role" {
+  description = <<-EOF
+  The CloudWatch Role that allows EC2 CloudWatch-Agents in this
+  account to send logs and metrics to the Log-Archive account.
+  EOF
+  value       = one(aws_iam_role.CloudWatch_Agent_Server_Role)
+}
+
+#---------------------------------------------------------------------
 ### Default VPC Component Outputs:
 
 output "Default_VPC" {
