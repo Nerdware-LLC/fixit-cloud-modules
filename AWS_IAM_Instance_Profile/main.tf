@@ -4,7 +4,7 @@
 resource "aws_iam_instance_profile" "this" {
   name = var.name
   role = aws_iam_role.this.name
-  path = coalesce(var.path, "/")
+  path = var.path
   tags = var.tags
 }
 
@@ -40,8 +40,10 @@ resource "aws_iam_policy" "map" {
 
 resource "aws_iam_role_policy_attachment" "set" {
   for_each = toset(flatten([
-    var.iam_role.policy_arns,
-    [for policy_name, custom_policy in aws_iam_policy.map : custom_policy.arn]
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore", # For SSM
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",  # For CloudWatch-Agent usage
+    var.iam_role.policy_arns,                               # User-provided policy ARNs
+    values(aws_iam_policy.map)[*].arn                       # User-provided new custom policy ARNs
   ]))
 
   role       = aws_iam_role.this.name

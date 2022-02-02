@@ -9,7 +9,7 @@ variable "name" {
 variable "path" {
   description = "Path to the instance profile; defaults to \"/\"."
   type        = string
-  default     = null
+  default     = "/"
 }
 
 variable "tags" {
@@ -20,11 +20,12 @@ variable "tags" {
 
 variable "iam_role" {
   description = <<-EOF
-  Config object for the Instance Profile's associated IAM Role. Existing
-  IAM policies can be attached via the "policy_arns" key; alternatively,
-  policies unique to this Instance Profile resource can be provided via
-  the "custom_iam_policies" key. Either way, all policies are attached
-  via the "aws_iam_role_policy_attachment" resource.
+  Config object for the Instance Profile's associated IAM Role. As a matter of
+  best practice, the "AmazonSSMManagedInstanceCore" and "CloudWatchAgentServerPolicy"
+  policies are automatically attached to the Role. Other existing IAM policies can
+  be attached via the "policy_arns" key; alternatively, one-off policies unique to
+  this Instance Profile can be provided via the "custom_iam_policies" key. Either
+  way, all policies are attached via the "aws_iam_role_policy_attachment" resource.
   EOF
   type = object({
     name        = string
