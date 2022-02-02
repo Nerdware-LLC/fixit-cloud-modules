@@ -192,19 +192,17 @@ No modules.
 | [aws_iam_account_password_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy) | resource |
 | [aws_iam_policy.CloudWatch-CrossAccountSharing-ListAccounts-Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.CloudWatch-Delivery_Role_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.CloudWatch_Agent_Server_Role_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.CloudWatch_Agent_CrossAccount_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.Org_Config_Role_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.CloudWatch-CrossAccountSharing-ListAccountsRole](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.CloudWatch-CrossAccountSharingRole](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.CloudWatch-Delivery_Role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role.CloudWatch_Agent_Server_Role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role.CloudWatch_Agent_Server_Role_RECEIVER](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.CloudWatch_Agent_CrossAccount_Receiver_Role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.Org_Config_Aggregator_Role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.Org_Config_Role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.OrganizationAccountAccessRole](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.CloudWatch-CrossAccountSharing-ListAccounts-Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.CloudWatch-Delivery_Role_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.CloudWatch_Agent_Server_Role-PolicyAttachments](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.Org_Config_Aggregator_Role_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.Org_Config_Role_Policies](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_service_linked_role.AWSServiceRoleForCloudWatchCrossAccount](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_service_linked_role) | resource |
@@ -339,8 +337,8 @@ No modules.
 | <a name="output_CloudWatch-CrossAccountSharingRole"></a> [CloudWatch-CrossAccountSharingRole](#output\_CloudWatch-CrossAccountSharingRole) | The CloudWatch Role that allows CloudWatch data to be shared with monitoring accounts. |
 | <a name="output_CloudWatch-Delivery_Role"></a> [CloudWatch-Delivery\_Role](#output\_CloudWatch-Delivery\_Role) | The IAM Service Role that permits delivery of Organization CloudTrail events<br>to the CloudWatch\_LogGroup (will be "null" for all accounts except Log-Archive). |
 | <a name="output_CloudWatch-Delivery_Role_Policy"></a> [CloudWatch-Delivery\_Role\_Policy](#output\_CloudWatch-Delivery\_Role\_Policy) | The IAM policy for "CloudWatch-Delivery\_Role" that permits delivery of the Organization's<br>CloudTrail events to the CloudWatch Logs log group (will be "null" for all accounts except Log-Archive). |
-| <a name="output_CloudWatch_Agent_Server_Role"></a> [CloudWatch\_Agent\_Server\_Role](#output\_CloudWatch\_Agent\_Server\_Role) | The CloudWatch Role that allows EC2 CloudWatch-Agents in this<br>account to send logs and metrics to the Log-Archive account. |
-| <a name="output_CloudWatch_Agent_Server_Role_RECEIVER"></a> [CloudWatch\_Agent\_Server\_Role\_RECEIVER](#output\_CloudWatch\_Agent\_Server\_Role\_RECEIVER) | The CloudWatch Role that EC2 CloudWatch-Agents in other accounts within the same<br>AWS Organization can assume to send logs and metrics to the Log-Archive account. |
+| <a name="output_CloudWatch_Agent_CrossAccount_Policy"></a> [CloudWatch\_Agent\_CrossAccount\_Policy](#output\_CloudWatch\_Agent\_CrossAccount\_Policy) | The Policy which allows EC2 CloudWatch-Agents in this account to send logs and metrics to the Log-Archive account. |
+| <a name="output_CloudWatch_Agent_CrossAccount_Receiver_Role"></a> [CloudWatch\_Agent\_CrossAccount\_Receiver\_Role](#output\_CloudWatch\_Agent\_CrossAccount\_Receiver\_Role) | The CloudWatch Role that EC2 CloudWatch-Agents in other accounts within the same<br>AWS Organization can assume to send logs and metrics to the Log-Archive account. |
 | <a name="output_CloudWatch_CIS_Alarms_SNS_Topic"></a> [CloudWatch\_CIS\_Alarms\_SNS\_Topic](#output\_CloudWatch\_CIS\_Alarms\_SNS\_Topic) | The SNS Topic associated with the CloudWatch Metric Alarms defined in CIS Benchmarks. |
 | <a name="output_CloudWatch_CIS_Alarms_SNS_Topic_Policy"></a> [CloudWatch\_CIS\_Alarms\_SNS\_Topic\_Policy](#output\_CloudWatch\_CIS\_Alarms\_SNS\_Topic\_Policy) | The SNS Topic Policy associated with the CloudWatch Metric Alarms defined in CIS Benchmarks. |
 | <a name="output_CloudWatch_LogGroup"></a> [CloudWatch\_LogGroup](#output\_CloudWatch\_LogGroup) | The CloudWatch Logs log group resource which receives an event stream from the<br>Organization's CloudTrail (will be "null" for all accounts except Log-Archive). |
