@@ -200,19 +200,6 @@ output "AWSServiceRoleForCloudWatchCrossAccount" {
   value       = one(aws_iam_service_linked_role.AWSServiceRoleForCloudWatchCrossAccount)
 }
 
-output "CloudWatch_Agent_CrossAccount_Receiver_Role" {
-  description = <<-EOF
-  The CloudWatch Role that EC2 CloudWatch-Agents in other accounts within the same
-  AWS Organization can assume to send logs and metrics to the Log-Archive account.
-  EOF
-  value       = one(aws_iam_role.CloudWatch_Agent_CrossAccount_Receiver_Role)
-}
-
-output "CloudWatch_Agent_CrossAccount_Policy" {
-  description = "The Policy which allows EC2 CloudWatch-Agents in this account to send logs and metrics to the Log-Archive account."
-  value       = one(aws_iam_policy.CloudWatch_Agent_CrossAccount_Policy)
-}
-
 #---------------------------------------------------------------------
 ### Default VPC Component Outputs:
 

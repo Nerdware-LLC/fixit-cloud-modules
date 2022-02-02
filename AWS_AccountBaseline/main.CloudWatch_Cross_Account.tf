@@ -79,51 +79,6 @@ resource "aws_iam_service_linked_role" "AWSServiceRoleForCloudWatchCrossAccount"
 }
 
 #---------------------------------------------------------------------
-### ROLES to provide EC2 CloudWatch-Agents with Cross-Account Access
-
-resource "aws_iam_role" "CloudWatch_Agent_CrossAccount_Receiver_Role" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT == true ? 1 : 0
-
-  name                = "CloudWatch_Agent_CrossAccount_Receiver_Role"
-  description         = "Allows EC2 CloudWatch-Agents in other Org accounts to send logs and metrics to this account."
-  managed_policy_arns = ["arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
-  tags                = { Name = "CloudWatch_Agent_CrossAccount_Receiver_Role" }
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        AWS = [for account_id in local.all_account_ids : "arn:aws:iam::${account_id}:root"]
-      }
-      Action = "sts:AssumeRole"
-      Condition = {
-        StringEquals = {
-          "aws:PrincipalOrgID" = local.org_id
-        }
-      }
-    }]
-  })
-}
-
-resource "aws_iam_policy" "CloudWatch_Agent_CrossAccount_Policy" {
-  count = local.IS_LOG_ARCHIVE_ACCOUNT == false ? 1 : 0
-
-  name        = "CloudWatch_Agent_CrossAccount_Policy"
-  description = "Allows EC2 CloudWatch-Agents in this account to send logs and metrics to the Log-Archive account."
-  path        = "/"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = "sts:AssumeRole"
-      Resource = "arn:aws:iam::${local.log_archive_account_id}:role/CloudWatch_Agent_CrossAccount_Receiver_Role"
-    }]
-  })
-}
-
-#---------------------------------------------------------------------
 ### CloudWatch-CrossAccountSharing-ListAccountsRole
 
 /* This role enables the account to view a dropdown list of all sharing-accounts in
