@@ -16,19 +16,17 @@ resource "aws_iam_role" "this" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Principal = { Service = "ec2.amazonaws.com" }
-        Action    = "sts:AssumeRole"
-      }
-    ]
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "ec2.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
   })
 }
 
 resource "aws_iam_policy" "map" {
   for_each = {
-    for policy in var.iam_role.custom_iam_policies : policy.policy_name => policy
+    for policy in coalesce(var.iam_role.custom_iam_policies, []) : policy.policy_name => policy
   }
 
   name        = each.key
