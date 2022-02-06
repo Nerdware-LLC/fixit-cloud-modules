@@ -16,14 +16,14 @@ Terraform module for managing Terraform Cloud workspaces and variables.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.26.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1.4 |
+| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.28.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | ~> 0.26.0 |
+| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | ~> 0.28.1 |
 
 ## Modules
 
