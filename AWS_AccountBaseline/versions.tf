@@ -2,13 +2,13 @@
 ### Terraform Version Info
 
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "~> 1.1.4"
   experiments      = [module_variable_optional_attrs]
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.0.0"
+      version = "~> 3.74.0"
 
       /* For services that require resources to be created in multiple
       regions (AWS-Config, GuardDuty, and SecurityHub), provider aliases
