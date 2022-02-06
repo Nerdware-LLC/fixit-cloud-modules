@@ -40,8 +40,8 @@ resource "aws_iam_role_policy_attachment" "set" {
   for_each = toset(flatten([
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore", # For SSM
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",  # For CloudWatch-Agent usage
-    var.iam_role.policy_arns,                               # User-provided policy ARNs
-    values(aws_iam_policy.map)[*].arn                       # User-provided new custom policy ARNs
+    coalesce(var.iam_role.policy_arns, []),                 # User-provided policy ARNs
+    [for policy in values(aws_iam_policy.map) : policy.arn] # User-provided new custom policy ARNs
   ]))
 
   role       = aws_iam_role.this.name
