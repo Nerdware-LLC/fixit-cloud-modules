@@ -55,7 +55,7 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharingRole" {
       {
         Effect = "Allow"
         Principal = {
-          AWS = local.cloudwatch_SHARING_account_arns
+          AWS = sort(local.cloudwatch_SHARING_account_arns)
         }
         Action = "sts:AssumeRole"
         Condition = {
@@ -97,7 +97,7 @@ resource "aws_iam_role" "CloudWatch-CrossAccountSharing-ListAccountsRole" {
       {
         Effect = "Allow"
         Principal = {
-          AWS = local.cloudwatch_MONITORING_account_arns
+          AWS = sort(local.cloudwatch_MONITORING_account_arns)
         }
         Action = "sts:AssumeRole"
         Condition = {
