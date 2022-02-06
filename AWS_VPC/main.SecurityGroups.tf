@@ -51,12 +51,13 @@ locals {
   ])
 }
 
+# Note: tfsec-ignore used for "description" due to erroneous flagging (description var is required)
 resource "aws_security_group_rule" "list" {
   count = length(local.SecGroup_Rules)
 
   # REQUIRED:
   security_group_id = local.SecGroup_Rules[count.index].security_group_id
-  description       = local.SecGroup_Rules[count.index].description
+  description       = local.SecGroup_Rules[count.index].description #tfsec:ignore:aws-vpc-add-description-to-security-group
   type              = local.SecGroup_Rules[count.index].type
   protocol          = local.SecGroup_Rules[count.index].protocol
   from_port         = local.SecGroup_Rules[count.index].from_port

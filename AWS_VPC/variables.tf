@@ -221,8 +221,8 @@ variable "security_groups" {
   }))
   validation {
     condition = alltrue(flatten([
-      for sec_grp_name, sec_grp_config in var.security_groups : [
-        for access_type, rule_list in sec_grp_config.access : [
+      for sec_grp in var.security_groups : [
+        for access_type, rule_list in sec_grp.access : [
           for rule in rule_list : alltrue([
             # Ensure all rules contain "port" OR ("from_port" AND "to_port")
             anytrue([
@@ -233,8 +233,10 @@ variable "security_groups" {
             1 == length([
               for rule_key in ["peer_security_group_id", "peer_security_group", "aws_service", "cidr_blocks", "self"] : rule_key
               if alltrue([
-                can(rule[rule_key]),                                                          # check rule param existence
-                rule_key == "peer_security_group" && can(var.security_groups[rule[rule_key]]) # for peer_secgrp, ensure named SecGrp exists
+                can(rule[rule_key]),              # check rule param existence
+                rule_key == "peer_security_group" # for peer_secgrp, ensure named SecGrp exists
+                ? contains(var.security_groups[*].name, lookup(rule, rule_key, ""))
+                : true
               ])
             ])
           ])
