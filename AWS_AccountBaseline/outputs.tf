@@ -192,7 +192,7 @@ output "CloudWatch_CIS_Alarms_SNS_Topic_Policy" {
 
 output "CloudWatch-CrossAccountSharingRole" {
   description = "The CloudWatch Role that allows CloudWatch data to be shared with monitoring accounts."
-  value       = one(aws_iam_role.CloudWatch-Cross-AccountSharingRole)
+  value       = one(aws_iam_role.CloudWatch-CrossAccountSharingRole)
 }
 
 output "AWSServiceRoleForCloudWatchCrossAccount" {
