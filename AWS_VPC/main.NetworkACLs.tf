@@ -28,16 +28,8 @@ locals {
               one(local.AWS_SERVICE_CIDRs[rule.cidr_block]),
               rule.cidr_block
             )
-            from_port = coalesce(
-              rule.from_port,
-              rule.port,
-              try(local.DEFAULT_PORTS[upper(rule.default_port)], null)
-            )
-            to_port = coalesce(
-              rule.to_port,
-              rule.port,
-              try(local.DEFAULT_PORTS[upper(rule.default_port)], null)
-            )
+            from_port = coalesce(rule.from_port, rule.port)
+            to_port   = coalesce(rule.to_port, rule.port)
           }
         ]
       ])
