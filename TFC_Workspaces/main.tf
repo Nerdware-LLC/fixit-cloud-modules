@@ -14,6 +14,7 @@ resource "tfe_workspace" "map" {
   working_directory   = each.value.modules_repo_dir
   allow_destroy_plan  = each.value.is_destroyable == true
   speculative_enabled = each.value.is_speculative_plan_enabled == true
+  terraform_version   = "1.1.5"
   queue_all_runs      = false
 
   dynamic "vcs_repo" {
