@@ -14,7 +14,7 @@ variable "path" {
 
 variable "tags" {
   description = "Map of resource tags for the IAM Instance Profile."
-  type        = string
+  type        = map(string)
   default     = null
 }
 

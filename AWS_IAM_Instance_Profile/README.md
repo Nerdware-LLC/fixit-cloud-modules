@@ -36,7 +36,7 @@ No modules.
 | <a name="input_iam_role"></a> [iam\_role](#input\_iam\_role) | Config object for the Instance Profile's associated IAM Role. As a matter of<br>best practice, the "AmazonSSMManagedInstanceCore" and "CloudWatchAgentServerPolicy"<br>policies are automatically attached to the Role. Other existing IAM policies can<br>be attached via the "policy\_arns" key; alternatively, one-off policies unique to<br>this Instance Profile can be provided via the "custom\_iam\_policies" key. Either<br>way, all policies are attached via the "aws\_iam\_role\_policy\_attachment" resource. | <pre>object({<br>    name        = string<br>    description = optional(string)<br>    path        = optional(string)<br>    tags        = optional(map(string))<br>    policy_arns = optional(list(string))<br>    custom_iam_policies = optional(list(object({<br>      policy_name = string<br>      policy_json = string<br>      description = optional(string)<br>      path        = optional(string)<br>      tags        = optional(map(string))<br>    })))<br>  })</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the Instance Profile. | `string` | n/a | yes |
 | <a name="input_path"></a> [path](#input\_path) | Path to the instance profile; defaults to "/". | `string` | `"/"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Map of resource tags for the IAM Instance Profile. | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Map of resource tags for the IAM Instance Profile. | `map(string)` | `null` | no |
 
 ## Outputs
 
