@@ -36,10 +36,11 @@ variable "subnets" {
   "true", the NAT gateway and its associated elastic IP address shall be skipped.
   EOF
   type = map(object({
-    availability_zone    = string
-    egress_destination   = string
-    contains_nat_gateway = optional(bool)
-    tags                 = optional(map(string))
+    availability_zone       = string
+    egress_destination      = string
+    map_public_ip_on_launch = optional(bool)
+    contains_nat_gateway    = optional(bool)
+    tags                    = optional(map(string))
   }))
   # Ensure all "egress_destination" values are one of the allowed enum values.
   validation {

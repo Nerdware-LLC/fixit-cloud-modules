@@ -40,10 +40,11 @@ resource "aws_vpc" "this" {
 resource "aws_subnet" "map" {
   for_each = var.subnets
 
-  vpc_id            = aws_vpc.this.id
-  cidr_block        = each.key
-  availability_zone = each.value.availability_zone
-  tags              = each.value.tags
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = each.key
+  availability_zone       = each.value.availability_zone
+  map_public_ip_on_launch = coalesce(each.value.map_public_ip_on_launch, false)
+  tags                    = each.value.tags
 }
 
 ######################################################################
