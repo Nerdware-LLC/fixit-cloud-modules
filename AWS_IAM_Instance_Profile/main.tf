@@ -48,4 +48,22 @@ resource "aws_iam_role_policy_attachment" "set" {
   policy_arn = each.key
 }
 
+#---------------------------------------------------------------------
+### EC2 Key Pair (optional)
+
+resource "aws_key_pair" "this" {
+  count = var.ec2_key_pair != null ? 1 : 0
+
+  key_name   = var.ec2_key_pair.key_name
+  public_key = var.ec2_key_pair.public_key
+  tags       = var.ec2_key_pair.tags
+
+  lifecycle {
+    /* "public_key" must be ignored bc the AWS API does not include
+    the field in the response, so `terraform apply` would otherwise
+    always attempt to replace the key pair.  */
+    ignore_changes = [public_key]
+  }
+}
+
 ######################################################################

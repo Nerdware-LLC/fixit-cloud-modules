@@ -43,4 +43,22 @@ variable "iam_role" {
   })
 }
 
+#---------------------------------------------------------------------
+### EC2 Key Pair (optional)
+
+variable "ec2_key_pair" {
+  description = <<-EOF
+  Config object for an optional EC2 key_pair resource. Public keys can be created
+  from existing private keys via the following command (use your local file names):
+  `ssh-keygen -y -f ~/.ssh/my_private_key.pem > ~/.ssh/new_public_key.pub`.
+  EOF
+  type = object({
+    key_name   = string
+    public_key = string
+    tags       = optional(map(string))
+  })
+  default   = null
+  sensitive = true
+}
+
 ######################################################################
