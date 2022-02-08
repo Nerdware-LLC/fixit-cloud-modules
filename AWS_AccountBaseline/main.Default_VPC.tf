@@ -4,9 +4,9 @@
 locals {
   DEFAULT_RESOURCE_NAMES = {
     default_vpc            = "Default_VPC"
-    default_route_table    = "Default_Route_Table"
-    default_network_acl    = "Default_Network_ACL"
-    default_security_group = "Default_Security_Group"
+    default_route_table    = "Default_VPC_Route_Table"
+    default_network_acl    = "Default_VPC_Network_ACL"
+    default_security_group = "Default_VPC_Security_Group"
   }
 
   default_resource_tags = {
