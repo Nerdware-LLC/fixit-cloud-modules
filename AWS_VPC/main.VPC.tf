@@ -43,7 +43,7 @@ resource "aws_subnet" "map" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = each.key
   availability_zone       = each.value.availability_zone
-  map_public_ip_on_launch = coalesce(each.value.map_public_ip_on_launch, false)
+  map_public_ip_on_launch = each.value.map_public_ip_on_launch == true
   tags                    = each.value.tags
 }
 
