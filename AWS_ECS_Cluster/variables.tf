@@ -5,16 +5,19 @@
 
 variable "ecs_cluster" {
   description = <<-EOF
-  Config object for the ECS Cluster and its CloudWatch Logs log group. If
-  a value for "retention_in_days" is not provided, the default is 400 days.
-  ECS Exec will be enabled if "ecs_exec_kms_key_alias" is provided; to ensure
-  it's DISABLED, simply don't provide a value or set it to "null".
+  Config object for the ECS Cluster and its CloudWatch Logs log group. The
+  "should_enable_container_insights" property defaults to "true". If a
+  value for "cloudwatch_log_group.retention_in_days" is not provided, the
+  default is 400 days. ECS Exec will be enabled if "ecs_exec_kms_key_alias"
+  is provided; to ensure it's DISABLED, simply don't provide a value or set
+  it to "null".
   EOF
   type = object({
-    name                   = string
-    capacity_provider_arns = optional(list(string))
-    ecs_exec_kms_key_alias = optional(string)
-    tags                   = optional(map(string))
+    name                             = string
+    capacity_provider_arns           = optional(list(string))
+    should_enable_container_insights = optional(bool)
+    ecs_exec_kms_key_alias           = optional(string)
+    tags                             = optional(map(string))
     cloudwatch_log_group = object({
       name              = string
       kms_key_alias     = string

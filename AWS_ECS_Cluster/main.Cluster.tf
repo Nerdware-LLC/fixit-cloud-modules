@@ -15,6 +15,11 @@ resource "aws_ecs_cluster" "this" {
     weight            = 1
   }
 
+  setting {
+    name  = "containerInsights"
+    value = var.ecs_cluster.should_enable_container_insights != false ? "enabled" : "disabled"
+  }
+
   # Enable ECS Exec ONLY if a KMS Key ARN was provided (should only ever be used in non-prod envs)
   dynamic "configuration" {
     for_each = (one(data.aws_kms_alias.ECS_Exec_Key) != null
