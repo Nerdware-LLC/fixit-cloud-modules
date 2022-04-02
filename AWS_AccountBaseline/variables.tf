@@ -268,15 +268,10 @@ variable "org_kms_key" {
 
 variable "administrators" {
   description = <<-EOF
-  Map of administrator IAM User names and their respective lists of
-  IP addresses to include in IAM Policy allow-lists. These values
-  are used to harden and restrict usage of admin-related resources.
+  List of administrator IAM User names to include in IAM Policy allow-lists.
+  These values are used to harden and restrict usage of admin-related resources.
   EOF
-  type        = map(list(string))
-  validation {
-    condition     = alltrue([for ip in flatten(values(var.administrators)) : can(cidrnetmask("${ip}/32"))])
-    error_message = "All values must be a list of valid 32-bit host IP address strings."
-  }
+  type        = list(string)
 }
 
 ######################################################################
