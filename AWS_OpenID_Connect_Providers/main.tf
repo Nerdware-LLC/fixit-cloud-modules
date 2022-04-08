@@ -29,7 +29,7 @@ resource "aws_iam_role" "OIDC_IdP_Roles_map" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = {
-      Sid    = "Allow_OIDC_IdP_AssumeRole"
+      Sid    = "AllowOidcIdpAssumeRole"
       Effect = "Allow"
       Principal = {
         Federated = coalesce(
