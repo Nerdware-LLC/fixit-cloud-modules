@@ -8,10 +8,13 @@ resource "aws_iam_openid_connect_provider" "map" {
     if idp_config.iam_oidc_idp_config != null
   }
 
-  url             = each.value.iam_oidc_idp_config.url
-  client_id_list  = each.value.iam_oidc_idp_config.client_id_list
-  thumbprint_list = each.value.iam_oidc_idp_config.thumbprint_list
-  tags            = each.value.iam_oidc_idp_config.tags
+  url            = each.value.iam_oidc_idp_config.url
+  client_id_list = each.value.iam_oidc_idp_config.client_id_list
+  thumbprint_list = [
+    # AWS lowercases all letters in the tp, so we lower() them here to avoid constant-diffs problem.
+    for thumbprint in each.value.iam_oidc_idp_config.thumbprint_list : lower(thumbprint)
+  ]
+  tags = each.value.iam_oidc_idp_config.tags
 }
 
 #---------------------------------------------------------------------
