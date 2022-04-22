@@ -8,7 +8,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.74.0"
+      version = "~> 4.11.0"
 
       /* For services that require resources to be created in multiple
       regions (AWS-Config, GuardDuty, and SecurityHub), provider aliases
