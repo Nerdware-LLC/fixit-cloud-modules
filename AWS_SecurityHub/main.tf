@@ -25,7 +25,11 @@ resource "aws_securityhub_organization_configuration" "Org_Config" {
 ### SecurityHub Member Accounts
 
 resource "aws_securityhub_member" "Member_Accounts" {
-  for_each = local.IS_SECURITYHUB_ADMIN_ACCOUNT ? var.securityhub_member_accounts : {}
+  for_each = (
+    local.IS_SECURITYHUB_ADMIN_ACCOUNT
+    ? { for k, v in var.securityhub_member_accounts : k => v }
+    : {} # The line above resolves ternary-type issue re: var nullability.
+  )
 
   account_id = each.value.id
   email      = each.value.email
