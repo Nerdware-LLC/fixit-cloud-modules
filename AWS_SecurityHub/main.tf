@@ -25,11 +25,7 @@ resource "aws_securityhub_organization_configuration" "Org_Config" {
 ### SecurityHub Member Accounts
 
 resource "aws_securityhub_member" "Member_Accounts" {
-  for_each = (
-    local.IS_SECURITYHUB_ADMIN_ACCOUNT
-    ? coalesce(var.securityhub_member_accounts, {})
-    : {} # coalesce resolves ternary-type issue re: var nullability.
-  )
+  for_each = coalesce(var.securityhub_member_accounts, {})
 
   account_id = each.value.id
   email      = each.value.email

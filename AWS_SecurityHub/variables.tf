@@ -18,8 +18,8 @@ variable "securityhub_member_accounts" {
   description = <<-EOF
   List of account param objects for all accounts within the
   Organization. The Delegated Admin account needs this list to add
-  each account to the Org's SecurityHub service. Each account-param
-  object must include the account's ID and email.
+  each account to the Org's SecurityHub service - all other accounts
+  should NOT provide a value for this variable.
   EOF
 
   type = map(object({
