@@ -8,11 +8,14 @@ variable "organization_config" {
   the relevant API/CLI commands. Note that "should_enable_all_features"
   defaults to "true".
   EOF
+
   type = object({
     org_trusted_services = list(string)
     enabled_policy_types = list(string)
   })
 }
+
+#---------------------------------------------------------------------
 
 variable "organizational_units" {
   description = <<-EOF
@@ -21,10 +24,12 @@ variable "organizational_units" {
   respective value pointing to the OU's config object with params identifying
   the OU's parent entity ("root" or the name of another OU) and optional tags.
   EOF
+
   type = map(object({
     parent = string
     tags   = optional(map(string))
   }))
+
   validation {
     condition = alltrue([
       for org_unit_parent in values(var.organizational_units)[*].parent : contains(
@@ -35,6 +40,8 @@ variable "organizational_units" {
     error_message = "All \"parent\" values must either be \"root\" or the name of another organizational unit."
   }
 }
+
+#---------------------------------------------------------------------
 
 variable "member_accounts" {
   description = <<-EOF
@@ -47,6 +54,7 @@ variable "member_accounts" {
   The "should_allow_iam_user_access_to_billing" property defaults to "true",
   and "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".
   EOF
+
   type = map(object({
     parent                                  = string
     email                                   = string
@@ -54,6 +62,7 @@ variable "member_accounts" {
     org_account_access_role_name            = optional(string)
     tags                                    = optional(map(string))
   }))
+
   validation {
     condition = alltrue([
       for parent in values(var.member_accounts)[*].parent : parent != "root"
@@ -61,6 +70,8 @@ variable "member_accounts" {
     error_message = "All \"parent\" values must be the name of an organizational unit, not \"root\"."
   }
 }
+
+#---------------------------------------------------------------------
 
 variable "admin_sso_config" {
   description = <<-EOF
@@ -70,6 +81,7 @@ variable "admin_sso_config" {
   created beforehand. For an overview of the default config values, please
   refer to the README.
   EOF
+
   type = object({
     sso_group_name             = optional(string)
     permission_set_name        = optional(string)
@@ -77,7 +89,9 @@ variable "admin_sso_config" {
     permission_set_tags        = optional(map(string))
     session_duration           = optional(number)
   })
+
   default = {}
+
   validation {
     condition = anytrue([ # Either a number between 1-12, OR null.
       (
@@ -90,6 +104,8 @@ variable "admin_sso_config" {
   }
 }
 
+#---------------------------------------------------------------------
+
 variable "organization_policies" {
   description = <<-EOF
   Map policy names to organization policy config objects to provision
@@ -100,6 +116,7 @@ variable "organization_policies" {
   or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs
   for info regarding how to structure each policy type.
   EOF
+
   type = map(object({
     target      = string
     type        = string
@@ -107,7 +124,9 @@ variable "organization_policies" {
     statement   = string
     tags        = optional(map(string))
   }))
+
   default = null
+
   validation {
     condition = (
       var.organization_policies == null || alltrue([
