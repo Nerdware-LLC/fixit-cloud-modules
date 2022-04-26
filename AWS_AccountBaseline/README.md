@@ -226,43 +226,6 @@ No modules.
 | [aws_s3_bucket.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_policy.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
-| [aws_securityhub_account.ap-northeast-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ap-northeast-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ap-northeast-3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ap-south-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ap-southeast-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ap-southeast-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.ca-central-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.eu-central-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.eu-north-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.eu-west-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.eu-west-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.eu-west-3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.sa-east-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.us-east-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.us-west-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_account.us-west-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_account) | resource |
-| [aws_securityhub_finding_aggregator.All_Regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_finding_aggregator) | resource |
-| [aws_securityhub_member.Member_Accounts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_member) | resource |
-| [aws_securityhub_organization_admin_account.Org_Admin_Account](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_organization_admin_account) | resource |
-| [aws_securityhub_organization_configuration.Org_Config](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_organization_configuration) | resource |
-| [aws_securityhub_standards_subscription.ap-northeast-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ap-northeast-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ap-northeast-3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ap-south-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ap-southeast-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ap-southeast-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.ca-central-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.eu-central-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.eu-north-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.eu-west-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.eu-west-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.eu-west-3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.sa-east-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.us-east-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.us-east-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.us-west-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
-| [aws_securityhub_standards_subscription.us-west-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/securityhub_standards_subscription) | resource |
 | [aws_sns_topic.CloudWatch_CIS_Alarms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic.ap-northeast-1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic.ap-northeast-2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
@@ -302,7 +265,6 @@ No modules.
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/organizations_organization) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [aws_regions.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
 
 ## Inputs
 
@@ -359,11 +321,6 @@ No modules.
 | <a name="output_Org_Log_Archive_S3_Bucket"></a> [Org\_Log\_Archive\_S3\_Bucket](#output\_Org\_Log\_Archive\_S3\_Bucket) | The S3 bucket used to store logs from the Organization's Config and CloudTrail<br>services (will be "null" for all accounts except Log-Archive). |
 | <a name="output_Org_Services_KMS_Key"></a> [Org\_Services\_KMS\_Key](#output\_Org\_Services\_KMS\_Key) | The KMS key resource used to encrypt Log-Archive files, as well as data streams<br>related to Organization-wide services like CloudTrail and CloudWatch. |
 | <a name="output_OrganizationAccountAccessRole"></a> [OrganizationAccountAccessRole](#output\_OrganizationAccountAccessRole) | The hardened role used by Administrators to manage AWS resources in Terraform/Terragrunt configs. |
-| <a name="output_SecurityHub_Finding_Aggregator"></a> [SecurityHub\_Finding\_Aggregator](#output\_SecurityHub\_Finding\_Aggregator) | The SecurityHub Finding Aggregator resource. |
-| <a name="output_SecurityHub_Member_Account"></a> [SecurityHub\_Member\_Account](#output\_SecurityHub\_Member\_Account) | A SecurityHub Member Account resource (will be "null" for non-Security accounts). |
-| <a name="output_SecurityHub_Org_Admin_Account"></a> [SecurityHub\_Org\_Admin\_Account](#output\_SecurityHub\_Org\_Admin\_Account) | The SecurityHub Org Admin Account resource. |
-| <a name="output_SecurityHub_Org_Config"></a> [SecurityHub\_Org\_Config](#output\_SecurityHub\_Org\_Config) | The SecurityHub Organization configuration resource. |
-| <a name="output_SecurityHub_Subscriptions_BY_REGION"></a> [SecurityHub\_Subscriptions\_BY\_REGION](#output\_SecurityHub\_Subscriptions\_BY\_REGION) | A map of SecurityHub Standards subscription resources, organized by region. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ---
