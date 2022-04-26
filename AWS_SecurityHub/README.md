@@ -4,6 +4,12 @@ Terraform module for SecurityHub resource management.
 
 <h2>Table of Contents</h2>
 
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Modules](#modules)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
 - [License](#license)
 - [Contact](#contact)
 
