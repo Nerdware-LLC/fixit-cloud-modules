@@ -1,5 +1,14 @@
 ######################################################################
 ### GuardDuty
+
+/* The resources in this file are structured this way for two reasons:
+
+  1) We know ahead of time that "us-east-2" will always be the
+     default provider region within the Fixit project umbrella.
+  2) In regard to module design, we're avoiding nested modules in
+     favor of a "flat" structure which makes state references
+     easier to read, import, etc.
+*/
 #---------------------------------------------------------------------
 ### us-east-2 (HOME REGION USES IMPLICIT/DEFAULT PROVIDER)
 
