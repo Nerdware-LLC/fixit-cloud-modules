@@ -1,6 +1,17 @@
-# Fixit Cloud ☁️ MODULE: OpenID Connect Providers
+<h1>Fixit Cloud ☁️ MODULE: OpenID Connect Providers</h1>
 
 Terraform module for defining an AWS account's OpenID Connect Identity Providers.
+
+<h2>Table of Contents</h2>
+
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Modules](#modules)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [License](#license)
+- [Contact](#contact)
 
 ### Useful Links
 
@@ -53,3 +64,25 @@ No modules.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+---
+
+## License
+
+All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
+
+See [LICENSE](/LICENSE) for more information.
+
+## Contact
+
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
+[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
