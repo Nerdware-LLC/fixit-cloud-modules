@@ -4,6 +4,7 @@ Terraform module for defining a hardened VPC and related resources.
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -74,6 +75,7 @@ No modules.
 | <a name="output_Subnets"></a> [Subnets](#output\_Subnets) | Map of subnet resource objects, with CIDR blocks as keys. User-provided values<br>"egress\_destination" and "contains\_nat\_gateway" are merged into the resource objects.<br>To facilitate easier filtering of subnet outputs, the boolean "is\_public\_subnet" is<br>also added, with the value being "true" for subnets where "egress\_destination" is<br>set to "INTERNET\_GATEWAY". |
 | <a name="output_VPC"></a> [VPC](#output\_VPC) | The VPC resource object. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

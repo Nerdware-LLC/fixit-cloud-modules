@@ -38,6 +38,7 @@ Can't be deleted.
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -269,6 +270,7 @@ No modules.
 | <a name="output_Org_Services_KMS_Key"></a> [Org\_Services\_KMS\_Key](#output\_Org\_Services\_KMS\_Key) | The KMS key resource used to encrypt Log-Archive files, as well as data streams<br>related to Organization-wide services like CloudTrail and CloudWatch. |
 | <a name="output_OrganizationAccountAccessRole"></a> [OrganizationAccountAccessRole](#output\_OrganizationAccountAccessRole) | The hardened role used by Administrators to manage AWS resources in Terraform/Terragrunt configs. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

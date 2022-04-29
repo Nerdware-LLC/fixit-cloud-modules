@@ -49,6 +49,7 @@ TODO explain our sso setup
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -103,6 +104,7 @@ No modules.
 | <a name="output_Organization_Policies"></a> [Organization\_Policies](#output\_Organization\_Policies) | n/a |
 | <a name="output_Organizational_Units"></a> [Organizational\_Units](#output\_Organizational\_Units) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

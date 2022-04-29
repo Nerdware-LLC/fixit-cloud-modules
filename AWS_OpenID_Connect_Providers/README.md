@@ -10,6 +10,7 @@ Terraform module for defining an AWS account's OpenID Connect Identity Providers
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -48,6 +49,7 @@ No modules.
 | <a name="output_OpenID_Connect_Provider_Roles"></a> [OpenID\_Connect\_Provider\_Roles](#output\_OpenID\_Connect\_Provider\_Roles) | Map of OpenID Connect (OIDC) Identity Provider Role resource objects. |
 | <a name="output_OpenID_Connect_Providers"></a> [OpenID\_Connect\_Providers](#output\_OpenID\_Connect\_Providers) | Map of IAM OpenID Connect (OIDC) Identity Provider resource objects. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

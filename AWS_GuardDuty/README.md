@@ -15,6 +15,7 @@ Terraform module for managing GuardDuty resources.
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -123,6 +124,7 @@ No modules.
 | <a name="output_GuardDuty_Org_Admin_Account_BY_REGION"></a> [GuardDuty\_Org\_Admin\_Account\_BY\_REGION](#output\_GuardDuty\_Org\_Admin\_Account\_BY\_REGION) | A map of GuardDuty Delegated Admin resources, organized by region. |
 | <a name="output_GuardDuty_Org_Config_BY_REGION"></a> [GuardDuty\_Org\_Config\_BY\_REGION](#output\_GuardDuty\_Org\_Config\_BY\_REGION) | A map of GuardDuty Organization Config resources, organized by region. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

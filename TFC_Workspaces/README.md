@@ -11,6 +11,7 @@ Terraform module for managing Terraform Cloud workspaces and variables.
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -52,6 +53,7 @@ No modules.
 | <a name="output_Organization"></a> [Organization](#output\_Organization) | n/a |
 | <a name="output_Workspaces"></a> [Workspaces](#output\_Workspaces) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

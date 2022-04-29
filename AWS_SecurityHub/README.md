@@ -15,6 +15,7 @@ Terraform module for SecurityHub resource management.
 
 ---
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -111,6 +112,7 @@ No modules.
 | <a name="output_SecurityHub_Org_Config"></a> [SecurityHub\_Org\_Config](#output\_SecurityHub\_Org\_Config) | The SecurityHub Organization configuration resource. |
 | <a name="output_SecurityHub_Subscriptions_BY_REGION"></a> [SecurityHub\_Subscriptions\_BY\_REGION](#output\_SecurityHub\_Subscriptions\_BY\_REGION) | A map of SecurityHub Standards subscription resources, organized by region. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
 
 ---
 

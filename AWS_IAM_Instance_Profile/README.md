@@ -2,6 +2,7 @@
 
 Terraform module for defining an EC2 instance profile.
 
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -49,3 +50,4 @@ No modules.
 | <a name="output_IAM_Instance_Profile"></a> [IAM\_Instance\_Profile](#output\_IAM\_Instance\_Profile) | Instance Profile resource object. |
 | <a name="output_IAM_Role"></a> [IAM\_Role](#output\_IAM\_Role) | IAM Role resource object. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->

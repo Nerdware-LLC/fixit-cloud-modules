@@ -2,6 +2,9 @@
 
 Terraform module for defining an ECS Cluster with related resources.
 
+---
+
+<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -53,3 +56,4 @@ No modules.
 | <a name="output_ECS_Cluster_CloudWatch_LogGroup"></a> [ECS\_Cluster\_CloudWatch\_LogGroup](#output\_ECS\_Cluster\_CloudWatch\_LogGroup) | The CloudWatch Logs log group for the ECS Cluster. |
 | <a name="output_ECS_Service_Discovery_Namespace"></a> [ECS\_Service\_Discovery\_Namespace](#output\_ECS\_Service\_Discovery\_Namespace) | The cluster's Service Discovery Namespace resource object. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
