@@ -1,4 +1,5 @@
 ######################################################################
+### GATEWAYS
 
 locals {
   SHOULD_CREATE_INTERNET_GW = length(values(local.public_subnets)) > 0
