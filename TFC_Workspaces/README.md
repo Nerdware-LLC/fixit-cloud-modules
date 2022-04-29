@@ -1,6 +1,17 @@
-# Fixit Cloud ☁️ MODULE: TFC Workspaces
+<h1>Fixit Cloud ☁️ MODULE: TFC Workspaces</h1>
 
-Terraform module for managing Terraform Cloud workspaces and variables.
+Terraform module for managing Terraform Cloud Workspaces.
+
+<h2>Table of Contents</h2>
+
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Modules](#modules)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [License](#license)
+- [Contact](#contact)
 
 #### Docs
 
