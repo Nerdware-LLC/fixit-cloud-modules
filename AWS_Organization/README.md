@@ -1,6 +1,6 @@
-<h1>Fixit Cloud ☁️ MODULE: AWS LandingZone</h1>
+<h1>Fixit Cloud ☁️ MODULE: AWS Organization</h1>
 
-Terraform module for defining a multi-account AWS Landing Zone.
+Terraform module for defining an AWS Organization and related resources.
 
 <h2>Table of Contents</h2>
 
