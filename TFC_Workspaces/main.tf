@@ -18,10 +18,10 @@ resource "tfe_workspace" "map" {
   queue_all_runs      = false
 
   dynamic "vcs_repo" {
-    # "repo" key is arbitrary; we just want the for_each to only ever run once.
-    for_each = (each.value.is_vcs_connected == true
-      ? { repo = "Nerdware-LLC/fixit-cloud-modules" }
-      : {}
+    for_each = (
+      each.value.is_vcs_connected == true
+      ? ["Nerdware-LLC/fixit-cloud-modules"]
+      : []
     )
     content {
       identifier = vcs_repo.value
