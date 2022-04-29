@@ -1,4 +1,4 @@
-# Fixit Cloud ☁️ MODULE: AWS ECS Cluster
+<h1>Fixit Cloud ☁️ MODULE: AWS ECS Cluster</h1>
 
 Terraform module for defining an ECS Cluster with related resources.
 
@@ -57,3 +57,25 @@ No modules.
 | <a name="output_ECS_Service_Discovery_Namespace"></a> [ECS\_Service\_Discovery\_Namespace](#output\_ECS\_Service\_Discovery\_Namespace) | The cluster's Service Discovery Namespace resource object. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
+
+---
+
+## License
+
+All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
+
+See [LICENSE](/LICENSE) for more information.
+
+## Contact
+
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
+[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
