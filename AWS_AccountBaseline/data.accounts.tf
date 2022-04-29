@@ -28,12 +28,6 @@ locals {
     if lookup(account, "is_log_archive_account", false) == true
   ])
 
-  # Security (Master GuardDuty account)
-  security_account_id = one([
-    for account in values(var.accounts) : account.id
-    if lookup(account, "is_security_account", false) == true
-  ])
-
   # Create a list of all account IDs to be used in several service-linked role policies
   all_account_ids = values(var.accounts)[*].id
 
@@ -41,7 +35,6 @@ locals {
   of count-meta-args in conditionally-created resources */
   IS_ROOT_ACCOUNT        = local.caller_account_id == local.root_account_id
   IS_LOG_ARCHIVE_ACCOUNT = local.caller_account_id == local.log_archive_account_id
-  IS_SECURITY_ACCOUNT    = local.caller_account_id == local.security_account_id
 }
 
 ######################################################################

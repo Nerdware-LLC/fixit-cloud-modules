@@ -8,7 +8,6 @@ variable "accounts" {
     id                                                = string
     email                                             = string
     is_log_archive_account                            = optional(bool)
-    is_security_account                               = optional(bool)
     should_enable_cross_account_cloudwatch_sharing    = optional(bool)
     should_enable_cross_account_cloudwatch_monitoring = optional(bool)
   }))
@@ -20,15 +19,10 @@ variable "accounts" {
     ])
     error_message = "Exactly one account must be designated as the Log-Archive account."
   }
-  # Ensure there's exactly 1 account designated as the Security account:
-  validation {
-    condition = 1 == length([
-      for account in values(var.accounts) : account
-      if lookup(account, "is_security_account", false) == true
-    ])
-    error_message = "Exactly one account must be designated as the Security account."
-  }
 }
+
+# TODO rm "var.accounts[].is_log_archive_account".
+#
 
 #---------------------------------------------------------------------
 ### Account Settings Variables:
@@ -205,25 +199,6 @@ variable "default_vpc_component_tags" {
     default_route_table    = null
     default_network_acl    = null
     default_security_group = null
-  }
-}
-
-#---------------------------------------------------------------------
-### GuardDuty Variables:
-
-variable "guard_duty_detector" {
-  description = <<-EOF
-  Config object for the Organization's GuardDuty service. Allowed values
-  for "finding_publishing_frequency" are "FIFTEEN_MINUTES", "ONE_HOUR",
-  or "SIX_HOURS" (default).
-  EOF
-  type = object({
-    finding_publishing_frequency = optional(string)
-    tags                         = optional(map(string))
-  })
-  default = {
-    finding_publishing_frequency = "SIX_HOURS"
-    tags                         = null
   }
 }
 
