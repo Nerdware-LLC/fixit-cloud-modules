@@ -163,6 +163,9 @@ variable "network_acl_configs" {
     }))
     tags = optional(map(string))
   }))
+
+  default = []
+
   validation {
     condition = alltrue([
       for rule in flatten([var.network_acl_configs[*].access.ingress, var.network_acl_configs[*].access.egress]) : anytrue([
@@ -220,6 +223,9 @@ variable "security_groups" {
       })))
     })
   }))
+
+  default = []
+
   validation {
     condition = alltrue(flatten([
       for sec_grp in var.security_groups : [
