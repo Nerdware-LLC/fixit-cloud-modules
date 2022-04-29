@@ -1,6 +1,23 @@
-# Fixit Cloud ☁️ MODULE: AWS LandingZone
+<h1>Fixit Cloud ☁️ MODULE: AWS LandingZone</h1>
 
 Terraform module for defining a multi-account AWS Landing Zone.
+
+<h2>Table of Contents</h2>
+
+- [AWS Organization](#aws-organization)
+    - [Trusted AWS Service Principals](#trusted-aws-service-principals)
+    - [Policy Types](#policy-types)
+    - [Service Control Policies](#service-control-policies)
+    - [Management Policies](#management-policies)
+- [AWS SSO](#aws-sso)
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Modules](#modules)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [License](#license)
+- [Contact](#contact)
 
 ## AWS Organization
 
