@@ -8,11 +8,17 @@ config {
   module     = true
 }
 
+#---------------------------------------------------------------------
+### TFLint Plugins
+
 plugin "aws" {
   enabled = true
-  version = "0.9.0"
+  version = "0.10.0"
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
+
+#---------------------------------------------------------------------
+### TFLint Rules
 
 # Disallow legacy dot index syntax
 rule "terraform_deprecated_index" {
