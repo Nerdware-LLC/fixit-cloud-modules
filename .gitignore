@@ -36,6 +36,9 @@ terraform.rc
 # Terragrunt docs recommend adding this to gitignore
 .terragrunt-cache
 
+# tfsec cache
+**/.tfsec/cache
+
 #---------------------------------------------------------------------
 ### NERDWARE gitignore ENTRIES:
 
