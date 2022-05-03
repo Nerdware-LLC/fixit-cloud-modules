@@ -13,7 +13,7 @@ output "Workspaces" {
 
 output "Workspace_Variables" {
   description = "Map of TFC Workspace Variable resources (sensitive)."
-  value       = tfe_variables.map
+  value       = tfe_variable.map
   sensitive   = true
 }
 
