@@ -10,29 +10,28 @@ data "tfe_organization" "Nerdware" {
 resource "tfe_workspace" "map" {
   for_each = var.workspaces
 
-  organization   = data.tfe_organization.Nerdware.name
-  name           = each.key
-  description    = each.value.description
-  execution_mode = each.value.remote_execution != null ? "remote" : "local"
+  organization      = data.tfe_organization.Nerdware.name
+  name              = each.key
+  description       = each.value.description
+  execution_mode    = each.value.remote_execution != null ? "remote" : "local"
+  working_directory = each.value.working_directory
 
-  working_directory   = each.value.modules_repo_dir
-  allow_destroy_plan  = coalesce(each.value.is_destroyable, false)
-  speculative_enabled = coalesce(each.value.is_speculative_plan_enabled, false)
-  terraform_version   = "1.1.5"
-  queue_all_runs      = false
+  terraform_version   = each.value.terraform_version
+  allow_destroy_plan  = coalesce(each.value.allow_destroy_plans, false)
+  speculative_enabled = coalesce(each.value.allow_speculative_plans, false)
+  queue_all_runs      = coalesce(each.value.should_queue_all_runs, false)
 
   dynamic "vcs_repo" {
     for_each = (
-      try(each.value.remote_execution.is_vcs_connected, false)
-      ? ["Nerdware-LLC/fixit-cloud-modules"]
+      try(each.value.remote_execution.vcs_config, null) != null
+      ? [each.value.remote_execution.vcs_config]
       : []
     )
     content {
-      identifier         = vcs_repo.value
-      branch             = "main"
-      ingress_submodules = false
-      # The below variable is stored/provided by TF Cloud - do not fiddle with it.
-      oauth_token_id = var.fixit-cloud-modules-repo_github-oauth-token-id
+      identifier         = vcs_repo.value.identifier
+      oauth_token_id     = vcs_repo.value.oauth_token_id
+      branch             = coalesce(vcs_repo.value.branch, "main")
+      ingress_submodules = coalesce(vcs_repo.value.ingress_submodules, false)
     }
   }
 }

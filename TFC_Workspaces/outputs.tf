@@ -2,12 +2,14 @@
 ### OUTPUTS
 
 output "Organization" {
-  value = data.tfe_organization.Nerdware
+  description = "The TFC Organization data-block attributes."
+  value       = data.tfe_organization.Nerdware
 }
 
 output "Workspaces" {
-  value     = tfe_workspace.map
-  sensitive = true
+  description = "Map of TFC Workspace resource objects."
+  value       = tfe_workspace.map
+  sensitive   = true
 }
 
 ######################################################################
