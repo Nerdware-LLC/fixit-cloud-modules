@@ -1,4 +1,4 @@
-###################################################
+######################################################################
 ### Terraform Cloud
 
 data "tfe_organization" "Nerdware" {
@@ -12,8 +12,8 @@ resource "tfe_workspace" "map" {
   name                = each.key
   description         = each.value.description
   working_directory   = each.value.modules_repo_dir
-  allow_destroy_plan  = each.value.is_destroyable == true
-  speculative_enabled = each.value.is_speculative_plan_enabled == true
+  allow_destroy_plan  = coalesce(each.value.is_destroyable, false)
+  speculative_enabled = coalesce(each.value.is_destroyable, false)
   terraform_version   = "1.1.5"
   queue_all_runs      = false
 
@@ -30,8 +30,9 @@ resource "tfe_workspace" "map" {
       ingress_submodules = false
     }
   }
-
 }
+
+#---------------------------------------------------------------------
 
 locals {
   /* This local provides a flat list of all workspace variable configs, along
@@ -67,4 +68,4 @@ resource "tfe_variable" "map" {
   sensitive    = each.value.is_sensitive == true
 }
 
-###################################################
+######################################################################

@@ -1,16 +1,16 @@
-###################################################
+######################################################################
 ### INPUT VARIABLES
 
 variable "workspaces" {
   description = <<-EOF
-  A map of TF Cloud Workspace config objects. The "is_vcs_connected"
-  param, if "true", will connect the workspace to the fixit-cloud-modules
-  repo. Note that enabling the VCS-driven workflow will DISABLE the
-  ability to trigger runs via the CLI/API, which at this time can only be
-  reversed by manually removing the repository from the workspace via the
-  Terraform Cloud console. The "modules_repo_dir" param should be the name
-  of a dir in the Nerdware fixit-cloud-modules repository (e.g.,
-  "Terraform_Cloud"). All optional boolean values default to "false".
+  Map of TF Cloud Workspace config objects. The optional boolean properties
+  all default to false. "is_vcs_connected", if "true", will connect the
+  workspace to the fixit-cloud-modules repo. Note that enabling the VCS-driven
+  workflow will DISABLE the ability to trigger runs via the CLI/API, which at
+  this time can only be reversed by manually removing the repository from the
+  workspace via the TF Cloud console. The "modules_repo_dir" param should be
+  the name of a dir in the Nerdware fixit-cloud-modules repository (e.g.,
+  "Terraform_Cloud").
   EOF
   type = map(object({
     description                 = optional(string)
@@ -29,11 +29,12 @@ variable "workspaces" {
   }))
 }
 
+#---------------------------------------------------------------------
+
 variable "variables_for_all_workspaces" {
   description = <<-EOF
-  If some variables need to be included in ALL workspaces, you can
-  list them here just once instead of repeating them throughout the
-  "workspaces" variable.
+  Map of variable-names to objects which configure them. The vars included
+  here will be available to ALL workspaces within the organization.
   EOF
   type = list(object({
     key          = string
@@ -56,4 +57,4 @@ variable "fixit-cloud-modules-repo_github-oauth-token-id" {
   sensitive   = true
 }
 
-###################################################
+######################################################################
