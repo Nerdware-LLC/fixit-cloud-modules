@@ -60,6 +60,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_Organization"></a> [Organization](#output\_Organization) | The TFC Organization data-block attributes. |
+| <a name="output_Workspace_Variables"></a> [Workspace\_Variables](#output\_Workspace\_Variables) | Map of TFC Workspace Variable resources (sensitive). |
 | <a name="output_Workspaces"></a> [Workspaces](#output\_Workspaces) | Map of TFC Workspace resource objects. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
