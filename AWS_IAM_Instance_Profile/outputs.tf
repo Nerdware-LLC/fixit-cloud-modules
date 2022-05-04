@@ -16,10 +16,4 @@ output "Custom_IAM_Policies" {
   value       = aws_iam_policy.map
 }
 
-output "EC2_Key_Pair" {
-  description = "The EC2 Key Pair resource object."
-  value       = one(aws_key_pair.this)
-  sensitive   = true
-}
-
 ######################################################################
