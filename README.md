@@ -8,7 +8,7 @@ Terraform modules for defining Fixit Cloud architecture.
 
 ## Developer Setup
 
-TODO expand upon below instructions
+<!-- TODO replace below w something like that in FCL. Also don't forget to add 'tfsec-checkgen' and 'terraform-docs' installs (see dev-env-repo). -->
 
 1. Clone the project into your local filesystem:
    ```shell
@@ -55,7 +55,3 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.Anderson
 [pets-meme]: https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/
 [linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
-
-```
-
-```
