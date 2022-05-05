@@ -45,11 +45,6 @@ rule "terraform_required_version" {
   enabled = true
 }
 
-# Require TF standard module structure
-rule "terraform_standard_module_structure" {
-  enabled = true
-}
-
 # Require that all providers have version constraints
 rule "terraform_required_providers" {
   enabled = true
