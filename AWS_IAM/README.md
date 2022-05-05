@@ -1,6 +1,6 @@
-<h1>Fixit Cloud ☁️ MODULE: AWS IAM Instance Profile</h2>
+<h1>Fixit Cloud ☁️ MODULE: AWS IAM</h2>
 
-Terraform module for defining an EC2 Instance Profile.
+Terraform module for defining IAM resources.
 
 <h2>Table of Contents</h2>
 
