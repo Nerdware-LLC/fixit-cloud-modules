@@ -26,19 +26,14 @@ variable "bucket_tags" {
 
 variable "bucket_policy" {
   description = <<-EOF
-  The IAM bucket policy of the S3 bucket. If not provided, a bucket policy
-  will be created which enforces the use of SSE-related headers for all
-  PutObject operations. If provided, the value must be a JSON-encoded string
-  which can be properly converted into a valid bucket policy upon being passed
-  into the "jsondecode" Terraform function. The aforementioned SSE-related
-  headers will be merged into the resulting policy object.
+  A JSON-encoded string which can be properly decoded into a valid IAM
+  bucket policy for the bucket.
   EOF
 
-  type    = string
-  default = null
+  type = string
 
   validation {
-    condition     = var.bucket_policy == null || can(jsondecode(var.bucket_policy))
+    condition     = can(jsondecode(var.bucket_policy))
     error_message = "\"bucket_policy\" value must be a valid JSON-encoded string."
   }
 }

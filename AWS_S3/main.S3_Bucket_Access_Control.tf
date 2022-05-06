@@ -14,13 +14,6 @@ resource "aws_s3_bucket_ownership_controls" "this" {
 #---------------------------------------------------------------------
 ### S3 Bucket Policy
 
-/* TODO merge into bucket policy:
-
-  - If using SSE-KMS, bucket_key will be enabled, so
-  - Other SSE conditions?
-  - StringNotEqualsIfExists "s3:x-amz-acl": "bucket-owner-full-control"
-*/
-
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
 
