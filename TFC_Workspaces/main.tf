@@ -13,6 +13,7 @@ resource "tfe_workspace" "map" {
   organization      = data.tfe_organization.Nerdware.name
   name              = each.key
   description       = each.value.description
+  tag_names         = each.value.tag_names
   execution_mode    = each.value.remote_execution != null ? "remote" : "local"
   working_directory = each.value.working_directory
 

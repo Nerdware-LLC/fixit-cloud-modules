@@ -20,6 +20,7 @@ variable "workspaces" {
 
   type = map(object({
     description             = optional(string)
+    tag_names               = optional(list(string))
     working_directory       = optional(string)
     terraform_version       = optional(string)
     allow_destroy_plans     = optional(bool)
