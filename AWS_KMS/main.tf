@@ -2,15 +2,11 @@
 ### AWS KMS
 
 resource "aws_kms_key" "this" {
-  description = var.key_description
-  policy      = var.key_policy
-
-  # TODO add remaining resource args
-
+  description         = var.key_description
+  policy              = var.key_policy
   multi_region        = var.is_multi_region_key
   enable_key_rotation = var.should_enable_key_rotation
-
-  tags = var.key_tags
+  tags                = var.key_tags
 }
 
 #---------------------------------------------------------------------
