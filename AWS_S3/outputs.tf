@@ -45,7 +45,7 @@ output "S3_Bucket_Logging_Config" {
 
 output "S3_Bucket_Transfer_Acceleration_Config" {
   description = "The S3 bucket transfer acceleration config resource."
-  value       = one(aws_s3_bucket_transfer_acceleration_configuration.list)
+  value       = one(aws_s3_bucket_accelerate_configuration.list)
 }
 
 #---------------------------------------------------------------------

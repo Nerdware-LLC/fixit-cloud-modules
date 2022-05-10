@@ -320,9 +320,9 @@ variable "web_host_config" {
         # Either "routing" OR "redirect_all_requests_to", but not both.
         1 == length(keys(var.web_host_config)),
         # redirect_rules --> OK if null, else alltrue conditions.
-        var.web_host_config.redirect_rules == null || alltrue(flatten([
+        var.web_host_config.routing.redirect_rules == null || alltrue(flatten([
           # Note: a splat won't work here, bc the parent obj may not exist.
-          for rule_obj in values(var.web_host_config.redirect_rules) : (
+          for rule_obj in values(var.web_host_config.routing.redirect_rules) : (
             # replace --> OK if null, else either "key_with" OR "key_prefix_with" but not both.
             rule_obj.replace == null || 1 == length(keys(rule_obj.replace))
           )
