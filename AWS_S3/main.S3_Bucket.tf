@@ -41,8 +41,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   rule {
     bucket_key_enabled = lookup(var.sse_kms_config, "should_enable_bucket_key", false)
 
+    # If user provided a KMS key, use SSE-KMS, else SSE-S3.
     apply_server_side_encryption_by_default {
-      # If user provided a KMS key, use SSE-KMS, else SSE-S3.
       sse_algorithm     = var.sse_kms_config != null ? "aws:kms" : "AES256"
       kms_master_key_id = lookup(var.sse_kms_config, "key_arn", null)
     }
