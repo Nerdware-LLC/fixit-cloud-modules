@@ -1,18 +1,14 @@
 ######################################################################
 ### S3 Bucket
 
+/* tfsec rule ignored bc access logging is handled via the
+aws_s3_bucket_logging resource, which tfsec is not recognizing. */
+
+# tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "this" {
   bucket              = var.bucket_name
   object_lock_enabled = true # no reason to not have this enabled
   tags                = var.bucket_tags
-
-  logging {
-    target_bucket = var.access_logs_config.bucket_name
-    target_prefix = coalesce(
-      var.access_logs_config.access_logs_prefix,
-      var.bucket_name
-    )
-  }
 }
 
 #---------------------------------------------------------------------
@@ -35,6 +31,7 @@ resource "aws_s3_bucket_versioning" "this" {
 #---------------------------------------------------------------------
 ### S3 Bucket Server Side Encryption
 
+# tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   bucket = aws_s3_bucket.this.id
 
@@ -69,20 +66,20 @@ resource "aws_s3_bucket_object_lock_configuration" "list" {
 #---------------------------------------------------------------------
 ### S3 Bucket Access Logging
 
-# resource "aws_s3_bucket_logging" "list" {
-#   count = var.access_logs_config != null ? 1 : 0
-#   /* access_logs_config will be null only if "aws_s3_bucket.this" will
-#   itself be an access-logs bucket that will receive access logs from
-#   other buckets. */
+resource "aws_s3_bucket_logging" "list" {
+  count = var.access_logs_config != null ? 1 : 0
+  /* access_logs_config will be null only if "aws_s3_bucket.this" will
+  itself be an access-logs bucket that will receive access logs from
+  other buckets. */
 
-#   bucket = aws_s3_bucket.this.id
+  bucket = aws_s3_bucket.this.id
 
-#   target_bucket = var.access_logs_config.bucket_name
-#   target_prefix = coalesce(
-#     var.access_logs_config.access_logs_prefix,
-#     var.bucket_name
-#   )
-# }
+  target_bucket = var.access_logs_config.bucket_name
+  target_prefix = coalesce(
+    var.access_logs_config.access_logs_prefix,
+    var.bucket_name
+  )
+}
 
 #---------------------------------------------------------------------
 ### S3 Bucket - Transfer Acceleration
