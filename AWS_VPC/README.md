@@ -4,6 +4,12 @@ Terraform module for defining a hardened VPC and related resources.
 
 <h2>Table of Contents</h2>
 
+- [Default VPC Resources](#default-vpc-resources)
+- [Subnet-Type Network ACLs](#subnet-type-network-acls)
+    - [Default Rules: Public_Subnets_NACL](#default-rules-public_subnets_nacl)
+    - [Default Rules: Private_Subnets_NACL](#default-rules-private_subnets_nacl)
+    - [Default Rules: IntraOnly_Subnets_NACL](#default-rules-intraonly_subnets_nacl)
+- [CIDR Blocks: AWS Services](#cidr-blocks-aws-services)
 - [Requirements](#requirements)
 - [Providers](#providers)
 - [Modules](#modules)
@@ -12,6 +18,121 @@ Terraform module for defining a hardened VPC and related resources.
 - [Outputs](#outputs)
 - [License](#license)
 - [Contact](#contact)
+
+## Default VPC Resources
+
+In accordance with network security best practices, this module brings each VPC's default resources (listed below) under management, and locks them down by implementing configurations that deny all traffic which may otherwise be **_implicitly_** allowed. This behavior cannot be overridden, as it ensures that the only network traffic throughout the VPC is that which has been **_explicitly_** allowed.
+
+**🔒 Locked-Down Resources:**
+
+- Default Route Table
+- Default Network ACL
+- Default Security Group
+
+<!-- TODO add section on SubnetTypes, Subnet-Type Route Tables -->
+
+## Subnet-Type Network ACLs
+
+By default, this module creates a network ACL for each subnet type included in `var.subnets`. These NACLs are named [Public_Subnets_NACL](#default-rules-public_subnets_nacl), [Private_Subnets_NACL](#default-rules-private_subnets_nacl), and [IntraOnly_Subnets_NACL](#default-rules-intra_only_subnets_nacl). The default rules for each NACL are provided in the tables below.
+
+To customize any of these module-provided NACLs, simply use their name as a key in `var.network_acls`, and either add your own rules, or override an existing rule using its ingress/egress rule number as a key.
+
+#### Default Rules: Public_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :------------------ |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP from anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS from anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+#### Default Rules: Private_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+#### Default Rules: IntraOnly_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | - | - | - | - | - | **Ingress not permitted** |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | - | - | - | - | - | **Egress not permitted** |
+
+## CIDR Blocks: AWS Services
+
+For both Security Group and Network ACL rule config objects, if the CIDR target is one of the supported AWS Services listed in the table below, you can provide the service's enum value to the rule's relevant property: `aws_service` for Security Group rules, and `cidr_block` for Network ACL rules. When provided, this module will perform the CIDR lookup for you using the region of the calling AWS Provider. CloudFront also offers "global" CIDRs, which can be obtained via the **cloudfront_global** enum value.
+
+Most of the services supported by the underlying data source return multiple CIDR block values, which is fine for Security Group rules which accept multiple CIDRs without issue, but this is problematic for NACL rules since we can only provide a single CIDR for any given NACL rule's CIDR parameter. Therefore, the list of supported services for Network ACL rules is restricted at this time to only those which return a single value.
+
+**Supported Services:**
+
+| Service              | Service Enum         | Supported for Security Group Rules | Supported for NACL Rules |
+| :------------------- | :------------------- | :--------------------------------: | :----------------------: |
+| Amazon (amazon.com)  | amazon               |                 ✔️                 |            ❌            |
+| Amazon Connect       | amazon_connect       |                 ✔️                 |            ❌            |
+| API Gateway          | api_gateway          |                 ✔️                 |            ❌            |
+| Cloud9               | cloud9               |                 ✔️                 |            ❌            |
+| CloudFront           | cloudfront           |                 ✔️                 |            ❌            |
+| CloudFront (global)  | cloudfront_global    |                 ✔️                 |            ❌            |
+| CodeBuild            | codebuild            |                 ✔️                 |            ❌            |
+| EC2                  | ec2                  |                 ✔️                 |            ❌            |
+| EC2 Instance Connect | ec2_instance_connect |                 ✔️                 |            ✔️            |
+| DynamoDB             | dynamodb             |                 ✔️                 |            ❌            |
+| GlobalAccelerator    | globalaccelerator    |                 ✔️                 |            ✔️            |
+| Route53              | route53              |                 ✔️                 |            ❌            |
+| Route53 HealthChecks | route53_healthchecks |                 ✔️                 |            ❌            |
+| S3                   | s3                   |                 ✔️                 |            ❌            |
+| Workspaces Gateways  | workspaces_gateways  |                 ✔️                 |            ❌            |
+
+<!-- FIXME these return ZERO in us-east-2: route53, route53_healthchecks, workspaces_gateways -->
+
+<br/>
+
+<details>
+  <summary><b>Note: Network ACL Unsupported Services</b></summary>
+
+<br/>
+<p>
+To address the NACL CIDR param issues, the following approaches are under consideration:
+</p>
+
+<ul>
+  <li>When multiple CIDRs are returned,
+    <ul>
+      <li>The module could create an allow rule for each CIDR. <br/> &nbsp; &nbsp; &nbsp; &nbsp;<i>Easiest to implement, but implicit rule decision-making = less caller control.</i></li>
+      <li>Or rules could be created for just a subset of the CIDRs. <br/> &nbsp; &nbsp; &nbsp; &nbsp;<i>How should caller determine the subset?</i></li>
+      <li>Or a rule could be created for just one CIDR. <br/> &nbsp; &nbsp; &nbsp; &nbsp;<i>How should caller determine which one?</i></li>
+    </ul>W
+  </li>
+  <br />
+  <li>When zero CIDRs are returned,
+    <ul>
+      <li>We could allow the data block to cause the plan/apply operation to error out. <br/> &nbsp; &nbsp; &nbsp; &nbsp;<i>More errors, never ideal.</i></li>
+      <li>Or the NACL rule could be skipped. <br/> &nbsp; &nbsp; &nbsp; &nbsp;<i>Fewer errors, but again, implicit rule decision-making = less caller control.</i></li>
+    </ul>
+  </li>
+</ul>
 
 ---
 
