@@ -42,8 +42,7 @@ repos:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
           - --hook-config=--create-file-if-not-exist=true
-          - --args=--formatter="md doc"
-          - --args=--indent=3
+          - --args=--config=.terraform_docs/config.yml
 
   - repo: local
     hooks:
