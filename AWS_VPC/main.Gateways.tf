@@ -1,44 +1,42 @@
 ######################################################################
 ### GATEWAYS
+######################################################################
+### Internet Gateway
 
-locals {
-  SHOULD_CREATE_INTERNET_GW = length(values(local.public_subnets)) > 0
-  SHOULD_CREATE_NAT_GW      = length(values(local.private_subnets)) > 0
-}
-
-#---------------------------------------------------------------------
-### INTERNET GATEWAY
-
-resource "aws_internet_gateway" "this" {
-  count = local.SHOULD_CREATE_INTERNET_GW ? 1 : 0
+resource "aws_internet_gateway" "list" {
+  count = can(local.subnets_by_type.PUBLIC) ? 1 : 0
 
   vpc_id = aws_vpc.this.id
-  tags   = var.gateway_tags.internet_gateway
+  tags   = var.internet_gateway_tags
 }
 
 #---------------------------------------------------------------------
-### NAT GATEWAY
+### NAT Gateways
 
-resource "aws_nat_gateway" "this" {
-  count = local.SHOULD_CREATE_NAT_GW ? 1 : 0
-
-  allocation_id = one(aws_eip.NAT_GW_EIP).allocation_id
-  subnet_id = one([
-    for cidr, subnet in aws_subnet.map : subnet.id
-    if var.subnets[cidr].contains_nat_gateway == true
-  ])
-  tags = var.gateway_tags.nat_gateway
-
-  depends_on = [aws_internet_gateway.this]
+locals {
+  public_subnets_with_nat_gw = {
+    for cidr, subnet in lookup(local.subnets_by_type, "PUBLIC", {}) : cidr => subnet
+    if subnet.contains_nat_gateway == true
+  }
 }
 
-resource "aws_eip" "NAT_GW_EIP" {
-  count = local.SHOULD_CREATE_NAT_GW ? 1 : 0
+resource "aws_nat_gateway" "map" {
+  for_each = local.public_subnets_with_nat_gw # keys --> public subnet CIDRs
+
+  allocation_id = aws_eip.nat_gw_elastic_ips[each.key].allocation_id
+  subnet_id     = each.value.id
+  tags          = lookup(var.nat_gateway_tags, each.value.cidr, null)
+
+  depends_on = [aws_internet_gateway.list]
+}
+
+resource "aws_eip" "nat_gw_elastic_ips" {
+  for_each = local.public_subnets_with_nat_gw # keys --> public subnet CIDRs
 
   vpc  = true
-  tags = var.gateway_tags.nat_gateway_elastic_ip
+  tags = lookup(var.nat_gateway_elastic_ip_tags, each.value.cidr, null)
 
-  depends_on = [aws_internet_gateway.this]
+  depends_on = [aws_internet_gateway.list]
 }
 
 ######################################################################

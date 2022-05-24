@@ -1,86 +1,117 @@
 ######################################################################
 ### OUTPUTS
-#---------------------------------------------------------------------
-### VPC + Subnets
+######################################################################
+### VPC
 
 output "VPC" {
   description = "The VPC resource object."
   value       = aws_vpc.this
 }
 
+#---------------------------------------------------------------------
+### Subnets
+
 output "Subnets" {
-  description = <<-EOF
-  Map of subnet resource objects, with CIDR blocks as keys. User-provided values
-  "egress_destination" and "contains_nat_gateway" are merged into the resource objects.
-  To facilitate easier filtering of subnet outputs, the boolean "is_public_subnet" is
-  also added, with the value being "true" for subnets where "egress_destination" is
-  set to "INTERNET_GATEWAY".
-  EOF
-  value = {
-    for cidr, subnet in aws_subnet.map : cidr => merge(
-      var.subnets[cidr],
-      subnet,
-      {
-        is_public_subnet = var.subnets[cidr].egress_destination == "INTERNET_GATEWAY"
-      }
-    )
-  }
+  description = "Map of subnet resource objects."
+  value       = aws_subnet.map
+}
+
+#---------------------------------------------------------------------
+### VPC Peering Connections
+
+output "VPC_Peering_Connection_Requests" {
+  description = "Map of VPC Peering Connection resource objects."
+  value = (
+    length(keys(aws_vpc_peering_connection.map)) > 0
+    ? aws_vpc_peering_connection.map
+    : null
+  )
+}
+
+output "VPC_Peering_Connections_Accepts" {
+  description = "Map of VPC Peering Connection Accepter resource objects."
+  value = (
+    length(keys(aws_vpc_peering_connection_accepter.map)) > 0
+    ? aws_vpc_peering_connection_accepter.map
+    : null
+  )
+}
+
+output "VPC_Peering_Connections_Options" {
+  description = "Map of VPC Peering Connection Options resource objects."
+  value = (
+    length(keys(aws_vpc_peering_connection_options.map)) > 0
+    ? aws_vpc_peering_connection_options.map
+    : null
+  )
 }
 
 #---------------------------------------------------------------------
 ### Gateways
 
-output "Internet_GW" {
+output "Internet_Gateway" {
   description = "The internet gateway resource object."
-  value       = one(aws_nat_gateway.this)
+  value       = one(aws_internet_gateway.list)
 }
 
-output "NAT_GW" {
-  description = "The NAT gateway resource object."
-  value       = one(aws_nat_gateway.this)
+output "NAT_Gateways" {
+  description = "Map of NAT gateway resource objects."
+  value = (
+    length(keys(aws_nat_gateway.map)) > 0
+    ? aws_nat_gateway.map
+    : null
+  )
 }
 
-output "NAT_GW_EIP" {
-  description = "The NAT gateway's elastic IP address resource object."
-  value       = one(aws_eip.NAT_GW_EIP)
+output "NAT_Gateway_Elastic_IPs" {
+  description = "Map of NAT gateway elastic IP address resource objects."
+  value = (
+    length(keys(aws_eip.nat_gw_elastic_ips)) > 0
+    ? aws_eip.nat_gw_elastic_ips
+    : null
+  )
 }
 
 #---------------------------------------------------------------------
 ### Route Tables
 
-output "RouteTables" {
-  description = "Map of route table resource objects, with \"egress_destination\" values as keys."
-  value       = aws_route_table.map
+output "Public_Subnet_RouteTables" {
+  description = "Map of PUBLIC subnet route table resource objects."
+  value = (
+    length(keys(aws_route_table.Public_Subnet_RouteTables)) > 0
+    ? aws_route_table.Public_Subnet_RouteTables
+    : null
+  )
+}
+
+output "Private_Subnet_RouteTables" {
+  description = "Map of PRIVATE subnet route table resource objects."
+  value = (
+    length(keys(aws_route_table.Private_Subnet_RouteTables)) > 0
+    ? aws_route_table.Private_Subnet_RouteTables
+    : null
+  )
+}
+
+output "IntraOnly_Subnet_RouteTables" {
+  description = "Map of INTRA-ONLY subnet route table resource objects."
+  value       = one(aws_route_table.IntraOnly_Subnets_RouteTable)
 }
 
 #---------------------------------------------------------------------
 ### Network ACL Outputs
 
 output "Network_ACLs" {
-  description = "A list of network ACL resource objects with their respective RULES merged in."
-  value = [
-    for nacl in aws_network_acl.list : merge(nacl, {
-      RULES = [
-        for nacl_rule in aws_network_acl_rule.nacl_rules : nacl_rule
-        if nacl_rule.network_acl_id == nacl.id
-      ]
-    })
-  ]
+  description = "Map of network ACL resource objects."
+  value       = aws_network_acl.map
 }
 
 #---------------------------------------------------------------------
 ### Security Group Outputs
 
 output "Security_Groups" {
-  description = "A map of security group resource objects with their respective RULES merged in."
-  value = {
-    for sec_grp_name, sec_grp in aws_security_group.map : sec_grp_name => merge(sec_grp, {
-      RULES = [
-        for sec_grp_rule in aws_security_group_rule.list : sec_grp_rule
-        if sec_grp_rule.security_group_id == sec_grp.id
-      ]
-    })
-  }
+  description = "Map of security group resource objects."
+  value       = aws_security_group.map
 }
 
 #---------------------------------------------------------------------

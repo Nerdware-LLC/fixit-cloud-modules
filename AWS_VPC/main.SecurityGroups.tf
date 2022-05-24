@@ -2,9 +2,7 @@
 ### SECURITY GROUPS
 
 resource "aws_security_group" "map" {
-  for_each = {
-    for sec_grp in var.security_groups : sec_grp.name => sec_grp
-  }
+  for_each = var.security_groups
 
   vpc_id      = aws_vpc.this.id
   name        = each.key
@@ -21,16 +19,16 @@ resource "aws_security_group" "map" {
     • field added => 'protocol' IF not provided
     • fields 'from_port' and 'to_port' are added if alt field 'port' was provided
     • field 'peer_security_group_id' is added if alt field 'peer_security_group' was provided
-    • of fields (peer_security_group_id, peer_security_group, cidr_blocks, self), only 1 should have a value, the other 2 = null
+    • of fields (peer_security_group_id, peer_security_group, cidr_blocks, self), only 1 should have a value, the others = null
 */
 
 locals {
   SecGroup_Rules = flatten([
-    for sec_grp in var.security_groups : [
-      for access_type, rules_list in sec_grp.access : [
+    for sg_name, sg_config in var.security_groups : [
+      for access_type, rules_list in sg_config.access : [
         for rule in rules_list : {
           # security_group_id = ID of the sec group to which the rule belongs
-          security_group_id = aws_security_group.map[sec_grp.name].id
+          security_group_id = aws_security_group.map[sg_name].id
           description       = rule.description
           type              = access_type
           protocol          = coalesce(rule.protocol, "tcp")
@@ -41,7 +39,7 @@ locals {
             rule.peer_security_group_id # optional, may be null
           )
           cidr_blocks = try(
-            local.AWS_SERVICE_CIDRs[rule.aws_service],
+            local.AWS_SERVICE_CIDRS[rule.aws_service],
             rule.cidr_blocks # optional, may be null
           )
           self = rule.self # optional, may be null

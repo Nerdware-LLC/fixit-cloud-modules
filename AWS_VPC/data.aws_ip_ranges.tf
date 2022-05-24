@@ -1,49 +1,41 @@
 ######################################################################
 ### AWS Service IP Ranges
 
-data "aws_ip_ranges" "ec2_instance_connect" {
-  regions  = [data.aws_region.current.name]
-  services = ["ec2_instance_connect"]
-}
+# For more info, see the README section "CIDR Blocks: AWS Services"
 
-data "aws_ip_ranges" "cloudfront" {
-  regions  = ["global"] # cloudfront is the only service that accepts this "global" param
-  services = ["cloudfront"]
+data "aws_ip_ranges" "map" {
+  for_each = toset([
+    "amazon",               # Amazon (amazon.com)
+    "amazon_connect",       # Amazon Connect
+    "api_gateway",          # API Gateway
+    "cloud9",               # Cloud9
+    "cloudfront",           # CloudFront
+    "cloudfront_global",    # CloudFront (global)
+    "codebuild",            # CodeBuild
+    "ec2",                  # EC2
+    "ec2_instance_connect", # EC2 Instance Connect
+    "dynamodb",             # DynamoDB
+    "globalaccelerator",    # GlobalAccelerator
+    "route53",              # Route53
+    "route53_healthchecks", # Route53 HealthChecks
+    "s3",                   # S3
+    "workspaces_gateways"   # Workspaces Gateways
+  ])
+
+  # Check for "cloudfront_global" enum; if anything else, use provider region.
+  regions  = [length(regexall("_global$", each.key)) > 0 ? "global" : data.aws_region.current.name]
+  services = [each.key]
 }
 
 locals {
-  AWS_SERVICE_CIDRs = {
-    EC2_INSTANCE_CONNECT = data.aws_ip_ranges.ec2_instance_connect.cidr_blocks
-    CLOUDFRONT           = data.aws_ip_ranges.cloudfront.cidr_blocks
+
+  # The only 2 supported for NACLs: ec2_instance_connect, globalaccelerator
+  # The rest all return zero or multiple CIDRs.
+
+  AWS_SERVICE_CIDRS = {
+    for service_enum, ip_ranges in data.aws_ip_ranges.map : service_enum => ip_ranges.cidr_blocks
   }
-  /* So far, every region+service filter combination we've implemented returns
-  just one CIDR string in a list. Therefore, we COULD use the one() fn here to
-  extract the CIDR strings from their respective lists, however, a future filter
-  combination may return MULTIPLE CIDRs, so we will have this local keep the CIDRs
-  in their lists to ensure the usage remains consistent over time.  */
+
 }
-
-/* NOTE: data.aws_ip_ranges
-If the combination of region+service filters don't return ANY CIDR blocks, TF will error out.
-
-DOCS: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ip_ranges
-
-Complete List of Allowed Values for "services" Params:
-
-amazon (for amazon.com)
-amazon_connect
-api_gateway
-cloud9
-cloudfront
-codebuild
-dynamodb
-ec2
-ec2_instance_connect
-globalaccelerator
-route53
-route53_healthchecks
-s3
-workspaces_gateways
-*/
 
 ######################################################################
