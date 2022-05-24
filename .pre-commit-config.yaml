@@ -42,6 +42,8 @@ repos:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
           - --hook-config=--create-file-if-not-exist=true
+          - --args=--formatter="markdown document"
+          - --args=--indent=3
 
   - repo: local
     hooks:
