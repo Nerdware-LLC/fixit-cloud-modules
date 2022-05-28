@@ -22,25 +22,25 @@ output "Subnets" {
 output "VPC_Peering_Connection_Requests" {
   description = "Map of VPC Peering Connection resource objects."
   value = (
-    length(keys(aws_vpc_peering_connection.map)) > 0
+    aws_vpc_peering_connection.map != {}
     ? aws_vpc_peering_connection.map
     : null
   )
 }
 
-output "VPC_Peering_Connections_Accepts" {
+output "VPC_Peering_Connection_Accepts" {
   description = "Map of VPC Peering Connection Accepter resource objects."
   value = (
-    length(keys(aws_vpc_peering_connection_accepter.map)) > 0
+    aws_vpc_peering_connection_accepter.map != {}
     ? aws_vpc_peering_connection_accepter.map
     : null
   )
 }
 
-output "VPC_Peering_Connections_Options" {
+output "VPC_Peering_Connection_Options" {
   description = "Map of VPC Peering Connection Options resource objects."
   value = (
-    length(keys(aws_vpc_peering_connection_options.map)) > 0
+    aws_vpc_peering_connection_options.map != {}
     ? aws_vpc_peering_connection_options.map
     : null
   )
@@ -56,17 +56,13 @@ output "Internet_Gateway" {
 
 output "NAT_Gateways" {
   description = "Map of NAT gateway resource objects."
-  value = (
-    length(keys(aws_nat_gateway.map)) > 0
-    ? aws_nat_gateway.map
-    : null
-  )
+  value       = aws_nat_gateway.map != {} ? aws_nat_gateway.map : null
 }
 
 output "NAT_Gateway_Elastic_IPs" {
   description = "Map of NAT gateway elastic IP address resource objects."
   value = (
-    length(keys(aws_eip.nat_gw_elastic_ips)) > 0
+    aws_eip.nat_gw_elastic_ips != {}
     ? aws_eip.nat_gw_elastic_ips
     : null
   )
@@ -75,27 +71,9 @@ output "NAT_Gateway_Elastic_IPs" {
 #---------------------------------------------------------------------
 ### Route Tables
 
-output "Public_Subnet_RouteTables" {
-  description = "Map of PUBLIC subnet route table resource objects."
-  value = (
-    length(keys(aws_route_table.Public_Subnet_RouteTables)) > 0
-    ? aws_route_table.Public_Subnet_RouteTables
-    : null
-  )
-}
-
-output "Private_Subnet_RouteTables" {
-  description = "Map of PRIVATE subnet route table resource objects."
-  value = (
-    length(keys(aws_route_table.Private_Subnet_RouteTables)) > 0
-    ? aws_route_table.Private_Subnet_RouteTables
-    : null
-  )
-}
-
-output "IntraOnly_Subnet_RouteTables" {
-  description = "Map of INTRA-ONLY subnet route table resource objects."
-  value       = one(aws_route_table.IntraOnly_Subnets_RouteTable)
+output "RouteTables" {
+  description = "Map of route table resource objects."
+  value       = aws_route_table.map != {} ? aws_route_table.map : null
 }
 
 #---------------------------------------------------------------------

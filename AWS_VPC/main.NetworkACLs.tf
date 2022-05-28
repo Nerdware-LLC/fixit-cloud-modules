@@ -2,46 +2,82 @@
 ### NETWORK ACLs
 
 locals {
-  # Deep-merge any user-provided override values for subnet-type NACL configs.
-  subnetType_nacls_with_user_overrides = {
-    for nacl_name, nacl in local.SUBNET_TYPE_DEFAULT_NACLS : nacl_name => {
+
+  # Subnet-Type NACLs ------------------------------------------------
+
+  # Map of subnet types to names of module-provided Subnet-Type NACLs
+  SUBNET_TYPE_NACLS_MAP = {
+    PUBLIC     = "Public_Subnets_NACL"
+    PRIVATE    = "Private_Subnets_NACL"
+    INTRA-ONLY = "IntraOnly_Subnets_NACL"
+  }
+
+  # Subnet-Type NACL Configs
+  SUBNET_TYPE_NACLS = {
+    Public_Subnets_NACL = {
       access = {
-        for access_type, access_rules in nacl.access : access_type => merge(
-          access_rules,
-          try(var.network_acls[nacl_name].access[access_type], {})
-        )
+        ingress = local.COMMON_NACL_RULES # http, https, ephemeral
+        egress  = local.COMMON_NACL_RULES # http, https, ephemeral
       }
-      tags = merge(
-        { Name = nacl_name },
-        try(var.network_acls[nacl_name].tags, {})
-      )
+      tags = { Name = "Public_Subnets_NACL" }
+    }
+    Private_Subnets_NACL = {
+      access = {
+        ingress = { "500" = local.COMMON_NACL_RULES["500"] } # ephemeral
+        egress  = local.COMMON_NACL_RULES                    # http, https, ephemeral
+      }
+      tags = { Name = "Private_Subnets_NACL" }
+    }
+    IntraOnly_Subnets_NACL = {
+      access = {
+        ingress = {} # none
+        egress  = {} # none
+      }
+      tags = { Name = "IntraOnly_Subnets_NACL" }
     }
   }
 
+  # User NACLs -------------------------------------------------------
+
   /* Map NACL names to a list of subnet IDs to associate with each respective NACL.
-  Note that this object will not include names of subnet-type NACLs for types which
+  Note that this object will not include names of Subnet-Type NACLs for types which
   aren't implemented by user. Likewise, if user accidentally included an NACL config
-  in var.network_acls, and the name of that NACL is not used for any subnet's
+  in var.network_acls, and the name of that NACL is not used in any subnet's
   "custom_network_acl" arg, that NACL will also not be created.  */
   nacl_subnet_ids = {
     for cidr, subnet in local.subnet_resources : coalesce(
       subnet.custom_network_acl,
-      local.SUBNET_TYPE_NACL_NAMES[subnet.type]
+      local.SUBNET_TYPE_NACLS_MAP[subnet.type]
     ) => subnet.id...
+  }
+
+  # Map each NACL name to its respective config
+  nacl_configs = {
+    for nacl_name, nacl_subnet_ids in local.nacl_subnet_ids : nacl_name => merge(
+      { subnet_ids = nacl_subnet_ids }, # <-- merge in the NACL's subnet IDs
+      (
+        !contains(keys(local.SUBNET_TYPE_NACLS), nacl_name) # is it a totally custom NACL?
+        ? var.network_acls[nacl_name]                       # if so, merge user's custom NACL as-is
+        : {                                                 # else deep-merge any user overrides
+          access = {
+            for access_type, default_rules in local.SUBNET_TYPE_NACLS[nacl_name].access
+            : access_type => merge(
+              default_rules,
+              try(var.network_acls[nacl_name].access[access_type], {})
+            )
+          }
+          tags = merge(
+            local.SUBNET_TYPE_NACLS[nacl_name].tags,
+            try(var.network_acls[nacl_name].tags, {})
+          )
+        }
+      )
+    )
   }
 }
 
 resource "aws_network_acl" "map" {
-  for_each = {
-    # Here we merge subnet IDs into each NACL's config.
-    for nacl_name, nacl_subnet_ids in local.nacl_subnet_ids : nacl_name => merge(
-      { subnet_ids = nacl_subnet_ids },
-      try(
-        local.subnetType_nacls_with_user_overrides[nacl_name], # Deep-merged subnetTypes NACLs
-        var.network_acls[nacl_name]                            # Custom NACLs
-      )
-    )
-  }
+  for_each = local.nacl_configs
 
   vpc_id     = aws_vpc.this.id
   subnet_ids = each.value.subnet_ids
@@ -81,46 +117,12 @@ resource "aws_network_acl" "map" {
   }
 
   tags = each.value.tags
-
-
 }
 
 #---------------------------------------------------------------------
-### Network ACL Defaults:
+### Shared Subnet-Type NACL Rules:
 
 locals {
-  # Provide a table for lookups
-  SUBNET_TYPE_NACL_NAMES = {
-    PUBLIC     = "Public_Subnets_NACL"
-    PRIVATE    = "Private_Subnets_NACL"
-    INTRA-ONLY = "IntraOnly_Subnets_NACL"
-  }
-
-  #-------------------------------------------------------------------
-
-  SUBNET_TYPE_DEFAULT_NACLS = {
-    Public_Subnets_NACL = {
-      access = {
-        ingress = local.COMMON_NACL_RULES # http, https, ephemeral
-        egress  = local.COMMON_NACL_RULES # http, https, ephemeral
-      }
-    }
-    Private_Subnets_NACL = {
-      access = {
-        ingress = { "500" = local.COMMON_NACL_RULES["500"] } # ephemeral
-        egress  = local.COMMON_NACL_RULES                    # http, https, ephemeral
-      }
-    }
-    IntraOnly_Subnets_NACL = {
-      access = {
-        ingress = {} # none
-        egress  = {} # none
-      }
-    }
-  }
-
-  #-------------------------------------------------------------------
-
   COMMON_NACL_RULES = {
     "100" = { # HTTP anywhere
       port       = 80
