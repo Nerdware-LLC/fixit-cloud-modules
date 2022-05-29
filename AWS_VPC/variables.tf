@@ -7,7 +7,7 @@ variable "vpc" {
   description = <<-EOF
   Config object for the VPC. All optional bools default to "true".
   For more info:
-    - [`VPC` input variable README](#vpc)
+    - [`VPC` README](#vpc)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
@@ -47,7 +47,7 @@ variable "subnets" {
   subnets can use custom NACL and/or route table configs via their
   respective properties; these cannot be overridden for intra-only
   subnets. For more info:
-    - [`Subnets` input variable README](#subnets)
+    - [`Subnets` README](#subnets)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
@@ -114,7 +114,7 @@ variable "subnets" {
 variable "route_tables" {
   description = <<-EOF
   Map of route table names to route table config objects. For more info:
-    - [`Route Tables` input variable README](#route-tables)
+    - [`Route Tables` README](#route-tables)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
@@ -159,7 +159,7 @@ variable "route_tables" {
 variable "network_acls" {
   description = <<-EOF
   Map of network ACL names to config objects. For more info:
-    - [`Network ACLs` input variable README](#network-acls)
+    - [`Network ACLs` README](#network-acls)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
@@ -225,7 +225,7 @@ variable "network_acls" {
 variable "security_groups" {
   description = <<-EOF
   Map of Security Group names to config objects. For more info:
-    - [`Security Groups` input variable README](#security_groups)
+    - [`Security Groups` README](#security_groups)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
