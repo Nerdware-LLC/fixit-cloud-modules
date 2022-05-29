@@ -117,6 +117,26 @@ resource "aws_network_acl" "map" {
   }
 
   tags = each.value.tags
+
+  lifecycle {
+    # Ensure any NACL rule "cidr_block" AWS service strings returned valid value from aws_ip_ranges data source.
+    precondition {
+      condition = alltrue([
+        for nacl_name, nacl in var.network_acls : alltrue([
+          for access_type, rules_map in lookup(nacl, "access", {}) : alltrue([
+            for rule_config in values(rules_map) : alltrue([
+              # If "cidr_block" is an AWS service string, ensure we have 1 CIDR for it.
+              (
+                !contains(["ec2_instance_connect", "globalaccelerator"], rule.cidr_block) ||
+                length(local.AWS_SERVICE_CIDRS[rule.cidr_block]) == 1
+              ),
+            ])
+          ])
+        ])
+      ])
+      error_message = "The \"aws_ip_ranges\" data source did not provide a CIDR for one or more of your NACL rule \"cidr_block\" AWS service strings."
+    }
+  }
 }
 
 #---------------------------------------------------------------------
