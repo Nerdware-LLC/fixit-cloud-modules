@@ -2,7 +2,7 @@
 ### VPC Peering
 
 resource "aws_vpc_peering_connection" "map" {
-  for_each = coalesce(var.vpc.request_peering_vpc_ids, {})
+  for_each = coalesce(var.vpc.peering_request_vpc_ids, {})
 
   # Args for all peering connections
   vpc_id      = aws_vpc.this.id # requester
@@ -30,7 +30,7 @@ resource "aws_vpc_peering_connection" "map" {
 ### Explicit Peering Connection Acceptance Config
 
 resource "aws_vpc_peering_connection_accepter" "map" {
-  for_each = coalesce(var.vpc.accept_peering_connection_ids, {})
+  for_each = coalesce(var.vpc.peering_accept_connection_ids, {})
 
   vpc_peering_connection_id = each.key
   auto_accept               = true
@@ -46,13 +46,13 @@ resource "aws_vpc_peering_connection_options" "map" {
     { # First, peering connections where VPC is requester
       for peer_vpc_id, requester_peering in aws_vpc_peering_connection.map : requester_peering.id => {
         is_requester = true
-        allow_dns    = var.vpc.request_peering_vpc_ids[peer_vpc_id].allow_remote_vpc_dns_resolution
+        allow_dns    = var.vpc.peering_request_vpc_ids[peer_vpc_id].allow_remote_vpc_dns_resolution
       } if upper(requester_peering.accept_status) == "ACTIVE" # Options can't be set until the connection has been accepted
     },
     { # Then peering connections where VPC is accepter
       for peer_conn_id, accepter_peering in aws_vpc_peering_connection_accepter.map : peer_conn_id => {
         is_requester = false
-        allow_dns    = var.vpc.accept_peering_connection_ids[peer_conn_id].allow_remote_vpc_dns_resolution
+        allow_dns    = var.vpc.peering_accept_connection_ids[peer_conn_id].allow_remote_vpc_dns_resolution
       } if upper(accepter_peering.accept_status) == "ACTIVE" # Options can't be set until the connection has been accepted
     }
   )

@@ -44,9 +44,9 @@ variable "subnets" {
   must be either "PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties
   "map_public_ip_on_launch" and "contains_nat_gateway" both default to
   false, and have no effect on non-public subnets. Public and private
-  subnets can use custom NACL and/or route table configs via their
-  respective properties; these cannot be overridden for intra-only
-  subnets. For more info:
+  subnets can be configured to use specific route tables and/or NACLs
+  via the "route_table" and "network_acl" properties respectively;
+  these have no effect on intra-only subnets. For more info:
     - [`Subnets` README](#subnets)
     - [Usage example](examples/terragrunt.hcl)
   EOF
@@ -58,8 +58,8 @@ variable "subnets" {
       type                    = string
       map_public_ip_on_launch = optional(bool)
       contains_nat_gateway    = optional(bool)
-      custom_route_table      = optional(string)
-      custom_network_acl      = optional(string)
+      route_table             = optional(string)
+      network_acl             = optional(string)
       tags                    = optional(map(string))
     })
   )
@@ -89,23 +89,6 @@ variable "subnets" {
     ])
     error_message = "For each AZ used by private subnets, there must be at least 1 public subnet in the same AZ with \"contains_nat_gateway\" set to \"true\"."
   }
-
-  # Ensure any PRIVATE subnet "custom_route_table" values point to a PUBLIC subnet in same AZ with "contains_nat_gateway"=true.
-  validation {
-    condition = alltrue([
-      for cidr, subnet in var.subnets : anytrue([
-        subnet.type != "PRIVATE",        # condition only applies to private subnets
-        !can(subnet.custom_route_table), # condition passes if this isn't set
-        (                                # else check target validity
-          try(var.subnets[subnet.custom_route_table].contains_nat_gateway, false) == true &&
-          try(var.subnets[subnet.custom_route_table].availability_zone, null) == subnet.availability_zone
-          # The AZ check is wrapped in try() to prevent lookup error on subnet.custom_route_table when it's not provided.
-        )
-      ])
-    ])
-    # TODO maybe amend this to ensure subnets are setting other-type Subnet-Type route table names in "custom_route_table"
-    error_message = "Any private subnet \"custom_route_table\" values must be the CIDR of a public subnet in the same AZ with \"contains_nat_gateway\" set to \"true\"."
-  }
 }
 
 #---------------------------------------------------------------------
@@ -113,7 +96,12 @@ variable "subnets" {
 
 variable "route_tables" {
   description = <<-EOF
-  Map of route table names to route table config objects. For more info:
+  Map of route table names to route table config objects. Peering connection
+  routes can be configured in one of two ways: if VPC is the peering REQUESTER,
+  use "peering_request_vpc_id", otherwise if VPC is the peering ACCEPTER, use
+  "peering_connection_id". Custom route tables for PRIVATE subnets can set their
+  default route ("0.0.0.0/0") using "nat_gateway_subnet_cidr", which must be set
+  to the CIDR of a NAT-containing PUBLIC subnet. For more info:
     - [`Route Tables` README](#route-tables)
     - [Usage example](examples/terragrunt.hcl)
   EOF
@@ -124,6 +112,7 @@ variable "route_tables" {
       routes = optional(map(
         # map keys: CIDRs of route destinations
         object({
+          nat_gateway_subnet_cidr      = optional(string)
           peering_request_vpc_id       = optional(string)
           peering_accept_connection_id = optional(string)
         })
@@ -134,14 +123,6 @@ variable "route_tables" {
 
   default = {}
 
-  # Ensure no RT "routes" use the egress CIDR ("0.0.0.0/0")
-  validation {
-    condition = alltrue([
-      for rt in values(var.route_tables) : !contains(keys(coalesce(rt.routes, {})), "0.0.0.0/0")
-    ])
-    error_message = "Route table egress route \"0.0.0.0/0\" may not be customized, remove it from \"routes\"."
-  }
-
   # Ensure all RT "routes" objects only include 1 route-type key
   validation {
     condition = alltrue([
@@ -149,7 +130,7 @@ variable "route_tables" {
         for route_cidr, route_config in coalesce(rt.routes, {}) : 1 == length(keys(route_config))
       ])
     ])
-    error_message = "Invalid combination of properties on one or more custom route table \"routes\". Each route must only contain \"cidr\" and one other key."
+    error_message = "Invalid route configs on one or more route tables; route config objects must use exactly one route-type property."
   }
 }
 

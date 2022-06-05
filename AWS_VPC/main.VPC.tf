@@ -13,11 +13,14 @@ resource "aws_vpc" "this" {
 
 locals {
   # For aws_subnet precondition blocks:
-  SUBNET_TYPE_VALID_CUSTOM_ROUTE_TABLES = {
+  SUBNET_TYPE_VALID_ROUTE_TABLES = {
     # PUBLIC subnets must use an RT defined in var.route_tables
     PUBLIC = keys(var.route_tables)
-    # PRIVATE subnets must use the CIDR of a subnet which contains a NAT gateway
-    PRIVATE    = [for cidr, subnet in var.subnets : cidr if subnet.contains_nat_gateway == true]
+    # PRIVATE subnets may use the CIDR of a subnet which contains a NAT gateway
+    PRIVATE = distinct(flatten([
+      keys(var.route_tables),
+      [for cidr, subnet in var.subnets : cidr if subnet.contains_nat_gateway == true]
+    ]))
     INTRA-ONLY = []
   }
 
@@ -51,27 +54,27 @@ resource "aws_subnet" "map" {
   tags                    = each.value.tags
 
   lifecycle {
-    # Ensure "custom_route_table" values are valid
+    # Ensure "route_table" values are valid
     precondition {
       condition = alltrue([
         for cidr, subnet in var.subnets : contains([
           # The list of acceptable non-null values depends on subnet type, but can always be null.
-          flatten([null, local.SUBNET_TYPE_VALID_CUSTOM_ROUTE_TABLES[subnet.type]]),
-          subnet.custom_route_table
+          flatten([null, local.SUBNET_TYPE_VALID_ROUTE_TABLES[subnet.type]]),
+          subnet.route_table
         ])
       ])
-      error_message = "All subnet \"custom_route_table\" values must be valid route tables for each subnet's type."
+      error_message = "One or more subnets contain \"route_table\" values which are invalid for their \"type\"."
     }
 
-    # Ensure every "custom_network_acl" value is either null, or exists as a key in "var.network_acls"
+    # Ensure every "network_acl" value is either null, or exists as a key in "var.network_acls"
     precondition {
       condition = alltrue([
         for cidr, subnet in var.subnets : contains(
           flatten([null, keys(var.network_acls)]),
-          subnet.custom_network_acl
+          subnet.network_acl
         )
       ])
-      error_message = "All subnet \"custom_network_acl\" values must match a custom NACL named in the \"network_acls\" variable."
+      error_message = "One or more subnets contain an invalid \"network_acl\" value not present in \"var.network_acls\"."
     }
   }
 }

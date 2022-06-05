@@ -43,10 +43,10 @@ locals {
   Note that this object will not include names of Subnet-Type NACLs for types which
   aren't implemented by user. Likewise, if user accidentally included an NACL config
   in var.network_acls, and the name of that NACL is not used in any subnet's
-  "custom_network_acl" arg, that NACL will also not be created.  */
+  "network_acl" arg, that NACL will also not be created.  */
   nacl_subnet_ids = {
     for cidr, subnet in local.subnet_resources : coalesce(
-      subnet.custom_network_acl,
+      subnet.network_acl,
       local.SUBNET_TYPE_NACLS_MAP[subnet.type]
     ) => subnet.id...
   }
