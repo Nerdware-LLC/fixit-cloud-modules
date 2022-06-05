@@ -21,6 +21,10 @@ content: |-
 
   {{ .Outputs }}
 
+  ---
+
+  {{ .Footer }}
+
 # recursive:
 #   enabled: false
 #   path: modules

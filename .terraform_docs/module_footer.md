@@ -1,7 +1,3 @@
-<span> <!-- keep span here to maintain module footer formatting  -->
-
----
-
 ## License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
@@ -11,8 +7,8 @@ See [LICENSE](/LICENSE) for more information.
 ## Contact
 
 <div style="width:75%; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
-  <img src="https://avatars.githubusercontent.com/u/43518091?v=4" style="height:50px; width:50px; border-radius:50% 50% 50% 50%;" alt="avatar" />
-  <span>
+  <img src="https://avatars.githubusercontent.com/u/43518091?v=4" style="height:50px; width:50px; border-radius:50% 50% 50% 50%; margin-right:10px;" alt="avatar" />
+  <span style="text-align:center;">
     <span>Trevor Anderson</span>
     <span> - </span>
     <a href="https://twitter.com/teerevtweets">@TeeRevTweets</a>
