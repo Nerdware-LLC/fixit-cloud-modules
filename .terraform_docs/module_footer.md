@@ -7,7 +7,7 @@ See [LICENSE](/LICENSE) for more information.
 ## Contact
 
 <div style="width:75%; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
-  <img src="https://avatars.githubusercontent.com/u/43518091?v=4" style="height:50px; width:50px; border-radius:50% 50% 50% 50%; margin-right:10px;" alt="avatar" />
+  <kbd><img src="https://avatars.githubusercontent.com/u/43518091?v=4" height="50" width="50" style="border-radius:50% 50% 50% 50%; margin-right:10px;" alt="avatar" /></kbd>
   <span style="text-align:center;">
     <span>Trevor Anderson</span>
     <span> - </span>
