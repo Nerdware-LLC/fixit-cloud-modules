@@ -11,20 +11,18 @@ resource "aws_vpc" "this" {
 #---------------------------------------------------------------------
 ### SUBNETS
 
-locals {
-  # For aws_subnet precondition blocks:
-  SUBNET_TYPE_VALID_ROUTE_TABLES = {
-    # PUBLIC subnets must use an RT defined in var.route_tables
-    PUBLIC = keys(var.route_tables)
-    # PRIVATE subnets may use the CIDR of a subnet which contains a NAT gateway
-    PRIVATE = distinct(flatten([
-      keys(var.route_tables),
-      [for cidr, subnet in var.subnets : cidr if subnet.contains_nat_gateway == true]
-    ]))
-    INTRA-ONLY = []
-  }
+resource "aws_subnet" "map" {
+  for_each = var.subnets
 
-  # After resource evaluation, merge var.subnets configs with their aws_subnet resource attributes
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = each.key
+  availability_zone       = each.value.availability_zone
+  map_public_ip_on_launch = coalesce(each.value.map_public_ip_on_launch, false)
+  tags                    = each.value.tags
+}
+
+locals {
+  # Merge var.subnets configs with their aws_subnet resource attributes
   subnet_resources = {
     for cidr, subnet in var.subnets : cidr => merge(
       subnet,                           # <-- does not contain "cidr" property
@@ -41,41 +39,6 @@ locals {
     for subnet_type, list_of_subnets_of_type in {
       for cidr, subnet in local.subnet_resources : subnet.type => { "${cidr}" = subnet }... # <-- group subnets by type
     } : subnet_type => merge(list_of_subnets_of_type...)                                    # <-- spread and merge grouped subnets
-  }
-}
-
-resource "aws_subnet" "map" {
-  for_each = var.subnets
-
-  vpc_id                  = aws_vpc.this.id
-  cidr_block              = each.key
-  availability_zone       = each.value.availability_zone
-  map_public_ip_on_launch = coalesce(each.value.map_public_ip_on_launch, false)
-  tags                    = each.value.tags
-
-  lifecycle {
-    # Ensure "route_table" values are valid
-    precondition {
-      condition = alltrue([
-        for cidr, subnet in var.subnets : contains([
-          # The list of acceptable non-null values depends on subnet type, but can always be null.
-          flatten([null, local.SUBNET_TYPE_VALID_ROUTE_TABLES[subnet.type]]),
-          subnet.route_table
-        ])
-      ])
-      error_message = "One or more subnets contain \"route_table\" values which are invalid for their \"type\"."
-    }
-
-    # Ensure every "network_acl" value is either null, or exists as a key in "var.network_acls"
-    precondition {
-      condition = alltrue([
-        for cidr, subnet in var.subnets : contains(
-          flatten([null, keys(var.network_acls)]),
-          subnet.network_acl
-        )
-      ])
-      error_message = "One or more subnets contain an invalid \"network_acl\" value not present in \"var.network_acls\"."
-    }
   }
 }
 

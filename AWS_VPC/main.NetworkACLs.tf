@@ -89,13 +89,13 @@ resource "aws_network_acl" "map" {
     content {
       rule_no  = rule.key
       action   = "allow"
-      protocol = coalesce(rule.value.protocol, "tcp")
+      protocol = try(rule.value.protocol, "tcp")
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = coalesce(rule.value.from_port, rule.value.port)
-      to_port   = coalesce(rule.value.to_port, rule.value.port)
+      from_port = try(rule.value.from_port, rule.value.port)
+      to_port   = try(rule.value.to_port, rule.value.port)
     }
   }
 
@@ -106,13 +106,13 @@ resource "aws_network_acl" "map" {
     content {
       rule_no  = rule.key
       action   = "allow"
-      protocol = coalesce(rule.value.protocol, "tcp")
+      protocol = try(rule.value.protocol, "tcp")
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = coalesce(rule.value.from_port, rule.value.port)
-      to_port   = coalesce(rule.value.to_port, rule.value.port)
+      from_port = try(rule.value.from_port, rule.value.port)
+      to_port   = try(rule.value.to_port, rule.value.port)
     }
   }
 
@@ -127,8 +127,11 @@ resource "aws_network_acl" "map" {
             for rule_config in values(rules_map) : alltrue([
               # If "cidr_block" is an AWS service string, ensure we have 1 CIDR for it.
               (
-                !contains(["ec2_instance_connect", "globalaccelerator"], rule.cidr_block) ||
-                length(local.AWS_SERVICE_CIDRS[rule.cidr_block]) == 1
+                !contains(["ec2_instance_connect", "globalaccelerator"], rule_config.cidr_block) ||
+                try(
+                  length(local.AWS_SERVICE_CIDRS[rule_config.cidr_block]) == 1,
+                  true # <-- prevent lookup error on evaluation
+                )
               ),
             ])
           ])

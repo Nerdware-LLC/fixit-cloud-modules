@@ -144,7 +144,7 @@ resource "aws_route_table" "map" {
   # All non-default routes
   dynamic "route" {
     for_each = {
-      for route_cidr, route_config in try(var.route_tables[each.key].routes, {})
+      for route_cidr, route_config in try(coalesce(var.route_tables[each.key].routes, {}), {})
       : route_cidr => route_config if route_cidr != "0.0.0.0/0"
     }
 
