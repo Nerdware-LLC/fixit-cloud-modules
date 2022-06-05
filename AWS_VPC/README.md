@@ -393,5 +393,32 @@ No modules.
 | <a name="output_VPC_Peering_Connection_Accepts"></a> [VPC\_Peering\_Connection\_Accepts](#output\_VPC\_Peering\_Connection\_Accepts) | Map of VPC Peering Connection Accepter resource objects. |
 | <a name="output_VPC_Peering_Connection_Options"></a> [VPC\_Peering\_Connection\_Options](#output\_VPC\_Peering\_Connection\_Options) | Map of VPC Peering Connection Options resource objects. |
 | <a name="output_VPC_Peering_Connection_Requests"></a> [VPC\_Peering\_Connection\_Requests](#output\_VPC\_Peering\_Connection\_Requests) | Map of VPC Peering Connection resource objects. |
+
+---
+
+## License
+
+All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
+
+See [LICENSE](/LICENSE) for more information.
+
+## Contact
+
+<div style="width:75%; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+  <img src="https://avatars.githubusercontent.com/u/43518091?v=4" style="height:50px; width:50px; border-radius:50% 50% 50% 50%;" alt="avatar" />
+  <span>
+    <span>Trevor Anderson</span>
+    <span> - </span>
+    <a href="https://twitter.com/teerevtweets">@TeeRevTweets</a>
+    <span> - </span>
+    <span>T.AndersonProperty@gmail.com</span>
+  </span>
+  <div style="height:auto;">
+    <br> <!-- bump the LinkedIn btn down to be centered inline -->
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/trevor-anderson-3a3b0392/)
+
+  </div>
+</div>
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
