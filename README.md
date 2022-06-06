@@ -2,9 +2,31 @@
 
 Terraform modules for defining Fixit Cloud architecture.
 
-[![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 **Check out the [fixit-cloud-live][fixit-cloud-live] repo to view the Terragrunt files which implement these modules.**
+
+--
+
+### Available Modules:
+
+- AWS
+  - [Account Baseline](AWS_AccountBaseline/README.md)
+  - [CloudFront](AWS_CloudFront/README.md)
+  - [EC2](AWS_EC2/README.md)
+  - [ECS Cluster](AWS_ECS_Cluster/README.md)
+  - [GuardDuty](AWS_GuardDuty/README.md)
+  - [IAM](AWS_IAM/README.md)
+  - [KMS](AWS_KMS/README.md)
+  - [Lambda](AWS_Lambda/README.md)
+  - [OpenID Connect Providers](AWS_OpenID_Connect_Providers/README.md)
+  - [Organization](AWS_Organization/README.md)
+  - [S3](AWS_S3/README.md)
+  - [SecurityHub](AWS_SecurityHub/README.md)
+  - [SSO](AWS_SSO/README.md)
+  - [VPC](AWS_VPC/README.md)
+- Terraform Cloud
+  - [Workspaces](TFC_Workspaces/README.md)
 
 ## Developer Setup
 
@@ -41,17 +63,36 @@ All scripts and source code contained herein are for commercial use only by Nerd
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center">
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+## 💬 Contact
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
+
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
+
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
+</div>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
 [fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
-[pets-meme]: https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/
-[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
-[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
