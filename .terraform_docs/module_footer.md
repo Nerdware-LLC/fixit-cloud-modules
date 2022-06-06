@@ -4,18 +4,31 @@ All scripts and source code contained herein are for commercial use only by Nerd
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center">
 
-<div style="width:75%; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
-  <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/43518091?v=4&h=75&w=75&fit=cover&mask=circle" height="75" width="75" alt="avatar" />
-  <span style="padding:20px; height:50px; background-color:red; text-align:center; margin: 0 10px 0 10px;">
-    <span>Trevor Anderson</span>
-    <span> - </span>
-    <a href="https://twitter.com/teerevtweets">@TeeRevTweets</a>
-    <span> - </span>
-    <span>T.AndersonProperty@gmail.com</span>
-  </span>
-  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/" style="margin-top: 10px;">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white" alt="LinkedIn" />
+## 💬 Contact
+
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
+
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
   </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
+
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
 </div>

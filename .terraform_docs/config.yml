@@ -5,6 +5,8 @@ formatter: "markdown table"
 footer-from: "../.terraform_docs/module_footer.md"
 
 content: |-
+  <!-- prettier-ignore-start -->
+
   ---
 
   ##  Module Usage
@@ -24,6 +26,7 @@ content: |-
   ---
 
   {{ .Footer }}
+  <!-- prettier-ignore-end -->
 
 # recursive:
 #   enabled: false
@@ -51,7 +54,7 @@ output:
 
 settings:
   indent: 3
-  anchor: true
+  # anchor: true
   # color: true
   # default: true
   # description: false
