@@ -31,7 +31,7 @@ Terraform module for defining secure-by-default VPC resources.
   - [Inputs](#inputs)
   - [Outputs](#outputs)
 - [License](#license)
-- [Contact](#contact)
+- [💬 Contact](#-contact)
 
 ## VPC Configs
 
@@ -313,8 +313,9 @@ To address the NACL CIDR param issues, the following approaches are under consid
 
 </details>
 
-<!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-start -->
+
 ---
 
 ##  Module Usage
@@ -402,23 +403,33 @@ All scripts and source code contained herein are for commercial use only by Nerd
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center">
 
-<div style="width:75%; display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
-  <img src="https://avatars.githubusercontent.com/u/43518091?v=4" style="height:50px; width:50px; border-radius:50% 50% 50% 50%;" alt="avatar" />
-  <span>
-    <span>Trevor Anderson</span>
-    <span> - </span>
-    <a href="https://twitter.com/teerevtweets">@TeeRevTweets</a>
-    <span> - </span>
-    <span>T.AndersonProperty@gmail.com</span>
-  </span>
-  <div style="height:auto;">
-    <br> <!-- bump the LinkedIn btn down to be centered inline -->
+## 💬 Contact
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/trevor-anderson-3a3b0392/)
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
 
-  </div>
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
+
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
 </div>
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
