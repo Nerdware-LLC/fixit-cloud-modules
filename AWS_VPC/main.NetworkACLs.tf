@@ -19,21 +19,18 @@ locals {
         ingress = local.COMMON_NACL_RULES # http, https, ephemeral
         egress  = local.COMMON_NACL_RULES # http, https, ephemeral
       }
-      tags = { Name = "Public_Subnets_NACL" }
     }
     Private_Subnets_NACL = {
       access = {
         ingress = { "500" = local.COMMON_NACL_RULES["500"] } # ephemeral
         egress  = local.COMMON_NACL_RULES                    # http, https, ephemeral
       }
-      tags = { Name = "Private_Subnets_NACL" }
     }
     IntraOnly_Subnets_NACL = {
       access = {
         ingress = {} # none
         egress  = {} # none
       }
-      tags = { Name = "IntraOnly_Subnets_NACL" }
     }
   }
 
@@ -66,10 +63,7 @@ locals {
               try(var.network_acls[nacl_name].access[access_type], {})
             )
           }
-          tags = merge(
-            local.SUBNET_TYPE_NACLS[nacl_name].tags,
-            try(var.network_acls[nacl_name].tags, {})
-          )
+          tags = try(var.network_acls[nacl_name].tags, {})
         }
       )
     )
@@ -148,59 +142,19 @@ resource "aws_network_acl" "map" {
 locals {
   COMMON_NACL_RULES = {
     "100" = { # HTTP anywhere
-      port       = 80
       cidr_block = "0.0.0.0/0"
+      port       = 80
     }
     "200" = { # HTTPS anywhere
-      port       = 443
       cidr_block = "0.0.0.0/0"
+      port       = 443
     }
     "500" = { # Ephemeral ports
-      action     = "allow"
-      protocol   = "tcp"
       cidr_block = "0.0.0.0/0"
       from_port  = 1024
       to_port    = 65535
     }
   }
 }
-
-# locals {
-#   NACL_Rules = flatten([
-#     for index, nacl_config in var.network_acls : [
-#       for access_type, rules_list in nacl_config.access : flatten([
-#         [ # Normalize the provided rule object
-#           for rule in rules_list : {
-#             network_acl_id = aws_network_acl.list[index].id
-#             rule_number    = rule.rule_number
-#             action         = "allow"
-#             type           = access_type
-#             protocol       = coalesce(rule.protocol, "tcp")
-#             cidr_block     = rule.cidr_block
-#             cidr_block = try(
-#               one(local.AWS_SERVICE_CIDRS[rule.cidr_block]),
-#               rule.cidr_block
-#             )
-#             from_port = coalesce(rule.from_port, rule.port)
-#             to_port   = coalesce(rule.to_port, rule.port)
-#           }
-#         ]
-#       ])
-#     ]
-#   ])
-# }
-
-# resource "aws_network_acl_rule" "nacl_rules" {
-#   count = length(local.NACL_Rules)
-
-#   network_acl_id = local.NACL_Rules[count.index].network_acl_id
-#   rule_number    = local.NACL_Rules[count.index].rule_number
-#   rule_action    = local.NACL_Rules[count.index].action
-#   egress         = local.NACL_Rules[count.index].type == "egress"
-#   protocol       = local.NACL_Rules[count.index].protocol
-#   cidr_block     = local.NACL_Rules[count.index].cidr_block
-#   from_port      = local.NACL_Rules[count.index].from_port
-#   to_port        = local.NACL_Rules[count.index].to_port
-# }
 
 ######################################################################

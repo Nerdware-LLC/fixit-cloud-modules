@@ -40,7 +40,7 @@ locals {
   }
 
   /* Group NAT-connected route tables by AZ for dynamic subnet assignment. Like the
-  NAT gateways themselves, these RTs will be internally identified be the CIDR of
+  NAT gateways themselves, these RTs will be internally identified by the CIDR of
   the public subnet which contains the related NAT gateway.  */
   nat_route_tables_by_az = {
     for nat_gw_public_subnet_cidr in keys(aws_nat_gateway.map)
