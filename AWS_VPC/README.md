@@ -318,13 +318,13 @@ To address the NACL CIDR param issues, the following approaches are under consid
 
 ---
 
-##  Module Usage
+## ⚙️ Module Usage
 
 ### Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.2.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.2 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
@@ -397,13 +397,13 @@ No modules.
 
 ---
 
-## License
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
 See [LICENSE](/LICENSE) for more information.
 
-<div align="center">
+<div align="center" style="margin-top:30px;">
 
 ## 💬 Contact
 

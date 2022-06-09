@@ -4,60 +4,85 @@ Terraform module for defining EC2 resources.
 
 <h2>Table of Contents</h2>
 
-- [License](#license)
-- [Contact](#contact)
+- [⚙️ Module Usage](#️-module-usage)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+- [📝 License](#-license)
+- [💬 Contact](#-contact)
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-start -->
 
 ---
 
-<!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+## ⚙️ Module Usage
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
+### Requirements
 
-## Providers
+| Name                                                                     | Version   |
+| ------------------------------------------------------------------------ | --------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.2     |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
+
+### Providers
 
 No providers.
 
-## Modules
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
 No resources.
 
-## Inputs
+### Inputs
 
 No inputs.
 
-## Outputs
+### Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
 
 ---
 
-## License
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center" style="margin-top:30px;">
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+## 💬 Contact
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
 
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-[fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
-[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
-[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
+</div>
+<!-- prettier-ignore-end -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

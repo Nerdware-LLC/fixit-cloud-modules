@@ -10,14 +10,15 @@ Terraform module for defining an AWS Organization and related resources.
     - [Service Control Policies](#service-control-policies)
     - [Management Policies](#management-policies)
 - [AWS SSO](#aws-sso)
-- [Requirements](#requirements)
-- [Providers](#providers)
-- [Modules](#modules)
-- [Resources](#resources)
-- [Inputs](#inputs)
-- [Outputs](#outputs)
-- [License](#license)
-- [Contact](#contact)
+- [⚙️ Module Usage](#️-module-usage)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+- [📝 License](#-license)
+- [💬 Contact](#-contact)
 
 ## AWS Organization
 
@@ -64,82 +65,101 @@ TODO add info on our mgmt policies
 
 TODO explain our sso setup
 
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-start -->
+
 ---
 
-<!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+## ⚙️ Module Usage
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
+### Requirements
 
-## Providers
+| Name                                                                     | Version   |
+| ------------------------------------------------------------------------ | --------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.2     |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
+### Providers
 
-## Modules
+| Name                                             | Version   |
+| ------------------------------------------------ | --------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
+
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
-| Name | Type |
-|------|------|
-| [aws_organizations_account.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_account) | resource |
-| [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organization) | resource |
-| [aws_organizations_organizational_unit.Level_1_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_2_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_3_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy) | resource |
-| [aws_organizations_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy_attachment) | resource |
-| [aws_ssoadmin_account_assignment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
-| [aws_ssoadmin_managed_policy_attachment.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_managed_policy_attachment) | resource |
-| [aws_ssoadmin_permission_set.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set) | resource |
-| [aws_identitystore_group.Admins_SSO_Group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group) | data source |
-| [aws_ssoadmin_instances.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_instances) | data source |
+| Name                                                                                                                                                                         | Type        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| [aws_organizations_account.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_account)                                           | resource    |
+| [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organization)                                | resource    |
+| [aws_organizations_organizational_unit.Level_1_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_2_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_3_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy)                                             | resource    |
+| [aws_organizations_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy_attachment)                       | resource    |
+| [aws_ssoadmin_account_assignment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment)                               | resource    |
+| [aws_ssoadmin_managed_policy_attachment.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_managed_policy_attachment) | resource    |
+| [aws_ssoadmin_permission_set.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set)                       | resource    |
+| [aws_identitystore_group.Admins_SSO_Group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group)                               | data source |
+| [aws_ssoadmin_instances.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_instances)                                             | data source |
 
-## Inputs
+### Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_admin_sso_config"></a> [admin\_sso\_config](#input\_admin\_sso\_config) | An object for configuring administrator access to accounts via AWS SSO.<br>Please note that SSO requires some setup in the console; for example,<br>GROUPS and USERS cannot be created via the AWS provider - they must be<br>created beforehand. For an overview of the default config values, please<br>refer to the README. | <pre>object({<br>    sso_group_name             = optional(string)<br>    permission_set_name        = optional(string)<br>    permission_set_description = optional(string)<br>    permission_set_tags        = optional(map(string))<br>    session_duration           = optional(number)<br>  })</pre> | `{}` | no |
-| <a name="input_member_accounts"></a> [member\_accounts](#input\_member\_accounts) | A config object for child/member accounts within an AWS Organization.<br>The keys of the object are names of child accounts, with each respective<br>value pointing to the account's config object with params identifying the<br>parent organizational unit and other attributes. Note that best practices<br>entails attaching organization policies to OUs - not accounts - so this<br>module does not permit member accounts to have a "parent" value of "root".<br>The "should\_allow\_iam\_user\_access\_to\_billing" property defaults to "true",<br>and "org\_account\_access\_role\_name" defaults to "OrganizationAccountAccessRole". | <pre>map(object({<br>    parent                                  = string<br>    email                                   = string<br>    should_allow_iam_user_access_to_billing = optional(bool)<br>    org_account_access_role_name            = optional(string)<br>    tags                                    = optional(map(string))<br>  }))</pre> | n/a | yes |
-| <a name="input_organization_config"></a> [organization\_config](#input\_organization\_config) | A config object for an AWS Organization. For more info on these<br>parameters, please refer to the documentation for AWS Organizations and<br>the relevant API/CLI commands. Note that "should\_enable\_all\_features"<br>defaults to "true". | <pre>object({<br>    org_trusted_services = list(string)<br>    enabled_policy_types = list(string)<br>  })</pre> | n/a | yes |
-| <a name="input_organization_policies"></a> [organization\_policies](#input\_organization\_policies) | Map policy names to organization policy config objects to provision<br>organization policies. The "target" property indicates to which<br>organization entity the policy should be attached; valid values are "root" and<br>the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE\_CONTROL\_POLICY, AISERVICES\_OPT\_OUT\_POLICY, BACKUP\_POLICY,<br>or TAG\_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type. | <pre>map(object({<br>    target      = string<br>    type        = string<br>    description = optional(string)<br>    statement   = string<br>    tags        = optional(map(string))<br>  }))</pre> | `null` | no |
-| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | A map of config objects for orginizational units within an AWS<br>Organization. The keys of the map are names of OU entities, with each<br>respective value pointing to the OU's config object with params identifying<br>the OU's parent entity ("root" or the name of another OU) and optional tags. | <pre>map(object({<br>    parent = string<br>    tags   = optional(map(string))<br>  }))</pre> | n/a | yes |
+| Name                                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Type                                                                                                                                                                                                                                                  | Default | Required |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | :------: |
+| <a name="input_admin_sso_config"></a> [admin_sso_config](#input_admin_sso_config)                | An object for configuring administrator access to accounts via AWS SSO.<br>Please note that SSO requires some setup in the console; for example,<br>GROUPS and USERS cannot be created via the AWS provider - they must be<br>created beforehand. For an overview of the default config values, please<br>refer to the README.                                                                                                                                                                                                                                                                                                        | <pre>object({<br> sso_group_name = optional(string)<br> permission_set_name = optional(string)<br> permission_set_description = optional(string)<br> permission_set_tags = optional(map(string))<br> session_duration = optional(number)<br> })</pre> | `{}`    |    no    |
+| <a name="input_member_accounts"></a> [member_accounts](#input_member_accounts)                   | A config object for child/member accounts within an AWS Organization.<br>The keys of the object are names of child accounts, with each respective<br>value pointing to the account's config object with params identifying the<br>parent organizational unit and other attributes. Note that best practices<br>entails attaching organization policies to OUs - not accounts - so this<br>module does not permit member accounts to have a "parent" value of "root".<br>The "should_allow_iam_user_access_to_billing" property defaults to "true",<br>and "org_account_access_role_name" defaults to "OrganizationAccountAccessRole". | <pre>map(object({<br> parent = string<br> email = string<br> should_allow_iam_user_access_to_billing = optional(bool)<br> org_account_access_role_name = optional(string)<br> tags = optional(map(string))<br> }))</pre>                              | n/a     |   yes    |
+| <a name="input_organization_config"></a> [organization_config](#input_organization_config)       | A config object for an AWS Organization. For more info on these<br>parameters, please refer to the documentation for AWS Organizations and<br>the relevant API/CLI commands. Note that "should_enable_all_features"<br>defaults to "true".                                                                                                                                                                                                                                                                                                                                                                                            | <pre>object({<br> org_trusted_services = list(string)<br> enabled_policy_types = list(string)<br> })</pre>                                                                                                                                            | n/a     |   yes    |
+| <a name="input_organization_policies"></a> [organization_policies](#input_organization_policies) | Map policy names to organization policy config objects to provision<br>organization policies. The "target" property indicates to which<br>organization entity the policy should be attached; valid values are "root" and<br>the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE_CONTROL_POLICY, AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY,<br>or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type.                                                                                           | <pre>map(object({<br> target = string<br> type = string<br> description = optional(string)<br> statement = string<br> tags = optional(map(string))<br> }))</pre>                                                                                      | `null`  |    no    |
+| <a name="input_organizational_units"></a> [organizational_units](#input_organizational_units)    | A map of config objects for orginizational units within an AWS<br>Organization. The keys of the map are names of OU entities, with each<br>respective value pointing to the OU's config object with params identifying<br>the OU's parent entity ("root" or the name of another OU) and optional tags.                                                                                                                                                                                                                                                                                                                                | <pre>map(object({<br> parent = string<br> tags = optional(map(string))<br> }))</pre>                                                                                                                                                                  | n/a     |   yes    |
 
-## Outputs
+### Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_Organization"></a> [Organization](#output\_Organization) | n/a |
-| <a name="output_Organization_Member_Accounts"></a> [Organization\_Member\_Accounts](#output\_Organization\_Member\_Accounts) | n/a |
-| <a name="output_Organization_Policies"></a> [Organization\_Policies](#output\_Organization\_Policies) | n/a |
-| <a name="output_Organizational_Units"></a> [Organizational\_Units](#output\_Organizational\_Units) | n/a |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
+| Name                                                                                                                    | Description |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------- |
+| <a name="output_Organization"></a> [Organization](#output_Organization)                                                 | n/a         |
+| <a name="output_Organization_Member_Accounts"></a> [Organization_Member_Accounts](#output_Organization_Member_Accounts) | n/a         |
+| <a name="output_Organization_Policies"></a> [Organization_Policies](#output_Organization_Policies)                      | n/a         |
+| <a name="output_Organizational_Units"></a> [Organizational_Units](#output_Organizational_Units)                         | n/a         |
 
 ---
 
-## License
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center" style="margin-top:30px;">
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+## 💬 Contact
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
 
-[org-services]: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services_list.html
-[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
-[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
+</div>
+<!-- prettier-ignore-end -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

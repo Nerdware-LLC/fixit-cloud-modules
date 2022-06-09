@@ -4,75 +4,100 @@ Terraform module for defining an AWS KMS Key and related resources.
 
 <h2>Table of Contents</h2>
 
-- [License](#license)
-- [Contact](#contact)
+- [⚙️ Module Usage](#️-module-usage)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+- [📝 License](#-license)
+- [💬 Contact](#-contact)
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-start -->
 
 ---
 
-<!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+## ⚙️ Module Usage
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
+### Requirements
 
-## Providers
+| Name                                                                     | Version   |
+| ------------------------------------------------------------------------ | --------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.2     |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
+### Providers
 
-## Modules
+| Name                                             | Version   |
+| ------------------------------------------------ | --------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
+
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
-| Name | Type |
-|------|------|
+| Name                                                                                                        | Type     |
+| ----------------------------------------------------------------------------------------------------------- | -------- |
 | [aws_kms_alias.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
-| [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key)     | resource |
 
-## Inputs
+### Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_is_multi_region_key"></a> [is\_multi\_region\_key](#input\_is\_multi\_region\_key) | Boolean indicating whether the key is a multi-region key; defaults to<br>false if not provided. | `bool` | `false` | no |
-| <a name="input_key_alias"></a> [key\_alias](#input\_key\_alias) | An alias to apply to the KMS key. | `string` | `null` | no |
-| <a name="input_key_description"></a> [key\_description](#input\_key\_description) | A description of the KMS key and/or its purpose. | `string` | `null` | no |
-| <a name="input_key_policy"></a> [key\_policy](#input\_key\_policy) | A JSON-encoded KMS key policy. | `string` | n/a | yes |
-| <a name="input_key_tags"></a> [key\_tags](#input\_key\_tags) | Map of tags to apply to the KMS key. | `map(any)` | `null` | no |
-| <a name="input_should_enable_key_rotation"></a> [should\_enable\_key\_rotation](#input\_should\_enable\_key\_rotation) | Boolean indicating whether the key has the auto-rotation feature enabled;<br>defaults to true if not provided. | `bool` | `true` | no |
+| Name                                                                                                            | Description                                                                                                    | Type       | Default | Required |
+| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------- | ------- | :------: |
+| <a name="input_is_multi_region_key"></a> [is_multi_region_key](#input_is_multi_region_key)                      | Boolean indicating whether the key is a multi-region key; defaults to<br>false if not provided.                | `bool`     | `false` |    no    |
+| <a name="input_key_alias"></a> [key_alias](#input_key_alias)                                                    | An alias to apply to the KMS key.                                                                              | `string`   | `null`  |    no    |
+| <a name="input_key_description"></a> [key_description](#input_key_description)                                  | A description of the KMS key and/or its purpose.                                                               | `string`   | `null`  |    no    |
+| <a name="input_key_policy"></a> [key_policy](#input_key_policy)                                                 | A JSON-encoded KMS key policy.                                                                                 | `string`   | n/a     |   yes    |
+| <a name="input_key_tags"></a> [key_tags](#input_key_tags)                                                       | Map of tags to apply to the KMS key.                                                                           | `map(any)` | `null`  |    no    |
+| <a name="input_should_enable_key_rotation"></a> [should_enable_key_rotation](#input_should_enable_key_rotation) | Boolean indicating whether the key has the auto-rotation feature enabled;<br>defaults to true if not provided. | `bool`     | `true`  |    no    |
 
-## Outputs
+### Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_KMS_Key"></a> [KMS\_Key](#output\_KMS\_Key) | The KMS Key resource object. |
-| <a name="output_KMS_Key_Alias"></a> [KMS\_Key\_Alias](#output\_KMS\_Key\_Alias) | The KMS Key Alias resource object. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
+| Name                                                                       | Description                        |
+| -------------------------------------------------------------------------- | ---------------------------------- |
+| <a name="output_KMS_Key"></a> [KMS_Key](#output_KMS_Key)                   | The KMS Key resource object.       |
+| <a name="output_KMS_Key_Alias"></a> [KMS_Key_Alias](#output_KMS_Key_Alias) | The KMS Key Alias resource object. |
 
 ---
 
-## License
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
 See [LICENSE](/LICENSE) for more information.
 
-## Contact
+<div align="center" style="margin-top:30px;">
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - T.AndersonProperty@gmail.com
+## 💬 Contact
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.AndersonProperty@gmail.com](mailto:T.AndersonProperty@gmail.com)
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="https://twitter.com/TeeRevTweets">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+  </a>
+  &nbsp;
+  <a href="mailto:T.AndersonProperty@gmail.com">
+    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+  </a>
+  <br><br>
 
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-[fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
-[linkedin-url]: https://www.linkedin.com/in/trevor-anderson-3a3b0392/
-[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
+  <a href="https://daremightythings.co/">
+    <strong><i>Dare Mighty Things.</i></strong>
+  </a>
+
+</div>
+<!-- prettier-ignore-end -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
