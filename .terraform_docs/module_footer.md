@@ -1,10 +1,10 @@
-## License
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
 See [LICENSE](/LICENSE) for more information.
 
-<div align="center">
+<div align="center" style="margin-top:30px;">
 
 ## 💬 Contact
 
