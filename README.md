@@ -1,14 +1,20 @@
+<div align="center">
+
 # Fixit Cloud ☁️ MODULES
 
 Terraform modules for defining Fixit Cloud architecture.
 
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
+[![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
+[![license][license-shield]](/LICENSE)
 
 **Check out the [fixit-cloud-live][fixit-cloud-live] repo to view the Terragrunt files which implement these modules.**
 
---
+</div>
 
-### Available Modules:
+---
+
+### 🧱 Available Modules:
 
 - AWS
   - [Account Baseline](AWS_AccountBaseline/README.md)
@@ -28,36 +34,32 @@ Terraform modules for defining Fixit Cloud architecture.
 - Terraform Cloud
   - [Workspaces](TFC_Workspaces/README.md)
 
-## Developer Setup
+## ⚙️ Developer Setup
 
-<!-- TODO replace below w something like that in FCL. Also don't forget to add 'tfsec-checkgen' and 'terraform-docs' installs (see dev-env-repo). -->
+```bash
+# Clone the project into your local filesystem
+git clone git@github.com:Nerdware-LLC/fixit-cloud-modules.git
 
-1. Clone the project into your local filesystem:
-   ```shell
-   git clone git@github.com:Nerdware-LLC/fixit-cloud-modules.git
-   ```
-2. Ensure [**pre-commit**](https://pre-commit.com/#install) is installed locally.
-3. Run `pre-commit install` to ensure local .git hooks are present.
-4. If developing alongside the **fixit-cloud-live** companion repo (recommended), install relevant binaries:
-   - TFLint:
-   ```shell
-   curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-   ```
-   - TFSec:
-   ```shell
-   wget https://github.com/aquasecurity/tfsec/releases/download/v0.63.1/tfsec-linux-amd64
-   ```
-5. Profit 💰💰💰
+# Ensure pre-commit is installed (more info: https://pre-commit.com/#install)
+pip3 install pre-commit
 
-TFLint Rules Docs
-https://github.com/terraform-linters/tflint/tree/master/docs/rules
+# Ensure pre-commit git hooks are in place
+pre-commit install
 
-TFSec Docs
-https://github.com/aquasecurity/tfsec
+# Ensure TFLint is installed (more info: https://github.com/terraform-linters/tflint#readme)
+curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
-Note: All custom TFSec custom rules must end in `_tfchecks.yaml/json`
+# Ensure TFSec is installed.
+go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+# Here we use go, but other methods are available at the link below.
+# https://aquasecurity.github.io/tfsec/v1.23.3/guides/installation/
+```
 
-## License
+## 🛡️ Custom TFSec Checks
+
+All custom TFSec custom rules must end in `_tfchecks.yaml/json` and be placed in [the /.tfsec dir](/.tfsec/README.md).
+
+## 📝 License
 
 All scripts and source code contained herein are for commercial use only by Nerdware, LLC.
 
@@ -92,7 +94,12 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.Anderso
 
 </div>
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+<!-- LINKS -->
 
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-33A532.svg?logo=pre-commit&logoColor=F8B424&labelColor=gray
+[semantic-shield]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-E10079.svg
+[semantic-gh-action-url]: https://github.com/cycjimmy/semantic-release-action
+[license-shield]: https://img.shields.io/badge/license-Proprietary-000080.svg?labelColor=gray
 [fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
+[gh-action-docs-url]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
+[gh-pat-docs-url]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
