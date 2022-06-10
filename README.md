@@ -98,8 +98,5 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [T.Anderso
 
 [pre-commit-shield]: https://img.shields.io/badge/pre--commit-33A532.svg?logo=pre-commit&logoColor=F8B424&labelColor=gray
 [semantic-shield]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-E10079.svg
-[semantic-gh-action-url]: https://github.com/cycjimmy/semantic-release-action
 [license-shield]: https://img.shields.io/badge/license-Proprietary-000080.svg?labelColor=gray
 [fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
-[gh-action-docs-url]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
-[gh-pat-docs-url]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
