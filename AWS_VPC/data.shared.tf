@@ -1,4 +1,11 @@
 ######################################################################
+### SHARED DATA SOURCES
+######################################################################
+### AWS Region
+
+data "aws_region" "current" {}
+
+#---------------------------------------------------------------------
 ### AWS Service IP Ranges
 
 # For more info, see the README section "CIDR Blocks: AWS Services"
@@ -35,7 +42,6 @@ locals {
   AWS_SERVICE_CIDRS = {
     for service_enum, ip_ranges in data.aws_ip_ranges.map : service_enum => ip_ranges.cidr_blocks
   }
-
 }
 
 ######################################################################

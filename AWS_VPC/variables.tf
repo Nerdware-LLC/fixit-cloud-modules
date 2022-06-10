@@ -277,6 +277,57 @@ variable "security_groups" {
 }
 
 #---------------------------------------------------------------------
+### VPC Endpoints (PrivateLink)
+
+variable "vpc_endpoints" {
+  description = <<-EOF
+  Map of VPC Endpoint services to endpoint config objects. Service-keys are
+  all normalized to lower-case and are therefore case-insensitive. A list of
+  valid services is available at the link below.
+  https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
+
+  "type" can be "Interface" (default), "Gateway", or "GatewayLoadBalancer".
+  Gateway endpoints can only be created for the S3 and DynamoDB services.
+  All "Gateway" and some "Interface" endpoints can provide "policy", which if
+  provided must be a valid IAM policy formatted as a JSON string.
+  If the endpoint and service are owned by the same account, "auto-accept" can
+  be used to either enable or disable automatic acceptance of the connection.
+  "enable_private_dns" is only applicable to "Interface" endpoints and defaults
+  to true. "timeouts" are all optional and default to "10m" if not provided.
+
+  Endpoint Resource Associations
+  "Interface" and "GatewayLoadBalancer" endpoints must provide "subnet_cidrs", a
+  list of subnet CIDRs in which to place the interface/GWLB. "Interface" endpoints
+  must additionally provide "security_groups", a list of names of security groups
+  which should be associated with the endpoint's interface. "Gateway" endpoints
+  must specify "route_tables"; AWS will automatically add/remove routes to these
+  route tables which connect the service's AWS-managed prefix-list to the gateway
+  endpoint.
+
+  For more info:
+    - [`VPC Endpoints` README](#vpc-endpoints)
+    - [Usage example](examples/terragrunt.hcl)
+  EOF
+
+  type = map(object({
+    # map keys: names of VPC endpoint services
+    type               = optional(string) # Interface (default), Gateway, or GatewayLoadBalancer
+    policy             = optional(string)
+    auto_accept        = optional(bool)
+    enable_private_dns = optional(bool)         # Only for types: Interface
+    subnet_cidrs       = optional(list(string)) # Only for types: Interface, GWLB
+    security_groups    = optional(list(string)) # Only for types: Interface
+    route_tables       = optional(list(string)) # Only for types: Gateway
+    timeouts = optional(object({
+      create = optional(string)
+      update = optional(string)
+      delete = optional(string)
+    }))
+    tags = optional(map(string))
+  }))
+}
+
+#---------------------------------------------------------------------
 ### Misc Resource Tags
 
 variable "internet_gateway_tags" {

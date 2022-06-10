@@ -21,16 +21,17 @@ Terraform module for defining secure-by-default VPC resources.
   - [NACL Rules](#nacl-rules)
   - [Subnet-Type Network ACLs](#subnet-type-network-acls)
   - [Custom Network ACLs](#custom-network-acls)
+- [VPC Endpoints](#vpc-endpoints)
 - [Non-Configurable VPC-Default Resources](#non-configurable-vpc-default-resources)
 - [AWS Service CIDR Blocks](#aws-service-cidr-blocks)
-- [Module Usage](#module-usage)
+- [⚙️ Module Usage](#️-module-usage)
   - [Requirements](#requirements)
   - [Providers](#providers)
   - [Modules](#modules)
   - [Resources](#resources)
   - [Inputs](#inputs)
   - [Outputs](#outputs)
-- [License](#license)
+- [📝 License](#-license)
 - [💬 Contact](#-contact)
 
 ## VPC Configs
@@ -248,6 +249,10 @@ By default, a network ACL will be created for each subnet type included in your 
 
 To create your own NACL, simply use your own custom NACL name as a key in this variable, and then associate subnets with the NACL via the `network_acl` property in your `var.subnets` configs. If all subnets of any given type are assigned to custom NACLs, then the **Subnet-Type** NACL for that type will not be created.
 
+## VPC Endpoints
+
+<!-- TODO add info for VPC Endpoints -->
+
 ## Non-Configurable VPC-Default Resources
 
 In accordance with network security best practices, this module brings each VPC's default resources (listed below) under management, and locks them down by implementing configurations that deny all traffic which may otherwise be **_implicitly_** allowed. This behavior cannot be overridden, as it ensures that the only network traffic throughout the VPC is that which has been **_explicitly_** allowed.
@@ -354,6 +359,7 @@ No modules.
 | [aws_security_group_rule.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_subnet.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
+| [aws_vpc_endpoint.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_peering_connection.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection) | resource |
 | [aws_vpc_peering_connection_accepter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter) | resource |
 | [aws_vpc_peering_connection_options.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
@@ -375,6 +381,7 @@ No modules.
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | Map of Security Group names to config objects. For more info:<br>  - [`Security Groups` README](#security\_groups)<br>  - [Usage example](examples/terragrunt.hcl) | <pre>map(<br>    # map keys: security group names<br>    object({<br>      description = string<br>      access = object({<br>        ingress = optional(list(<br>          object({<br>            description            = string<br>            protocol               = optional(string)<br>            port                   = optional(number)<br>            from_port              = optional(number)<br>            to_port                = optional(number)<br>            peer_security_group_id = optional(string)<br>            peer_security_group    = optional(string)<br>            aws_service            = optional(string)<br>            cidr_blocks            = optional(list(string))<br>            self                   = optional(bool)<br>          })<br>        ))<br>        egress = optional(list(<br>          object({<br>            description            = string<br>            protocol               = optional(string)<br>            port                   = optional(number)<br>            from_port              = optional(number)<br>            to_port                = optional(number)<br>            peer_security_group_id = optional(string)<br>            peer_security_group    = optional(string)<br>            aws_service            = optional(string)<br>            cidr_blocks            = optional(list(string))<br>            self                   = optional(bool)<br>          })<br>        ))<br>      })<br>      tags = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Map of subnet CIDRs to subnet config objects. For each subnet, "type"<br>must be either "PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties<br>"map\_public\_ip\_on\_launch" and "contains\_nat\_gateway" both default to<br>false, and have no effect on non-public subnets. Public and private<br>subnets can be configured to use specific route tables and/or NACLs<br>via the "route\_table" and "network\_acl" properties respectively;<br>these have no effect on intra-only subnets. For more info:<br>  - [`Subnets` README](#subnets)<br>  - [Usage example](examples/terragrunt.hcl) | <pre>map(<br>    # map keys: subnet CIDRs<br>    object({<br>      availability_zone       = string<br>      type                    = string<br>      map_public_ip_on_launch = optional(bool)<br>      contains_nat_gateway    = optional(bool)<br>      route_table             = optional(string)<br>      network_acl             = optional(string)<br>      tags                    = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
 | <a name="input_vpc"></a> [vpc](#input\_vpc) | Config object for the VPC. All optional bools default to "true".<br>For more info:<br>  - [`VPC` README](#vpc)<br>  - [Usage example](examples/terragrunt.hcl) | <pre>object({<br>    cidr_block = string<br>    peering_request_vpc_ids = optional(map(<br>      # map keys: peer VPC IDs<br>      object({<br>        peer_vpc_owner_account_id       = optional(string)<br>        peer_vpc_region                 = optional(string)<br>        allow_remote_vpc_dns_resolution = optional(bool)<br>        tags                            = optional(map(string))<br>      })<br>    ))<br>    peering_accept_connection_ids = optional(map(<br>      # map keys: peering connection IDs<br>      object({<br>        allow_remote_vpc_dns_resolution = optional(bool)<br>        tags                            = optional(map(string))<br>      })<br>    ))<br>    enable_dns_support   = optional(bool)<br>    enable_dns_hostnames = optional(bool)<br>    tags                 = optional(map(string))<br>  })</pre> | n/a | yes |
+| <a name="input_vpc_endpoints"></a> [vpc\_endpoints](#input\_vpc\_endpoints) | Map of VPC Endpoint services to endpoint config objects. Service-keys are<br>all normalized to lower-case and are therefore case-insensitive. A list of<br>valid services is available at the link below.<br>https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html<br><br>"type" can be "Interface" (default), "Gateway", or "GatewayLoadBalancer".<br>Gateway endpoints can only be created for the S3 and DynamoDB services.<br>All "Gateway" and some "Interface" endpoints can provide "policy", which if<br>provided must be a valid IAM policy formatted as a JSON string.<br>If the endpoint and service are owned by the same account, "auto-accept" can<br>be used to either enable or disable automatic acceptance of the connection.<br>"enable\_private\_dns" is only applicable to "Interface" endpoints and defaults<br>to true. "timeouts" are all optional and default to "10m" if not provided.<br><br>Endpoint Resource Associations<br>"Interface" and "GatewayLoadBalancer" endpoints must provide "subnet\_cidrs", a<br>list of subnet CIDRs in which to place the interface/GWLB. "Interface" endpoints<br>must additionally provide "security\_groups", a list of names of security groups<br>which should be associated with the endpoint's interface. "Gateway" endpoints<br>must specify "route\_tables"; AWS will automatically add/remove routes to these<br>route tables which connect the service's AWS-managed prefix-list to the gateway<br>endpoint.<br><br>For more info:<br>  - [`VPC Endpoints` README](#vpc-endpoints)<br>  - [Usage example](examples/terragrunt.hcl) | <pre>map(object({<br>    # map keys: names of VPC endpoint services<br>    type               = optional(string) # Interface (default), Gateway, or GatewayLoadBalancer<br>    policy             = optional(string)<br>    auto_accept        = optional(bool)<br>    enable_private_dns = optional(bool)         # Only for types: Interface<br>    subnet_cidrs       = optional(list(string)) # Only for types: Interface, GWLB<br>    security_groups    = optional(list(string)) # Only for types: Interface<br>    route_tables       = optional(list(string)) # Only for types: Gateway<br>    timeouts = optional(object({<br>      create = optional(string)<br>      update = optional(string)<br>      delete = optional(string)<br>    }))<br>    tags = optional(map(string))<br>  }))</pre> | n/a | yes |
 
 ### Outputs
 
@@ -391,6 +398,7 @@ No modules.
 | <a name="output_Security_Groups"></a> [Security\_Groups](#output\_Security\_Groups) | Map of security group resource objects. |
 | <a name="output_Subnets"></a> [Subnets](#output\_Subnets) | Map of subnet resource objects. |
 | <a name="output_VPC"></a> [VPC](#output\_VPC) | The VPC resource object. |
+| <a name="output_VPC_Endpoints"></a> [VPC\_Endpoints](#output\_VPC\_Endpoints) | Map of VPC Endpoint resource objects. |
 | <a name="output_VPC_Peering_Connection_Accepts"></a> [VPC\_Peering\_Connection\_Accepts](#output\_VPC\_Peering\_Connection\_Accepts) | Map of VPC Peering Connection Accepter resource objects. |
 | <a name="output_VPC_Peering_Connection_Options"></a> [VPC\_Peering\_Connection\_Options](#output\_VPC\_Peering\_Connection\_Options) | Map of VPC Peering Connection Options resource objects. |
 | <a name="output_VPC_Peering_Connection_Requests"></a> [VPC\_Peering\_Connection\_Requests](#output\_VPC\_Peering\_Connection\_Requests) | Map of VPC Peering Connection resource objects. |

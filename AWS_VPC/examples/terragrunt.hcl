@@ -305,7 +305,7 @@ inputs = {
           }
           "210" = { # HTTPS from peer: Management-Svcs VPC
             cidr_block = local.peer_vpc.cidr_block
-            port = 443
+            port       = 443
           }
           "510" = { # Ephemeral ports ingress from peer: Management-Svcs VPC
             cidr_block = local.peer_vpc.cidr_block
@@ -316,7 +316,7 @@ inputs = {
         egress = {
           "210" = { # HTTPS to peer: Management-Svcs VPC
             cidr_block = local.peer_vpc.cidr_block
-            port = 443
+            port       = 443
           }
           "500" = { # Ephemeral ports egress to Public_Subnet_A
             cidr_block = local.subnet_cidrs.public_subnet_A
@@ -425,6 +425,15 @@ inputs = {
         ]
         egress = []
       }
+    }
+  }
+
+  # VPC ENDPOINTS ----------------------------------
+
+  vpc_endpoints = {
+    s3 = {
+      type         = "Gateway"
+      route_tables = ["Private_Subnets_NACL"]
     }
   }
 

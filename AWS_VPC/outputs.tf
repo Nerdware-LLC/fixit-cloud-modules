@@ -93,6 +93,14 @@ output "Security_Groups" {
 }
 
 #---------------------------------------------------------------------
+### VPC Endpoint Outputs
+
+output "VPC_Endpoints" {
+  description = "Map of VPC Endpoint resource objects."
+  value       = aws_vpc_endpoint.map
+}
+
+#---------------------------------------------------------------------
 ### Default VPC-Resource Outputs
 
 output "Default_RouteTable" {
