@@ -29,10 +29,12 @@ plugins:
 
   - - "@semantic-release/changelog"
     - changelogFile: "CHANGELOG.md"
-      changelogTitle: >
-        # Changelog \n\n
-        All notable changes to this project will be documented in this file. \n\n
-        --- \n
+      changelogTitle: |
+        # Changelog
+
+        All notable changes to this project will be documented in this file.
+
+        ---
 
   - - "@semantic-release/git"
     - assets: ["CHANGELOG.md"]
