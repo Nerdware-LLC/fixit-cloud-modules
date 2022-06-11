@@ -8,7 +8,7 @@ on:
       - next
     paths:
       - "**/*.tf"
-      - "**/*.tpl"
+      - "**/*.tftpl"
       - "**/README.md"
       - ".github/workflows/release.yml"
 
