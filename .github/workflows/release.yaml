@@ -10,7 +10,7 @@ on:
       - "**/*.tf"
       - "**/*.tftpl"
       - "**/README.md"
-      - ".github/workflows/release.yml"
+      - ".github/workflows/release.yaml"
 
 jobs:
   release:
