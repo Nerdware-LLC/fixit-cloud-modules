@@ -2,7 +2,7 @@
 ### Terraform Version Info
 
 terraform {
-  required_version = "1.2.2"
+  required_version = "1.2.4"
   experiments      = [module_variable_optional_attrs]
 
   required_providers {
