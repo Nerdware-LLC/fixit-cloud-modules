@@ -182,7 +182,7 @@ resource "aws_sns_topic_policy" "us-east-2" {
   count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   arn = one(aws_sns_topic.us-east-2).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.us-east-2).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -251,7 +251,7 @@ resource "aws_sns_topic_policy" "ap-northeast-1" {
   provider = aws.ap-northeast-1
 
   arn = one(aws_sns_topic.ap-northeast-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-northeast-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -320,7 +320,7 @@ resource "aws_sns_topic_policy" "ap-northeast-2" {
   provider = aws.ap-northeast-2
 
   arn = one(aws_sns_topic.ap-northeast-2).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-northeast-2).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -389,7 +389,7 @@ resource "aws_sns_topic_policy" "ap-northeast-3" {
   provider = aws.ap-northeast-3
 
   arn = one(aws_sns_topic.ap-northeast-3).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-northeast-3).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -458,7 +458,7 @@ resource "aws_sns_topic_policy" "ap-south-1" {
   provider = aws.ap-south-1
 
   arn = one(aws_sns_topic.ap-south-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-south-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -527,7 +527,7 @@ resource "aws_sns_topic_policy" "ap-southeast-1" {
   provider = aws.ap-southeast-1
 
   arn = one(aws_sns_topic.ap-southeast-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-southeast-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -596,7 +596,7 @@ resource "aws_sns_topic_policy" "ap-southeast-2" {
   provider = aws.ap-southeast-2
 
   arn = one(aws_sns_topic.ap-southeast-2).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ap-southeast-2).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -665,7 +665,7 @@ resource "aws_sns_topic_policy" "ca-central-1" {
   provider = aws.ca-central-1
 
   arn = one(aws_sns_topic.ca-central-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.ca-central-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -734,7 +734,7 @@ resource "aws_sns_topic_policy" "eu-north-1" {
   provider = aws.eu-north-1
 
   arn = one(aws_sns_topic.eu-north-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.eu-north-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -803,7 +803,7 @@ resource "aws_sns_topic_policy" "eu-central-1" {
   provider = aws.eu-central-1
 
   arn = one(aws_sns_topic.eu-central-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.eu-central-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -872,7 +872,7 @@ resource "aws_sns_topic_policy" "eu-west-1" {
   provider = aws.eu-west-1
 
   arn = one(aws_sns_topic.eu-west-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.eu-west-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -941,7 +941,7 @@ resource "aws_sns_topic_policy" "eu-west-2" {
   provider = aws.eu-west-2
 
   arn = one(aws_sns_topic.eu-west-2).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.eu-west-2).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -1010,7 +1010,7 @@ resource "aws_sns_topic_policy" "eu-west-3" {
   provider = aws.eu-west-3
 
   arn = one(aws_sns_topic.eu-west-3).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.eu-west-3).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -1079,7 +1079,7 @@ resource "aws_sns_topic_policy" "sa-east-1" {
   provider = aws.sa-east-1
 
   arn = one(aws_sns_topic.sa-east-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.sa-east-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -1148,7 +1148,7 @@ resource "aws_sns_topic_policy" "us-east-1" {
   provider = aws.us-east-1
 
   arn = one(aws_sns_topic.us-east-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.us-east-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -1217,7 +1217,7 @@ resource "aws_sns_topic_policy" "us-west-1" {
   provider = aws.us-west-1
 
   arn = one(aws_sns_topic.us-west-1).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.us-west-1).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
@@ -1286,7 +1286,7 @@ resource "aws_sns_topic_policy" "us-west-2" {
   provider = aws.us-west-2
 
   arn = one(aws_sns_topic.us-west-2).arn
-  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.tftpl", {
+  policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {
     sns_topic_arn   = one(aws_sns_topic.us-west-2).arn
     org_id          = local.org_id
     all_account_ids = local.all_account_ids
