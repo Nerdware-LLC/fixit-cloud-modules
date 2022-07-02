@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+
+## [0.4.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.0...v0.4.1) (2022-07-02)
+
+
+### Bug Fixes
+
+* **config-sns:** correct path to sns topic policy templatefile ([749c01e](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/749c01e8f1580ebcadb4d6e4e553a3c6924a98fe))
+* update changelogTitle so newlines are correctly interpreted ([e3ab63a](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/e3ab63adcf5df4f36a844483cb2c24859aa2cb66))
+
 # [0.4.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.3.15...v0.4.0) (2022-06-11)
 
 ### Bug Fixes
