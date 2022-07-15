@@ -5,34 +5,67 @@
 
 variable "vpc" {
   description = <<-EOF
-  Config object for the VPC. All optional bools default to "true".
-  For more info:
+  Config object for the VPC. The optional bools "enable_dns_support"
+  and "enable_dns_hostnames" both default to "true". For more info:
     - [`VPC` README](#vpc)
     - [Usage example](examples/terragrunt.hcl)
   EOF
 
   type = object({
-    cidr_block = string
-    peering_request_vpc_ids = optional(map(
-      # map keys: peer VPC IDs
-      object({
-        peer_vpc_owner_account_id       = optional(string)
-        peer_vpc_region                 = optional(string)
-        allow_remote_vpc_dns_resolution = optional(bool)
-        tags                            = optional(map(string))
-      })
-    ))
-    peering_accept_connection_ids = optional(map(
-      # map keys: peering connection IDs
-      object({
-        allow_remote_vpc_dns_resolution = optional(bool)
-        tags                            = optional(map(string))
-      })
-    ))
+    cidr_block           = string
     enable_dns_support   = optional(bool)
     enable_dns_hostnames = optional(bool)
     tags                 = optional(map(string))
   })
+}
+
+#---------------------------------------------------------------------
+### VPC Peering Connections
+
+variable "peering_request_vpc_ids" {
+  description = <<-EOF
+  (Optional) VPC Peering connection requests config; use this variable for
+  peering connections in which your VPC is the REQUESTER VPC. Map accepter
+  VPC IDs to config objects for each respective peering connection request.
+  "allow_remote_vpc_dns_resolution" defaults to "true". For more info:
+    - [`VPC Peering` README](#vpc-peering)
+    - [Usage example](examples/terragrunt.hcl)
+  EOF
+
+  type = map(
+    # map keys: peer VPC IDs
+    object({
+      peer_vpc_owner_account_id       = optional(string)
+      peer_vpc_region                 = optional(string)
+      allow_remote_vpc_dns_resolution = optional(bool)
+      tags                            = optional(map(string))
+    })
+  )
+
+  default = {}
+}
+
+variable "peering_accept_connection_ids" {
+  description = <<-EOF
+  (Optional) VPC Peering connection accepts config; use this variable for
+  peering connections in which your VPC is the ACCEPTER VPC. Map peering
+  connection IDs to config objects for each respective peering connection
+  to accept. If the peering connection was configured for auto-acceptance,
+  manual acceptance is not required to establish the connection.
+  "allow_remote_vpc_dns_resolution" defaults to "true". For more info:
+    - [`VPC Peering` README](#vpc-peering)
+    - [Usage example](examples/terragrunt.hcl)
+  EOF
+
+  type = map(
+    # map keys: peering connection IDs
+    object({
+      allow_remote_vpc_dns_resolution = optional(bool)
+      tags                            = optional(map(string))
+    })
+  )
+
+  default = {}
 }
 
 #---------------------------------------------------------------------

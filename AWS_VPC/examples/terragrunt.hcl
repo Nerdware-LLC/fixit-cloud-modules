@@ -39,28 +39,31 @@ inputs = {
 
   vpc = {
     cidr_block = local.vpc_cidr
-    peering_request_vpc_ids = {
 
-      # Request peering connection with Management-Svcs VPC
-      "${local.peer_vpc.id}" = {
-        peer_vpc_owner_account_id       = local.peer_vpc.owner_id
-        allow_remote_vpc_dns_resolution = true # <-- default: true
-
-        /* In this example, both vpc and peer_vpc are in the same region, so
-        "peer_region" does not have to be provided here.
-
-        Also, since this example VPC and the peer Management-Svcs VPC are owned
-        by different accounts, the peering connection cannot be auto-accepted -
-        it must be manually accepted by the peer VPC. Assuming the peer VPC is
-        using the same VPC module, acceptance would be configured using the
-        "peering_accept_connection_ids" property.                        */
-      }
-
-    }
     enable_dns_support   = true # <-- default: true
     enable_dns_hostnames = true # <-- default: true
     tags = {
       Name = "Foo_Development_VPC"
+    }
+  }
+
+  # VPC PEERING ------------------------------------
+
+  peering_request_vpc_ids = {
+
+    # Request peering connection with Management-Svcs VPC
+    "${local.peer_vpc.id}" = {
+      peer_vpc_owner_account_id       = local.peer_vpc.owner_id
+      allow_remote_vpc_dns_resolution = true # <-- default: true
+
+      /* In this example, both vpc and peer_vpc are in the same region, so
+      "peer_region" does not have to be provided here.
+
+      Also, since this example VPC and the peer Management-Svcs VPC are owned
+      by different accounts, the peering connection cannot be auto-accepted -
+      it must be manually accepted by the peer VPC. Assuming the peer VPC is
+      using the same VPC module, acceptance would be configured using the
+      "peering_accept_connection_ids" input variable.  */
     }
   }
 
@@ -187,7 +190,7 @@ inputs = {
             2. If VPC is the peering ACCEPTER, use "peering_connection_id"
 
           In this example, our VPC is the REQUESTER, so we use the same VPC ID in
-          "peering_request_vpc_id" that was used in "var.vpc.peering_request_vpc_ids". */
+          "peering_request_vpc_id" that was used in "var.peering_request_vpc_ids". */
           peering_request_vpc_id = local.peer_vpc.id
         }
       }
