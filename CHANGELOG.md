@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.4.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.2...v0.4.3) (2022-07-15)
+
+
+### Bug Fixes
+
+* **tf-version:** bump modules TF req_version to 1.2.5 ([5b8ae83](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/5b8ae8313e5802ced48c1bc9fa5116dbfd498ddf))
+
 ## [0.4.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.1...v0.4.2) (2022-07-08)
 
 ## [0.4.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.0...v0.4.1) (2022-07-02)
