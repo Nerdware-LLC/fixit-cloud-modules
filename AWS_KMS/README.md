@@ -23,16 +23,16 @@ Terraform module for defining an AWS KMS Key and related resources.
 
 ### Requirements
 
-| Name                                                                     | Version   |
-| ------------------------------------------------------------------------ | --------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.2     |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
 
-| Name                                             | Version   |
-| ------------------------------------------------ | --------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
 
 ### Modules
 
@@ -40,28 +40,28 @@ No modules.
 
 ### Resources
 
-| Name                                                                                                        | Type     |
-| ----------------------------------------------------------------------------------------------------------- | -------- |
+| Name | Type |
+|------|------|
 | [aws_kms_alias.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
-| [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key)     | resource |
+| [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 
 ### Inputs
 
-| Name                                                                                                            | Description                                                                                                    | Type       | Default | Required |
-| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------- | ------- | :------: |
-| <a name="input_is_multi_region_key"></a> [is_multi_region_key](#input_is_multi_region_key)                      | Boolean indicating whether the key is a multi-region key; defaults to<br>false if not provided.                | `bool`     | `false` |    no    |
-| <a name="input_key_alias"></a> [key_alias](#input_key_alias)                                                    | An alias to apply to the KMS key.                                                                              | `string`   | `null`  |    no    |
-| <a name="input_key_description"></a> [key_description](#input_key_description)                                  | A description of the KMS key and/or its purpose.                                                               | `string`   | `null`  |    no    |
-| <a name="input_key_policy"></a> [key_policy](#input_key_policy)                                                 | A JSON-encoded KMS key policy.                                                                                 | `string`   | n/a     |   yes    |
-| <a name="input_key_tags"></a> [key_tags](#input_key_tags)                                                       | Map of tags to apply to the KMS key.                                                                           | `map(any)` | `null`  |    no    |
-| <a name="input_should_enable_key_rotation"></a> [should_enable_key_rotation](#input_should_enable_key_rotation) | Boolean indicating whether the key has the auto-rotation feature enabled;<br>defaults to true if not provided. | `bool`     | `true`  |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_is_multi_region_key"></a> [is\_multi\_region\_key](#input\_is\_multi\_region\_key) | Boolean indicating whether the key is a multi-region key; defaults to<br>false if not provided. | `bool` | `false` | no |
+| <a name="input_key_alias"></a> [key\_alias](#input\_key\_alias) | An alias to apply to the KMS key. | `string` | `null` | no |
+| <a name="input_key_description"></a> [key\_description](#input\_key\_description) | A description of the KMS key and/or its purpose. | `string` | `null` | no |
+| <a name="input_key_policy"></a> [key\_policy](#input\_key\_policy) | A JSON-encoded KMS key policy. | `string` | n/a | yes |
+| <a name="input_key_tags"></a> [key\_tags](#input\_key\_tags) | Map of tags to apply to the KMS key. | `map(any)` | `null` | no |
+| <a name="input_should_enable_key_rotation"></a> [should\_enable\_key\_rotation](#input\_should\_enable\_key\_rotation) | Boolean indicating whether the key has the auto-rotation feature enabled;<br>defaults to true if not provided. | `bool` | `true` | no |
 
 ### Outputs
 
-| Name                                                                       | Description                        |
-| -------------------------------------------------------------------------- | ---------------------------------- |
-| <a name="output_KMS_Key"></a> [KMS_Key](#output_KMS_Key)                   | The KMS Key resource object.       |
-| <a name="output_KMS_Key_Alias"></a> [KMS_Key_Alias](#output_KMS_Key_Alias) | The KMS Key Alias resource object. |
+| Name | Description |
+|------|-------------|
+| <a name="output_KMS_Key"></a> [KMS\_Key](#output\_KMS\_Key) | The KMS Key resource object. |
+| <a name="output_KMS_Key_Alias"></a> [KMS\_Key\_Alias](#output\_KMS\_Key\_Alias) | The KMS Key Alias resource object. |
 
 ---
 
