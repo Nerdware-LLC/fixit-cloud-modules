@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.4.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.3...v0.4.4) (2022-07-15)
+
 ## [0.4.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.2...v0.4.3) (2022-07-15)
 
 
