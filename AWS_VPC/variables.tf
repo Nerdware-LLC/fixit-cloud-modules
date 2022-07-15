@@ -358,6 +358,8 @@ variable "vpc_endpoints" {
     }))
     tags = optional(map(string))
   }))
+
+  default = {}
 }
 
 #---------------------------------------------------------------------
