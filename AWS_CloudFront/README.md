@@ -23,10 +23,10 @@ Terraform module for defining CloudFront resources.
 
 ### Requirements
 
-| Name                                                                     | Version   |
-| ------------------------------------------------------------------------ | --------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.2     |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
 
