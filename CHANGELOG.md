@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.4.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.6...v0.4.7) (2022-07-16)
+
+
+### Bug Fixes
+
+* **vpc-e:** correct SecGrp resource label ref ([e09fc88](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/e09fc88a3d4fc1bfad4a56b0e963cea2886cd249))
+
 ## [0.4.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.5...v0.4.6) (2022-07-16)
 
 
