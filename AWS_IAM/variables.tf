@@ -9,12 +9,15 @@ variable "custom_iam_policies" {
   property.
   EOF
 
-  type = map(object({
-    policy_json = string
-    description = optional(string)
-    path        = optional(string)
-    tags        = optional(map(string))
-  }))
+  type = map(
+    # map keys: IAM Policy names
+    object({
+      policy_json = string
+      description = optional(string)
+      path        = optional(string)
+      tags        = optional(map(string))
+    })
+  )
 
   default = {}
 }
@@ -36,14 +39,17 @@ variable "iam_roles" {
   include the names of those policies in this list as well.
   EOF
 
-  type = map(object({
-    description             = optional(string)
-    path                    = optional(string)
-    assume_role_policy_json = optional(string)
-    service_assume_role     = optional(string)
-    policies                = optional(list(string))
-    tags                    = optional(map(string))
-  }))
+  type = map(
+    # map keys: IAM Role names
+    object({
+      description             = optional(string)
+      path                    = optional(string)
+      assume_role_policy_json = optional(string)
+      service_assume_role     = optional(string)
+      policies                = optional(list(string))
+      tags                    = optional(map(string))
+    })
+  )
 
   default = {}
 
@@ -69,12 +75,15 @@ variable "instance_profiles" {
   the name of the desired role to "role_name".
   EOF
 
-  type = map(object({
-    path      = optional(string)
-    role_arn  = optional(string)
-    role_name = optional(string)
-    tags      = optional(map(string))
-  }))
+  type = map(
+    # map keys: Instance Profile names
+    object({
+      path      = optional(string)
+      role_arn  = optional(string)
+      role_name = optional(string)
+      tags      = optional(map(string))
+    })
+  )
 
   default = {}
 
