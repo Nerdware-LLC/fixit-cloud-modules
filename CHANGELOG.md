@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.5.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.9...v0.5.0) (2022-07-16)
+
+
+### Features
+
+* **AWS_IAM:** add var,resource,output for Service-Linked Roles ([b1172ff](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/b1172ff55f1477d2e54caee52b04a952145428a7))
+
 ## [0.4.9](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.8...v0.4.9) (2022-07-16)
 
 ## [0.4.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.7...v0.4.8) (2022-07-16)
