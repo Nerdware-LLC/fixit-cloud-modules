@@ -77,36 +77,36 @@ resource "aws_network_acl" "map" {
   subnet_ids = each.value.subnet_ids
 
   dynamic "ingress" {
-    for_each = try(each.value.access.ingress, [])
+    for_each = try(coalesce(each.value.access.ingress, []), [])
     iterator = rule
 
     content {
-      rule_no  = rule.key
+      rule_no  = rule.value
       action   = "allow"
-      protocol = try(rule.value.protocol, "tcp")
+      protocol = coalesce(rule.value.protocol, "tcp")
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = try(rule.value.from_port, rule.value.port)
-      to_port   = try(rule.value.to_port, rule.value.port)
+      from_port = coalesce(rule.value.from_port, rule.value.port)
+      to_port   = coalesce(rule.value.to_port, rule.value.port)
     }
   }
 
   dynamic "egress" {
-    for_each = try(each.value.access.egress, [])
+    for_each = try(coalesce(each.value.access.egress, []), [])
     iterator = rule
 
     content {
-      rule_no  = rule.key
+      rule_no  = rule.value
       action   = "allow"
-      protocol = try(rule.value.protocol, "tcp")
+      protocol = coalesce(rule.value.protocol, "tcp")
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = try(rule.value.from_port, rule.value.port)
-      to_port   = try(rule.value.to_port, rule.value.port)
+      from_port = coalesce(rule.value.from_port, rule.value.port)
+      to_port   = coalesce(rule.value.to_port, rule.value.port)
     }
   }
 
@@ -142,14 +142,19 @@ resource "aws_network_acl" "map" {
 locals {
   COMMON_NACL_RULES = {
     "100" = { # HTTP anywhere
+      protocol   = "tcp"
       cidr_block = "0.0.0.0/0"
-      port       = 80
+      from_port  = 80
+      to_port    = 80
     }
     "200" = { # HTTPS anywhere
+      protocol   = "tcp"
       cidr_block = "0.0.0.0/0"
-      port       = 443
+      from_port  = 443
+      to_port    = 443
     }
     "500" = { # Ephemeral ports
+      protocol   = "tcp"
       cidr_block = "0.0.0.0/0"
       from_port  = 1024
       to_port    = 65535

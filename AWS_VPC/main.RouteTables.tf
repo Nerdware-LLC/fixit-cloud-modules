@@ -93,8 +93,6 @@ resource "aws_route_table" "map" {
   vpc_id = aws_vpc.this.id
   tags   = try(var.route_tables[each.key].tags, null)
 
-  # TODO test below assertion
-
   /* dynamic "route" blocks cannot contain both "gateway_id" and "nat_gateway_id",
   even if set to null when unused. Therefore, three separate dynamic "route" blocks:
     - One which filters for default route with "gateway_id" (public subnet RTs)
@@ -107,7 +105,7 @@ resource "aws_route_table" "map" {
     for_each = each.value.subnet_type == "PUBLIC" ? ["0.0.0.0/0"] : []
 
     content {
-      cidr_block = route.key
+      cidr_block = route.value
       gateway_id = one(aws_internet_gateway.list).id
     }
   }
@@ -117,7 +115,7 @@ resource "aws_route_table" "map" {
     for_each = each.value.subnet_type == "PRIVATE" ? ["0.0.0.0/0"] : []
 
     content {
-      cidr_block = route.key
+      cidr_block = route.value
       /* The NAT gateway ID is obtained from aws_nat_gateway.map in one of two ways,
       depending on the nature of the private subnet's "route_table" value:
 
@@ -149,7 +147,7 @@ resource "aws_route_table" "map" {
     }
 
     content {
-      cidr_block = route.key
+      cidr_block = route.value
       # Peering Connection Routes
       vpc_peering_connection_id = try(
         aws_vpc_peering_connection[route.value.peering_request_vpc_id].id, # for REQUESTER VPCs
