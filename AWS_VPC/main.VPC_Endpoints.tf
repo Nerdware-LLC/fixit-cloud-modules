@@ -10,7 +10,7 @@ locals {
     for svc, svc_endpoint_config in var.vpc_endpoints : lower(svc) => merge(
       svc_endpoint_config,
       {
-        type = coalesce(each.value.type, "Interface")
+        type = coalesce(svc_endpoint_config.type, "Interface")
         service_name = (
           # All services adhere to a common format except for sagemaker
           lower(svc) == "sagemaker"
