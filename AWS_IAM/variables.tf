@@ -67,6 +67,23 @@ variable "iam_roles" {
 
 #---------------------------------------------------------------------
 
+variable "iam_service_linked_roles" {
+  description = <<-EOF
+  Map of IAM Service-Linked Role URLs (e.g., "elasticbeanstalk.amazonaws.com") to
+  config objects for each respective service-linked role.
+  EOF
+
+  type = map(
+    # map keys: AWS service URL
+    object({
+      description = optional(string)
+      tags        = optional(map(string))
+    })
+  )
+}
+
+#---------------------------------------------------------------------
+
 variable "instance_profiles" {
   description = <<-EOF
   Map of Instance Profile names to config objects. To associate an instance

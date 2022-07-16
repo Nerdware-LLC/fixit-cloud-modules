@@ -41,6 +41,17 @@ resource "aws_iam_role" "map" {
 }
 
 #---------------------------------------------------------------------
+### IAM Service-Linked Roles
+
+resource "aws_iam_service_linked_role" "map" {
+  for_each = var.iam_service_linked_roles
+
+  aws_service_name = each.key
+  description      = each.value.description
+  tags             = each.value.tags
+}
+
+#---------------------------------------------------------------------
 ### IAM Instance Profiles
 
 resource "aws_iam_instance_profile" "map" {
