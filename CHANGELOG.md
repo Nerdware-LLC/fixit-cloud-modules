@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.4.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.5...v0.4.6) (2022-07-16)
+
+
+### Bug Fixes
+
+* **vpc-e:** correct ref to var.vpc_endpoints value in local ([759fa62](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/759fa62705aaaf6dd3307473a3094baa4228af28))
+
 ## [0.4.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.4...v0.4.5) (2022-07-16)
 
 
