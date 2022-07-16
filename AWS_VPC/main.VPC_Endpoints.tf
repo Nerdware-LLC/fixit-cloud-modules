@@ -46,7 +46,7 @@ resource "aws_vpc_endpoint" "map" {
 
   security_group_ids = ( # only for type "Interface"
     each.value.type == "Interface"
-    ? [for sg_name, sg in aws_aws_security_group.map : sg.id if contains(each.value.security_groups, sg_name)]
+    ? [for sg_name, sg in aws_security_group.map : sg.id if contains(each.value.security_groups, sg_name)]
     : null
   )
 
