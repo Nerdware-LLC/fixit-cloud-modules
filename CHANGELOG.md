@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.4.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.7...v0.4.8) (2022-07-16)
+
+
+### Bug Fixes
+
+* **AWS_VPC:** correct dynamic block sets to ref value not key ([d7ce8fd](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d7ce8fd0e55549e41feef2887de4585c27d88af2))
+
 ## [0.4.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.4.6...v0.4.7) (2022-07-16)
 
 
