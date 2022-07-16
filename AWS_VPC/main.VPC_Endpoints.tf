@@ -13,9 +13,9 @@ locals {
         type = coalesce(each.value.type, "Interface")
         service_name = (
           # All services adhere to a common format except for sagemaker
-          each.key == "sagemaker"
+          lower(svc) == "sagemaker"
           ? "aws.sagemaker.${data.aws_region.current.name}.notebook"
-          : "com.amazonaws.${data.aws_region.current.name}.${each.key}"
+          : "com.amazonaws.${data.aws_region.current.name}.${lower(svc)}"
         )
       }
     )
