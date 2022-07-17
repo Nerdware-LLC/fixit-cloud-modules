@@ -77,23 +77,23 @@ resource "aws_iam_instance_profile" "map" {
 resource "aws_iam_role_policy_attachment" "map" {
   /* Since neither role names nor policy names/ARNs can serve as unique keys
   within a map, we use both in combination to create keys out of jsonencoded
-  objects with keys "role" and "policy_arn". Note if user provided a policy
+  objects with keys "role" and "policy". Note if user provided a policy
   name, the ARN is obtained from the aws_iam_policy resource.  */
   for_each = toset(flatten([
     for role_name, role_config in var.iam_roles : [
       for policy_name_or_arn in coalesce(role_config.policies, []) : jsonencode({
-        role = role_name
-        policy_arn = (
-          can(aws_iam_policy.map[policy_name_or_arn])
-          ? aws_iam_policy.map[policy_name_or_arn].arn # <-- if policy was created in same module call
-          : policy_name_or_arn                         # <-- if policy is the ARN of an existing policy
-        )
+        role   = role_name
+        policy = policy_name_or_arn
       })
     ]
   ]))
 
-  role       = jsondecode(each.value).role
-  policy_arn = jsondecode(each.value).policy_arn
+  role = jsondecode(each.value).role
+  policy_arn = (
+    can(aws_iam_policy.map[jsondecode(each.value).policy])
+    ? aws_iam_policy.map[jsondecode(each.value).policy].arn # <-- if policy was created in same module call
+    : jsondecode(each.value).policy                         # <-- if policy is the ARN of an existing policy
+  )
 
   /* The purpose of this depends_on is to ensure all referenced role/policy
   resources exist before requests are submitted to attach them.  */
