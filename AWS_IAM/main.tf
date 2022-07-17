@@ -81,7 +81,7 @@ resource "aws_iam_role_policy_attachment" "map" {
   name, the ARN is obtained from the aws_iam_policy resource.  */
   for_each = toset(flatten([
     for role_name, role_config in var.iam_roles : [
-      for policy_name_or_arn in role_config.policies : jsonencode({
+      for policy_name_or_arn in coalesce(role_config.policies, []) : jsonencode({
         role = role_name
         policy_arn = (
           can(aws_iam_policy.map[policy_name_or_arn])
