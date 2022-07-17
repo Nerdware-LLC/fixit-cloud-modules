@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.5.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.4...v0.5.5) (2022-07-17)
+
+
+### Bug Fixes
+
+* **AWS_IAM:** mv policy arn lookup out of for_each to simplify applies ([2de9166](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/2de9166cf7916069fb1666df90dcf70cd406a7f8))
+
 ## [0.5.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.3...v0.5.4) (2022-07-17)
 
 
