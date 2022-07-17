@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.5.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.1...v0.5.2) (2022-07-17)
+
+
+### Bug Fixes
+
+* **AWS_IAM:** replace PolicyAttachment meta arg with for_each ([61621cc](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/61621cc85009e62dcecac0714db1e607b8963ebd))
+
 ## [0.5.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.0...v0.5.1) (2022-07-17)
 
 
