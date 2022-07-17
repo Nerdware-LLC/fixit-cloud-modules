@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.5.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.3...v0.5.4) (2022-07-17)
+
+
+### Bug Fixes
+
+* **AWS_IAM:** add coalesce empty list in policy attchmts for role policies ([3e346fd](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/3e346fd3d10ff65df19acf30969e23fa45ec53f3))
+
 ## [0.5.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.2...v0.5.3) (2022-07-17)
 
 
