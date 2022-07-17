@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.5.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.2...v0.5.3) (2022-07-17)
+
+
+### Bug Fixes
+
+* **AWS_IAM:** add default value to iam_service_linked_roles var ([1d261af](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/1d261afa58634d7e275e4fcb8191a99f034f329c))
+
 ## [0.5.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.1...v0.5.2) (2022-07-17)
 
 
