@@ -45,7 +45,7 @@ No modules.
 | [aws_iam_instance_profile.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_service_linked_role.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_service_linked_role) | resource |
 
 ### Inputs
@@ -63,6 +63,7 @@ No modules.
 |------|-------------|
 | <a name="output_Custom_IAM_Policies"></a> [Custom\_IAM\_Policies](#output\_Custom\_IAM\_Policies) | Map of custom IAM Policy resources by policy name. |
 | <a name="output_IAM_Instance_Profile"></a> [IAM\_Instance\_Profile](#output\_IAM\_Instance\_Profile) | Map of Instance Profile resource objects. |
+| <a name="output_IAM_Role_Policy_Attachments"></a> [IAM\_Role\_Policy\_Attachments](#output\_IAM\_Role\_Policy\_Attachments) | Map of IAM Role Policy Attachment resource objects, the keys of which<br>are JSON-encoded objects with keys "role" and "policy\_arn". |
 | <a name="output_IAM_Roles"></a> [IAM\_Roles](#output\_IAM\_Roles) | Map of IAM Role resource objects. |
 | <a name="output_IAM_Service_Linked_Roles"></a> [IAM\_Service\_Linked\_Roles](#output\_IAM\_Service\_Linked\_Roles) | Map of IAM Service-Linked Role resource objects. |
 

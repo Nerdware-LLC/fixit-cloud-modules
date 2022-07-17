@@ -21,4 +21,13 @@ output "IAM_Instance_Profile" {
   value       = aws_iam_instance_profile.map
 }
 
+output "IAM_Role_Policy_Attachments" {
+  description = <<-EOF
+  Map of IAM Role Policy Attachment resource objects, the keys of which
+  are JSON-encoded objects with keys "role" and "policy_arn".
+  EOF
+
+  value = aws_iam_role_policy_attachment.map
+}
+
 ######################################################################

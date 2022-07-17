@@ -74,35 +74,26 @@ resource "aws_iam_instance_profile" "map" {
 #---------------------------------------------------------------------
 ### IAM Role Policy Attachments
 
-locals {
-  /* To make the below count expression easier to read, here we form a map
-  with each role_name key set to the list of policies that each role requires,
-  respectively. Policies are sorted to ensure consistent ordering (min blast). */
-  roles_mapped_to_policies = {
-    for role_name, role_config in var.iam_roles : role_name => merge(
-      role_config,
-      { policies = sort(role_config.policies) }
-    )
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "list" {
-  count = length(flatten([
-    # This gives us a list of objects with keys "role_name" and "policy"
-    for role_name, role_policies in local.roles_mapped_to_policies : [
-      for policy_name_or_arn in role_policies : {
-        role_name = role_name
-        policy    = policy_name_or_arn
-      }
+resource "aws_iam_role_policy_attachment" "map" {
+  /* Since neither role names nor policy names/ARNs can serve as unique keys
+  within a map, we use both in combination to create keys out of jsonencoded
+  objects with keys "role" and "policy_arn". Note if user provided a policy
+  name, the ARN is obtained from the aws_iam_policy resource.  */
+  for_each = toset(flatten([
+    for role_name, role_config in var.iam_roles : [
+      for policy_name_or_arn in role_config.policies : jsonencode({
+        role = role_name
+        policy_arn = (
+          can(aws_iam_policy.map[policy_name_or_arn])
+          ? aws_iam_policy.map[policy_name_or_arn].arn # <-- if policy was created in same module call
+          : policy_name_or_arn                         # <-- if policy is the ARN of an existing policy
+        )
+      })
     ]
   ]))
 
-  role = each.value.role_name
-  policy_arn = (
-    can(aws_iam_policy.map[each.value.policy])
-    ? aws_iam_policy.map[each.value.policy].arn # <-- if policy was created in same module call
-    : each.value.policy                         # <-- if policy is the ARN of an existing policy
-  )
+  role       = jsondecode(each.value).role
+  policy_arn = jsondecode(each.value).policy_arn
 
   /* The purpose of this depends_on is to ensure all referenced role/policy
   resources exist before requests are submitted to attach them.  */
