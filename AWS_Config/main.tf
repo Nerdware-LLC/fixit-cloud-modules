@@ -76,7 +76,7 @@ resource "aws_sns_topic" "us-east-2" {
 }
 
 resource "aws_sns_topic_policy" "us-east-2" {
-  count = local.IS_ROOT_ACCOUNT && var.config_sns_topic != null ? 1 : 0
+  count = local.IS_ROOT_ACCOUNT ? 1 : 0
 
   arn = one(aws_sns_topic.us-east-2).arn
   policy = templatefile("${path.module}/templates/Config_SNS_Topic_Policy.json.tftpl", {

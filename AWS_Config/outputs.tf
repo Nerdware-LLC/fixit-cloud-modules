@@ -3,7 +3,7 @@
 
 output "Org_Config_Aggregator" {
   description = "The Config Aggregator resource."
-  value       = one(aws_config_configuration_aggregator.Org_Config_Aggregator)
+  value       = one(aws_config_configuration_aggregator.list)
 }
 
 output "Config_Recorders" {
