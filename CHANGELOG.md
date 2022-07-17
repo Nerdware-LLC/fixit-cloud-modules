@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.6.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.5...v0.6.0) (2022-07-17)
+
+
+### Features
+
+* **AWS_Config:** create separate module for AWS_Config resources ([b26e175](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/b26e175c3113525108eca1cd7d8c3a662c52e3b2))
+
 ## [0.5.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.5.4...v0.5.5) (2022-07-17)
 
 
