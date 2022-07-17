@@ -76,9 +76,13 @@ resource "aws_iam_instance_profile" "map" {
 
 locals {
   /* To make the below count expression easier to read, here we form a map
-  with each role_name key set to the list of policies that role requires.  */
+  with each role_name key set to the list of policies that each role requires,
+  respectively. Policies are sorted to ensure consistent ordering (min blast). */
   roles_mapped_to_policies = {
-    for role_name, role_config in var.iam_roles : role_name => role_config.policies
+    for role_name, role_config in var.iam_roles : role_name => merge(
+      role_config,
+      { policies = sort(role_config.policies) }
+    )
   }
 }
 
