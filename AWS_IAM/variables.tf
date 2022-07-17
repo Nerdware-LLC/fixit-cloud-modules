@@ -80,6 +80,8 @@ variable "iam_service_linked_roles" {
       tags        = optional(map(string))
     })
   )
+
+  default = {}
 }
 
 #---------------------------------------------------------------------
