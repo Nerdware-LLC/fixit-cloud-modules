@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.7.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.6.3...v0.7.0) (2022-07-22)
+
+
+### Features
+
+* **AWS_VPC:** add var.subnets params like 'type' to Subnets output obj ([926c4c2](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/926c4c2f10670b9c20ca8ac3f8a09b9c11ad6c34))
+
 ## [0.6.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.6.2...v0.6.3) (2022-07-22)
 
 ## [0.6.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.6.1...v0.6.2) (2022-07-18)
