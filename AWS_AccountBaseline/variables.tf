@@ -1,15 +1,14 @@
 ######################################################################
 ### INPUT VARIABLES
-#---------------------------------------------------------------------
+######################################################################
 ### Organization Variables:
 
 variable "accounts" {
+  description = "Map of Organization account configs."
   type = map(object({
-    id                                                = string
-    email                                             = string
-    is_log_archive_account                            = optional(bool)
-    should_enable_cross_account_cloudwatch_sharing    = optional(bool)
-    should_enable_cross_account_cloudwatch_monitoring = optional(bool)
+    id                     = string
+    email                  = string
+    is_log_archive_account = optional(bool)
   }))
   validation {
     # Ensure there's exactly 1 account designated as the Log-Archive account:
@@ -22,7 +21,6 @@ variable "accounts" {
 }
 
 # TODO rm "var.accounts[].is_log_archive_account".
-#
 
 #---------------------------------------------------------------------
 ### Account Settings Variables:
@@ -60,76 +58,6 @@ variable "org_access_analyzer" {
 }
 
 #---------------------------------------------------------------------
-### AWS Config Variables:
-
-variable "config_recorder_name" {
-  description = "The name to assign to the AWS-Config Recorder in each region."
-  type        = string
-  default     = "Org_Config_Recorder"
-}
-
-variable "config_aggregator" {
-  description = <<-EOF
-  Config object for the AWS-Config Aggregator resource and its associated IAM
-  service role, the lone policy for which is "AWSConfigRoleForOrganizations",
-  an AWS-managed policy.
-  EOF
-  type = object({
-    name = string
-    tags = optional(map(string))
-    iam_service_role = object({
-      name        = string
-      description = optional(string)
-      tags        = optional(map(string))
-    })
-  })
-}
-
-variable "config_iam_service_role" {
-  description = <<-EOF
-  Config object for IAM Service Role resource which allows the AWS-Config
-  service to write findings/logs to the Organization's log-archive S3,
-  use the Org's KMS key, and publish to the Config SNS Topic.
-  EOF
-  type = object({
-    name        = string
-    description = optional(string)
-    tags        = optional(map(string))
-    policy = object({
-      name        = string
-      description = optional(string)
-      path        = optional(string)
-      tags        = optional(map(string))
-    })
-  })
-}
-
-variable "config_sns_topic" {
-  description = "Config object for the AWS-Config SNS Topic resource."
-  type = object({
-    name         = string
-    display_name = optional(string)
-    tags         = optional(map(string))
-  })
-}
-
-variable "config_delivery_channel" {
-  description = <<-EOF
-  Config object for AWS-Config Delivery Channel resource. Allowed values
-  for "snapshot_frequency" are "One_Hour", "Three_Hours", "Six_Hours",
-  "Twelve_Hours", or "TwentyFour_Hours" (default).
-  EOF
-  type = object({
-    name               = string
-    snapshot_frequency = optional(string)
-    s3_bucket = object({
-      name       = string
-      key_prefix = optional(string)
-    })
-  })
-}
-
-#---------------------------------------------------------------------
 ### CloudTrail Variables:
 
 variable "org_cloudtrail" {
@@ -146,19 +74,10 @@ variable "org_cloudtrail_cloudwatch_logs_group" {
   service role used to receive logs from the Organization's CloudTrail.
   EOF
   type = object({
-    name              = string
-    retention_in_days = optional(number)
-    tags              = optional(map(string))
-    iam_service_role = object({
-      name = string
-      tags = optional(map(string))
-      policy = object({
-        name        = string
-        description = optional(string)
-        path        = optional(string)
-        tags        = optional(map(string))
-      })
-    })
+    name                           = string
+    retention_in_days              = optional(number)
+    tags                           = optional(map(string))
+    logs_delivery_service_role_arn = string
   })
 }
 
@@ -236,17 +155,6 @@ variable "org_kms_key" {
     tags             = optional(map(string))
     replica_key_tags = optional(map(string))
   })
-}
-
-#---------------------------------------------------------------------
-### IAM Hardening Variables
-
-variable "administrators" {
-  description = <<-EOF
-  List of administrator IAM User names to include in IAM Policy allow-lists.
-  These values are used to harden and restrict usage of admin-related resources.
-  EOF
-  type        = list(string)
 }
 
 ######################################################################

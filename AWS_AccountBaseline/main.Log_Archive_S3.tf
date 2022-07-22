@@ -21,8 +21,8 @@ locals {
   ]
 }
 
-# Ignored bc we don't need access logs for our access logs S3
-#tfsec:ignore:aws-s3-enable-bucket-logging
+# Ignored bc we don't need access logs for our access logs S3, SSE config will be fixed when Log-Archive is migrated to S3 module.
+#tfsec:ignore:aws-s3-enable-bucket-logging #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "list" {
   count = local.IS_LOG_ARCHIVE_ACCOUNT ? 2 : 0
 
