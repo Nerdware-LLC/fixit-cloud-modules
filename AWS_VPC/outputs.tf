@@ -12,8 +12,10 @@ output "VPC" {
 ### Subnets
 
 output "Subnets" {
-  description = "Map of subnet resource objects."
-  value       = aws_subnet.map
+  description = "Map of subnet resource objects merged with their respective input params."
+  value = {
+    for cidr, subnet in aws_subnet.map : cidr => merge(var.subnets[cidr], subnet)
+  }
 }
 
 #---------------------------------------------------------------------

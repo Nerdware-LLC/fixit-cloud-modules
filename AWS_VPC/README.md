@@ -398,7 +398,7 @@ No modules.
 | <a name="output_Network_ACLs"></a> [Network\_ACLs](#output\_Network\_ACLs) | Map of network ACL resource objects. |
 | <a name="output_RouteTables"></a> [RouteTables](#output\_RouteTables) | Map of route table resource objects. |
 | <a name="output_Security_Groups"></a> [Security\_Groups](#output\_Security\_Groups) | Map of security group resource objects. |
-| <a name="output_Subnets"></a> [Subnets](#output\_Subnets) | Map of subnet resource objects. |
+| <a name="output_Subnets"></a> [Subnets](#output\_Subnets) | Map of subnet resource objects merged with their respective input params. |
 | <a name="output_VPC"></a> [VPC](#output\_VPC) | The VPC resource object. |
 | <a name="output_VPC_Endpoints"></a> [VPC\_Endpoints](#output\_VPC\_Endpoints) | Map of VPC Endpoint resource objects. |
 | <a name="output_VPC_Peering_Connection_Accepts"></a> [VPC\_Peering\_Connection\_Accepts](#output\_VPC\_Peering\_Connection\_Accepts) | Map of VPC Peering Connection Accepter resource objects. |
@@ -417,22 +417,22 @@ See [LICENSE](/LICENSE) for more information.
 
 ## 💬 Contact
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [trevor@nerdware.cloud](mailto:trevor@nerdware.cloud)
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Nerdware.cloud](mailto:trevor@nerdware.cloud)
 
   <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+    <img src="/.github/assets/YouTube\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
+    <img src="/.github/assets/LinkedIn\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="https://twitter.com/TeeRevTweets">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+    <img src="/.github/assets/Twitter\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="mailto:trevor@nerdware.cloud">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+    <img src="/.github/assets/email\_icon\_circle.svg" height="40" />
   </a>
   <br><br>
 
