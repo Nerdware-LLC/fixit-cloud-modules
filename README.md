@@ -18,18 +18,15 @@ Terraform modules for defining Fixit Cloud architecture.
 
 - AWS
   - [Account Baseline](AWS_AccountBaseline/README.md)
-  - [CloudFront](AWS_CloudFront/README.md)
-  - [EC2](AWS_EC2/README.md)
-  - [ECS Cluster](AWS_ECS_Cluster/README.md)
+  - [AWS Config](AWS_Config/README.md)
+  - [ECS Service](AWS_ECS_Service/README.md)
   - [GuardDuty](AWS_GuardDuty/README.md)
   - [IAM](AWS_IAM/README.md)
   - [KMS](AWS_KMS/README.md)
-  - [Lambda](AWS_Lambda/README.md)
   - [OpenID Connect Providers](AWS_OpenID_Connect_Providers/README.md)
   - [Organization](AWS_Organization/README.md)
   - [S3](AWS_S3/README.md)
   - [SecurityHub](AWS_SecurityHub/README.md)
-  - [SSO](AWS_SSO/README.md)
   - [VPC](AWS_VPC/README.md)
 - Terraform Cloud
   - [Workspaces](TFC_Workspaces/README.md)
