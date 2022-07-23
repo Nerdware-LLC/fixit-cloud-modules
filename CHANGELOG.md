@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.8.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.7.0...v0.8.0) (2022-07-23)
+
+
+### Features
+
+* **ECS_Service:** add ECS_Service module ([079335e](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/079335e839127a0c4e7777b88f4120d935e59e61))
+
 # [0.7.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.6.3...v0.7.0) (2022-07-22)
 
 
