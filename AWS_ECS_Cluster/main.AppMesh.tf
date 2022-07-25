@@ -95,7 +95,7 @@ resource "aws_appmesh_virtual_node" "map" {
     # Node: INBOUND traffic from other nodes or gateways
     listener {
       dynamic "port_mapping" {
-        for_each = each.value.port_mappings
+        for_each = each.value.listener_port_mappings
 
         content {
           port     = port_mapping.value.port
