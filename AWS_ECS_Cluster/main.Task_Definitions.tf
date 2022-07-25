@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "map" {
     data.aws_ec2_instance_type.map[each.key].default_vcpus * 1024 # cpu_units = number-of-vCPUs x 1024
   ), null)
   memory = try(coalesce(
-    var.task_definition.memory,
+    each.value.memory,
     data.aws_ec2_instance_type.map[each.key].memory_size
   ), null)
 
@@ -86,7 +86,7 @@ resource "aws_ecs_task_definition" "map" {
     }
   }
 
-  tags = var.task_definition.tags
+  tags = each.value.tags
 
   lifecycle {
     # Ensure an Envoy container definition was provided.

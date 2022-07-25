@@ -81,16 +81,19 @@ variable "ecs_services" {
   description = <<-EOF
   Map of ECS Service names to config objects. All "capacity_provider_name"
   values must be unique, and must point to a capacity provider defined in
-  var.capacity_providers. All "service_discovery_service" values must be
-  unique, and must point to a service discovery service defined in
-  var.service_discovery_services. Regarding "rolling_update_controls", set
-  "force_new_deployment" to "true" after the AMI pipeline updates the service
-  image. Min/Max default to 100/200, respectively.
+  var.capacity_providers. All "task_definition_name" values must be unique,
+  and must point to a task definition defined in var.task_definitions. All
+  "service_discovery_service" values must be unique, and must point to a
+  service discovery service defined in var.service_discovery_services.
+  Regarding "rolling_update_controls", set "force_new_deployment" to "true"
+  after the AMI pipeline updates the service image. Min/Max default to
+  100/200, respectively.
   EOF
 
   type = map(
     # map keys: ecs service names
     object({
+      task_definition_name      = string
       capacity_provider_name    = string
       service_discovery_service = string
       network_configs = object({
@@ -107,6 +110,14 @@ variable "ecs_services" {
       tags            = optional(map(string))
     })
   )
+
+  # Ensure all "task_definition_name" values are unique.
+  validation {
+    condition = length(values(var.ecs_services)) == length(distinct(
+      values(var.ecs_services)[*].task_definition_name
+    ))
+    error_message = "All \"task_definition_name\" values must be unique."
+  }
 
   # Ensure all "capacity_provider_name" values are unique.
   validation {

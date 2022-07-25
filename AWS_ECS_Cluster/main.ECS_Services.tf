@@ -6,7 +6,7 @@ resource "aws_ecs_service" "map" {
 
   name            = each.key
   cluster         = aws_ecs_cluster.this.arn
-  task_definition = aws_ecs_task_definition.this.arn
+  task_definition = aws_ecs_task_definition.map[each.value.task_definition_name].arn
 
   # INSTANCE SETTINGS
   launch_type            = "EC2"

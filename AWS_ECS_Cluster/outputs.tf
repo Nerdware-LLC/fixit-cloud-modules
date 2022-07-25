@@ -35,7 +35,7 @@ output "Capacity_Providers" {
 
 output "AutoScaling_Groups" {
   description = "Map of AutoScaling Group resource objects."
-  value       = aws_autoscaling_groups.map
+  value       = aws_autoscaling_group.map
 }
 
 #---------------------------------------------------------------------
