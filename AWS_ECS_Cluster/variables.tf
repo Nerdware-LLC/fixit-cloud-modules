@@ -44,23 +44,26 @@ variable "task_definitions" {
   addresses formatted as a single string.
   EOF
 
-  type = object({
-    ecs_service                = string
-    instance_type              = optional(string)
-    cpu                        = optional(number)
-    memory                     = optional(number)
-    container_definitions_json = string
-    task_execution_role_arn    = string # Used to start containers
-    task_role_arn              = string # Used to access AWS resources during runtime
-    envoy_proxy_config = object({       # Example envoy_proxy_config values:
-      appmesh_node_name  = string       #   "Nginx_node1"
-      app_ports          = string       #   "8080"
-      egress_ignored_ips = string       #   "169.254.170.2,169.254.169.254"
-      proxy_ingress_port = number       #   15000
-      proxy_egress_port  = number       #   15001
+  type = map(
+    # map keys: task definition names
+    object({
+      ecs_service                = string
+      instance_type              = optional(string)
+      cpu                        = optional(number)
+      memory                     = optional(number)
+      container_definitions_json = string
+      task_execution_role_arn    = string # Used to start containers
+      task_role_arn              = string # Used to access AWS resources during runtime
+      envoy_proxy_config = object({       # Example envoy_proxy_config values:
+        appmesh_node_name  = string       #   "Nginx_node1"
+        app_ports          = string       #   "8080"
+        egress_ignored_ips = string       #   "169.254.170.2,169.254.169.254"
+        proxy_ingress_port = number       #   15000
+        proxy_egress_port  = number       #   15001
+      })
+      tags = optional(map(string))
     })
-    tags = optional(map(string))
-  })
+  )
 
   # Ensure all "ecs_service" values are unique.
   validation {

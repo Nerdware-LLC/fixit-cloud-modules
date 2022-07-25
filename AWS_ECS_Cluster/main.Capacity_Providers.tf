@@ -30,7 +30,7 @@ resource "aws_ecs_capacity_provider" "map" {
     }
   }
 
-  tags = var.capacity_provider.tags
+  tags = each.value.tags
 }
 
 ######################################################################

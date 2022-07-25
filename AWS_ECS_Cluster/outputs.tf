@@ -35,7 +35,7 @@ output "Capacity_Providers" {
 
 output "AutoScaling_Groups" {
   description = "Map of AutoScaling Group resource objects."
-  value       = autoscaling_groups.map
+  value       = aws_autoscaling_groups.map
 }
 
 #---------------------------------------------------------------------
@@ -82,9 +82,9 @@ output "AppMesh_Routers" {
   value       = aws_appmesh_virtual_router.map
 }
 
-output "AppMesh_Routes" {
-  description = "Map of App Mesh Route resource objects."
-  value       = aws_appmesh_route.map
-}
+# output "AppMesh_Routes" {
+#   description = "Map of App Mesh Route resource objects."
+#   value       = aws_appmesh_route.map
+# }
 
 ######################################################################
