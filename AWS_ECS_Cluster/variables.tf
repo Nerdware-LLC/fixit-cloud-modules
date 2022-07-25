@@ -337,6 +337,8 @@ variable "appmesh_routers" {
       protocol = string
     })
   )
+
+  default = null
 }
 
 # TODO Finish appmesh_routes var.
@@ -364,6 +366,8 @@ variable "appmesh_routes" {
       tags = optional(map(string))
     })
   )
+
+  default = null
 }
 
 # TODO add variable for AppMesh Gateways
