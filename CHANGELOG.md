@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.0...v0.10.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ecs_services:** make rolling_update_controls optional ([ffe5949](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/ffe5949e08f9f5952116f8655524808608e88e9d))
+
 # [0.10.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.9.3...v0.10.0) (2022-07-25)
 
 
