@@ -25,8 +25,8 @@ resource "aws_security_group" "map" {
 locals {
   SecGroup_Rules = flatten([
     for sg_name, sg_config in var.security_groups : [
-      for access_type, rules_list in sg_config.access : [
-        for rule in rules_list : {
+      for access_type, rules_list in coalesce(sg_config.access, {}) : [
+        for rule in coalesce(rules_list, []) : {
           # security_group_id = ID of the sec group to which the rule belongs
           security_group_id = aws_security_group.map[sg_name].id
           description       = rule.description

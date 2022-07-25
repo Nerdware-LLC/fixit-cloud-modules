@@ -211,9 +211,9 @@ variable "network_acls" {
   # Ensure any ingress/egress rules all contain valid arguments.
   validation {
     condition = alltrue([
-      for nacl_name, nacl in var.network_acls : nacl.access == null || alltrue([
-        for access_type, rules_map in nacl.access : alltrue([
-          for rule_num, rule in rules_map : alltrue([
+      for nacl_name, nacl in var.network_acls : alltrue([
+        for access_type, rules_map in coalesce(nacl.access, {}) : alltrue([
+          for rule_num, rule in coalesce(rules_map, {}) : alltrue([
             # Ensure cidr_block is a valid CIDR or a supported AWS Service Enum
             (
               can(cidrsubnet(rule.cidr_block, 0, 0)) ||
@@ -287,15 +287,10 @@ variable "security_groups" {
   validation {
     condition = alltrue([
       for sg_name, sg_config in var.security_groups : alltrue([
-        for access_type, rule_list in sg_config.access : alltrue([
-          for rule in rule_list : alltrue([
+        for access_type, rule_list in coalesce(sg_config.access, {}) : alltrue([
+          for rule in coalesce(rule_list, []) : alltrue([
             # Ensure all rules contain "port" OR ("from_port" AND "to_port")
             can(rule.port) || (can(rule.from_port) && can(rule.to_port)),
-            # Ensure all rules contain exactly one of the listed keys
-            1 == length(setintersection(
-              keys(rule),
-              ["peer_security_group_id", "peer_security_group", "aws_service", "cidr_blocks", "self"]
-            )),
             # If rule uses "peer_security_group", ensure the named SecGrp was provided
             (
               lookup(rule, "peer_security_group", null) == null ||

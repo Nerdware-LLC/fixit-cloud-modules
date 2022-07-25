@@ -162,13 +162,15 @@ resource "aws_route_table" "map" {
 ### Subnet Route Table Associations
 
 resource "aws_route_table_association" "map" {
-  for_each = {
-    for cidr, subnet in local.subnets_with_normalized_route_table
-    : subnet.id => aws_route_table.map[subnet.route_table].id
-  }
+  for_each = toset([
+    for cidr, subnet in local.subnets_with_normalized_route_table : jsonencode({
+      subnet_cidr = cidr
+      route_table = subnet.route_table
+    })
+  ])
 
-  subnet_id      = each.key
-  route_table_id = each.value
+  subnet_id      = aws_subnet.map[jsondecode(each.value).subnet_cidr].id
+  route_table_id = aws_route_table.map[jsondecode(each.value).route_table].id
 }
 
 ######################################################################

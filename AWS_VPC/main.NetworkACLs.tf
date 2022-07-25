@@ -117,8 +117,8 @@ resource "aws_network_acl" "map" {
     precondition {
       condition = alltrue([
         for nacl_name, nacl in var.network_acls : alltrue([
-          for access_type, rules_map in lookup(nacl, "access", {}) : alltrue([
-            for rule_config in values(rules_map) : alltrue([
+          for access_type, rules_map in coalesce(nacl.access, {}) : alltrue([
+            for rule_config in values(coalesce(rules_map, {})) : alltrue([
               # If "cidr_block" is an AWS service string, ensure we have 1 CIDR for it.
               (
                 !contains(["ec2_instance_connect", "globalaccelerator"], rule_config.cidr_block) ||
