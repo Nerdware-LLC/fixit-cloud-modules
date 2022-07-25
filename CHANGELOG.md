@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.5...v0.10.6) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ECS_Cluster:** rm AppMesh route resources for refactor ([68b1069](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/68b1069173ae88c72664bd588aec774f9fd57438))
+
 ## [0.10.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.4...v0.10.5) (2022-07-25)
 
 
