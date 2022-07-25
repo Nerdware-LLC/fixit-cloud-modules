@@ -95,11 +95,11 @@ variable "ecs_services" {
         subnet_ids         = list(string)
         security_group_ids = list(string)
       })
-      rolling_update_controls = object({
+      rolling_update_controls = optional(object({
         force_new_deployment               = bool
         deployment_minimum_healthy_percent = optional(number)
         deployment_maximum_percent         = optional(number)
-      })
+      }))
       enable_ecs_exec = optional(bool)
       tags            = optional(map(string))
     })
