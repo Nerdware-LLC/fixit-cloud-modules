@@ -19,7 +19,7 @@ Terraform modules for defining Fixit Cloud architecture - a [Nerdware](https://g
 - AWS
   - [Account Baseline](AWS_AccountBaseline/README.md)
   - [AWS Config](AWS_Config/README.md)
-  - [ECS Service](AWS_ECS_Service/README.md)
+  - [ECS Cluster](AWS_ECS_Cluster/README.md)
   - [GuardDuty](AWS_GuardDuty/README.md)
   - [IAM](AWS_IAM/README.md)
   - [KMS](AWS_KMS/README.md)
@@ -35,13 +35,12 @@ Terraform modules for defining Fixit Cloud architecture - a [Nerdware](https://g
 
 The following modules have WIP feature branches which will be merged into the **main** branch upon PR review and acceptance. Resources contained in these modules reflect either a refactoring of existing modules, whereby resources commonly used by several modules are extracted and isolated into their own separate module, or resources which are entirely new to the FCM collection.
 
-| **Module**      | **Branch**           | **Description**                                                        |
-| :-------------- | :------------------- | :--------------------------------------------------------------------- |
-| AWS CloudFront  | feat/AWS_CloudFront  | AWS CloudFront resources; currently CloudFront resources are embedded. |
-| AWS ECS Cluster | feat/AWS_ECS_Cluster | AWS ECS cluster with AppMesh mesh layer resources.                     |
-| AWS Lambda      | feat/AWS_Lambda      | AWS Lambda functions and related resources.                            |
-| AWS SNS         | feat/AWS_SNS         | AWS SNS resources isolated in their own separate module.               |
-| AWS SSO         | feat/AWS_SSO         | AWS SSO resources, extracted from AWS_Organization.                    |
+| **Module**     | **Branch**          | **Description**                                                        |
+| :------------- | :------------------ | :--------------------------------------------------------------------- |
+| AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources; currently CloudFront resources are embedded. |
+| AWS Lambda     | feat/AWS_Lambda     | AWS Lambda functions and related resources.                            |
+| AWS SNS        | feat/AWS_SNS        | AWS SNS resources isolated in their own separate module.               |
+| AWS SSO        | feat/AWS_SSO        | AWS SSO resources, extracted from AWS_Organization.                    |
 
 ## ⚙️ Developer Setup
 
