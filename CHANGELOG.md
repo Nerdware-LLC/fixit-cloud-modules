@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.1...v0.10.2) (2022-07-25)
+
+
+### Bug Fixes
+
+* **VPC:** replace lookup w coalesce in NACL var validation ([1f5c1f3](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/1f5c1f370664a087e9929cf191c69d09bc880132))
+
 ## [0.10.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.0...v0.10.1) (2022-07-25)
 
 
