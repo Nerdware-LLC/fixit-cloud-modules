@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.11](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.10...v0.10.11) (2022-07-25)
+
+
+### Bug Fixes
+
+* **MeshNodes:** correct ref to listener_port_mappings ([dd1f0f7](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/dd1f0f725d5e5d0286a35d07decd69ac17d50704))
+
 ## [0.10.10](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.9...v0.10.10) (2022-07-25)
 
 
