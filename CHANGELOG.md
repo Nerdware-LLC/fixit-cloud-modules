@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.4...v0.10.5) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ECS_Cluster:** make AppMesh routers+routes optional via default null ([fea20bf](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/fea20bfba594a85c8f973fc2f8ecefe02cd6e559))
+
 ## [0.10.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.3...v0.10.4) (2022-07-25)
 
 
