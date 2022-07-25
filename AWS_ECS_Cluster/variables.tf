@@ -352,7 +352,7 @@ variable "appmesh_routers" {
     })
   )
 
-  default = null
+  default = {}
 }
 
 # TODO Finish appmesh_routes var.
@@ -381,7 +381,7 @@ variable "appmesh_routers" {
 #     })
 #   )
 
-#   default = null
+#   default = {}
 # }
 
 # TODO add variable for AppMesh Gateways
