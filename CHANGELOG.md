@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.13](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.12...v0.10.13) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ECS_Services:** wrap rolling update controls in try ([6f59408](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/6f59408be3b720b94ec83db4caf96a760c317568))
+
 ## [0.10.12](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.11...v0.10.12) (2022-07-25)
 
 
