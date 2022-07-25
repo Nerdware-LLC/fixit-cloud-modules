@@ -211,8 +211,8 @@ variable "network_acls" {
   # Ensure any ingress/egress rules all contain valid arguments.
   validation {
     condition = alltrue([
-      for nacl_name, nacl in var.network_acls : alltrue([
-        for access_type, rules_map in coalesce(nacl.access, {}) : alltrue([
+      for nacl_name, nacl in var.network_acls : nacl.access == null || alltrue([
+        for access_type, rules_map in nacl.access : alltrue([
           for rule_num, rule in rules_map : alltrue([
             # Ensure cidr_block is a valid CIDR or a supported AWS Service Enum
             (

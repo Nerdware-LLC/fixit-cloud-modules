@@ -4,7 +4,7 @@
 ### Internet Gateway
 
 resource "aws_internet_gateway" "list" {
-  count = can(local.subnets_by_type.PUBLIC) ? 1 : 0
+  count = contains(values(var.subnets)[*].type, "PUBLIC") ? 1 : 0
 
   vpc_id = aws_vpc.this.id
   tags   = var.internet_gateway_tags
