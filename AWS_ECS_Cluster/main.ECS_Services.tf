@@ -56,8 +56,8 @@ resource "aws_ecs_service" "map" {
 
   # ROLLING UDPATE CONTROLS
   force_new_deployment               = try(each.value.rolling_update_controls.force_new_deployment, false)
-  deployment_minimum_healthy_percent = coalesce(each.value.rolling_update_controls.deployment_minimum_healthy_percent, 100) # Never fall below desired_count.
-  deployment_maximum_percent         = coalesce(each.value.rolling_update_controls.deployment_maximum_percent, 200)         # Run existing AND new, then xfer traffic to new.
+  deployment_minimum_healthy_percent = try(coalesce(each.value.rolling_update_controls.deployment_minimum_healthy_percent, 100), 100) # Never fall below desired_count.
+  deployment_maximum_percent         = try(coalesce(each.value.rolling_update_controls.deployment_maximum_percent, 200), 200)         # Run existing AND new, then xfer traffic to new.
 
   deployment_circuit_breaker {
     # If a deployment doesn't get at least 1 healthy instance, it rolls back to previous config.
