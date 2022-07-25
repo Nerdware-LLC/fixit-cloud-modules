@@ -7,7 +7,7 @@ resource "aws_ecs_capacity_provider" "map" {
   name = each.key
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.map[each.value.autoscaling_group].arn
+    auto_scaling_group_arn = aws_autoscaling_group.map[each.value.autoscaling_group_name].arn
     managed_termination_protection = (
       each.value.should_enable_managed_termination_protection != false
       ? "ENABLED" # <-- default

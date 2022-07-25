@@ -55,21 +55,21 @@ resource "aws_ecs_task_definition" "map" {
   # CONTAINERS
   container_definitions = jsonencode([
     # Add APPMESH_RESOURCE_ARN env var to Envoy container definition
-    for container_def_obj in each.value.container_definitions : (
-      container_def_obj.name == each.value.envoy_container_def.name
-      ? merge(
-        container_def_obj,
-        {
-          environment = flatten([
-            lookup(container_def_obj, "environment", []),
-            {
+    for container_def_obj in each.value.container_definitions : merge(
+      container_def_obj,
+      {
+        environment = flatten([
+          lookup(container_def_obj, "environment", []),
+          (
+            container_def_obj.name == each.value.envoy_container_def.name
+            ? [{
               name  = "APPMESH_RESOURCE_ARN"
               value = aws_appmesh_virtual_node.map[each.value.envoy_proxy_config.appmesh_node_name].arn
-            }
-          ])
-        }
-      )
-      : container_def_obj
+            }]
+            : []
+          )
+        ])
+      }
     )
   ])
 
