@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.3...v0.10.4) (2022-07-25)
+
+
+### Bug Fixes
+
+* **VPC:** correct var validation logic ([be65f69](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/be65f691c83a9bf9f301e2c28f8ba3f7af785425))
+
 ## [0.10.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.2...v0.10.3) (2022-07-25)
 
 
