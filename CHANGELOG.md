@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.12](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.11...v0.10.12) (2022-07-25)
+
+
+### Bug Fixes
+
+* **TaskDefs:** correct ternary types in container defs ([022db8e](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/022db8ec4f11a3bbe5911819644aa9e14525c72c))
+
 ## [0.10.11](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.10...v0.10.11) (2022-07-25)
 
 
