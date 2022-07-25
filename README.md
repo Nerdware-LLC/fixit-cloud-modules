@@ -40,6 +40,7 @@ The following modules have WIP feature branches which will be merged into the **
 | AWS CloudFront  | feat/AWS_CloudFront  | AWS CloudFront resources; currently CloudFront resources are embedded. |
 | AWS ECS Cluster | feat/AWS_ECS_Cluster | AWS ECS cluster with AppMesh mesh layer resources.                     |
 | AWS Lambda      | feat/AWS_Lambda      | AWS Lambda functions and related resources.                            |
+| AWS SNS         | feat/AWS_SNS         | AWS SNS resources isolated in their own separate module.               |
 | AWS SSO         | feat/AWS_SSO         | AWS SSO resources, extracted from AWS_Organization.                    |
 
 ## ⚙️ Developer Setup
