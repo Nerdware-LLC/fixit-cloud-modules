@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.10](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.9...v0.10.10) (2022-07-25)
+
+
+### Bug Fixes
+
+* **MeshRouter:** set default to empty map ([3b41b1f](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/3b41b1fad6e9a64e85d5ff7328391ad389046c72))
+
 ## [0.10.9](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.8...v0.10.9) (2022-07-25)
 
 
