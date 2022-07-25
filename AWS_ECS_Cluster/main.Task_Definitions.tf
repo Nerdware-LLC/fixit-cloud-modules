@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "map" {
   for_each = local.task_definitions_with_identified_envoy_configs
 
   family                   = each.key
-  requires_compatibilities = "EC2"
+  requires_compatibilities = ["EC2"]
 
   # CPU and MEMORY: try data.aws_ec2_instance_type lookup, else default to null.
   cpu = try(coalesce(
