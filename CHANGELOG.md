@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.2...v0.10.3) (2022-07-25)
+
+
+### Bug Fixes
+
+* **VPC:** fix count meta-arg in GW, rm null iterator from var.nacls ([0c8f4fa](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/0c8f4fae2aaef64626e2724481ea67246f66614d))
+
 ## [0.10.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.1...v0.10.2) (2022-07-25)
 
 
