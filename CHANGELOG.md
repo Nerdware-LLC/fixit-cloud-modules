@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.9](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.8...v0.10.9) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ECS_TaskDef:** wrap EC2 requires_compat value in set brackets ([6311d9b](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/6311d9bf34652ae1c0febf3383a1132dd42e80df))
+
 ## [0.10.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.7...v0.10.8) (2022-07-25)
 
 
