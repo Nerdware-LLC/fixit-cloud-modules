@@ -2,7 +2,7 @@
 
 # Fixit Cloud ☁️ MODULES
 
-Terraform modules for defining Fixit Cloud architecture.
+Terraform modules for defining Fixit Cloud architecture - a [Nerdware](https://github.com/Nerdware-LLC) project.
 
 [![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
 [![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
