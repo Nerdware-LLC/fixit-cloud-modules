@@ -2,12 +2,12 @@
 ### App Mesh
 
 resource "aws_appmesh_mesh" "this" {
-  name = var.app_mesh.name
+  name = var.appmesh_mesh.name
 
   dynamic "spec" {
     for_each = (
-      var.app_mesh.should_allow_egress_traffic != null
-      ? [{ should_allow_egress_traffic = var.app_mesh.should_allow_egress_traffic }]
+      var.appmesh_mesh.should_allow_egress_traffic != null
+      ? [{ should_allow_egress_traffic = var.appmesh_mesh.should_allow_egress_traffic }]
       : []
     )
 
@@ -18,14 +18,14 @@ resource "aws_appmesh_mesh" "this" {
     }
   }
 
-  tags = var.app_mesh.tags
+  tags = var.appmesh_mesh.tags
 }
 
 #---------------------------------------------------------------------
 ### AppMesh Services
 
 resource "aws_appmesh_virtual_service" "map" {
-  for_each = var.app_mesh_services
+  for_each = var.appmesh_services
 
   name      = each.key
   mesh_name = aws_appmesh_mesh.this.id
@@ -56,39 +56,62 @@ resource "aws_appmesh_virtual_service" "map" {
 ### AppMesh Nodes
 
 resource "aws_appmesh_virtual_node" "map" {
-  for_each = var.app_mesh_nodes
+  for_each = var.appmesh_nodes
 
   name      = each.key
   mesh_name = aws_appmesh_mesh.this.id
 
   spec {
+
+    # How nodes identify/communicate with other nodes
+    service_discovery {
+
+      dynamic "aws_cloud_map" {
+        for_each = each.value.cloud_map_config != null ? [each.value.cloud_map_config] : []
+
+        content {
+          attributes = {
+            stack = aws_cloud_map.value.stack
+          }
+
+          service_name   = aws_cloud_map.value.service_name
+          namespace_name = aws_service_discovery_private_dns_namespace.this.name
+        }
+      }
+
+      dynamic "dns" {
+        for_each = (
+          each.value.service_dns_hostname != null
+          ? [each.value.service_dns_hostname]
+          : []
+        )
+
+        content {
+          hostname = each.value.service_dns_hostname
+        }
+      }
+    }
+
+    # Node: INBOUND traffic from other nodes or gateways
+    listener {
+      dynamic "port_mapping" {
+        for_each = each.value.port_mappings
+
+        content {
+          port     = port_mapping.value.port
+          protocol = port_mapping.value.protocol
+        }
+      }
+    }
+
+    # Node: OUTBOUND traffic to service
     backend {
       virtual_service {
         virtual_service_name = each.value.service_name
       }
     }
 
-    # listener {
-    #   port_mapping {
-    #     port     = 8080
-    #     protocol = "http"
-    #   }
-    # }
-
-    service_discovery {
-      aws_cloud_map {
-        attributes = {
-          stack = "blue"
-        }
-
-        service_name   = "serviceb1"
-        namespace_name = aws_service_discovery_http_namespace.example.name
-      }
-
-      dns {
-        hostname = "serviceb.simpleapp.local"
-      }
-    }
+    # TODO implement Node healthchecks
   }
 }
 
@@ -96,7 +119,7 @@ resource "aws_appmesh_virtual_node" "map" {
 ### AppMesh Routers
 
 resource "aws_appmesh_virtual_router" "map" {
-  for_each = var.app_mesh_routers
+  for_each = var.appmesh_routers
 
   name      = each.key
   mesh_name = aws_appmesh_mesh.this.id
@@ -118,13 +141,15 @@ resource "aws_appmesh_virtual_router" "map" {
 
 # TODO Finish aws_appmesh_route resouce.
 resource "aws_appmesh_route" "map" {
-  for_each = var.app_mesh_routes
+  for_each = var.appmesh_routes
 
   name                = each.key
   mesh_name           = aws_appmesh_mesh.this.id
   virtual_router_name = each.value.virtual_router_name
 
   spec {
+
+    # TODO ensure all routes are configured with a retry policy!
 
     # HTTP ROUTE
     dynamic "http_route" {

@@ -12,9 +12,9 @@ resource "aws_ecs_cluster" "this" {
   # ECS Exec
   dynamic "configuration" {
     for_each = (
-      var.ecs_exec_config.should_enable_ecs_exec == true
-      ? { ecs_exec_config = var.ecs_exec_config }
-      : {}
+      try(var.ecs_cluster.ecs_exec_config.should_enable, false) == true
+      ? [var.ecs_cluster.ecs_exec_config]
+      : []
     )
 
     content {
@@ -42,7 +42,7 @@ resource "aws_ecs_cluster" "this" {
 resource "aws_ecs_cluster_capacity_providers" "this" {
   cluster_name = aws_ecs_cluster.this.name
 
-  capacity_providers = var.ecs_cluster.capacity_provider_arns
+  capacity_providers = values(aws_ecs_capacity_provider.map)[*].arn
 
   default_capacity_provider_strategy {
     base              = 0

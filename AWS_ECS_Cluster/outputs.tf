@@ -6,14 +6,57 @@ output "ECS_Cluster" {
   value       = aws_ecs_cluster.this
 }
 
-output "ECS_Cluster_CapacityProviders" {
-  description = "The cluster's Capacity Provider resource objects."
-  value       = aws_ecs_cluster_capacity_providers.this
+#---------------------------------------------------------------------
+### ECS Service Outputs
+
+output "ECS_Services" {
+  description = "Map of ECS Service resource objects."
+  value       = aws_ecs_service.map
 }
 
-output "ECS_Service_Discovery_Namespace" {
-  description = "The cluster's Service Discovery Namespace resource object."
+#---------------------------------------------------------------------
+### Task Definition Outputs
+
+output "Task_Definition" {
+  description = "Map of Task Definition resource objects."
+  value       = aws_ecs_task_definition.map
+}
+
+#---------------------------------------------------------------------
+### Capacity Provider Outputs
+
+output "Capacity_Providers" {
+  description = "Map of Capacity Provider resource objects."
+  value       = aws_ecs_capacity_provider.map
+}
+
+#---------------------------------------------------------------------
+### AutoScaling Group Outputs
+
+output "AutoScaling_Groups" {
+  description = "Map of AutoScaling Group resource objects."
+  value       = autoscaling_groups.map
+}
+
+#---------------------------------------------------------------------
+### Task Host Launch Template Outputs
+
+output "Task_Host_Launch_Template" {
+  description = "Map of Task Host Launch Template resource objects."
+  value       = aws_launch_template.map
+}
+
+#---------------------------------------------------------------------
+### Service Discovery Outputs
+
+output "Service_Discovery_Namespace" {
+  description = "The Service Discovery \"private DNS\" Namespace resource object."
   value       = aws_service_discovery_private_dns_namespace.this
+}
+
+output "Service_Discovery_Services" {
+  description = "Map of Service Discovery Service resource objects."
+  value       = aws_service_discovery_service.map
 }
 
 #---------------------------------------------------------------------
