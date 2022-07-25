@@ -140,75 +140,75 @@ resource "aws_appmesh_virtual_router" "map" {
 ### AppMesh Routes
 
 # TODO Finish aws_appmesh_route resouce.
-resource "aws_appmesh_route" "map" {
-  for_each = var.appmesh_routes
+# resource "aws_appmesh_route" "map" {
+#   for_each = var.appmesh_routes
 
-  name                = each.key
-  mesh_name           = aws_appmesh_mesh.this.id
-  virtual_router_name = each.value.virtual_router_name
+#   name                = each.key
+#   mesh_name           = aws_appmesh_mesh.this.id
+#   virtual_router_name = each.value.virtual_router_name
 
-  spec {
+#   spec {
 
-    # TODO ensure all routes are configured with a retry policy!
+#     # TODO ensure all routes are configured with a retry policy!
 
-    # HTTP ROUTE
-    dynamic "http_route" {
-      for_each = each.value.type == "http_route" ? [each.value.spec] : []
+#     # HTTP ROUTE
+#     dynamic "http_route" {
+#       for_each = each.value.type == "http_route" ? [each.value.spec] : []
 
-      content {
-        match {
+#       content {
+#         match {
 
-        }
+#         }
 
-        action {
+#         action {
 
-        }
-      }
-    }
+#         }
+#       }
+#     }
 
-    # HTTP2 ROUTE
-    dynamic "http2_route" {
-      for_each = each.value.type == "http2_route" ? [each.value.spec] : []
+#     # HTTP2 ROUTE
+#     dynamic "http2_route" {
+#       for_each = each.value.type == "http2_route" ? [each.value.spec] : []
 
-      content {
-        match {
+#       content {
+#         match {
 
-        }
+#         }
 
-        action {
+#         action {
 
-        }
-      }
-    }
+#         }
+#       }
+#     }
 
-    # gRPC ROUTE
-    dynamic "grpc_route" {
-      for_each = each.value.type == "grpc_route" ? [each.value.spec] : []
+#     # gRPC ROUTE
+#     dynamic "grpc_route" {
+#       for_each = each.value.type == "grpc_route" ? [each.value.spec] : []
 
-      content {
-        match {
+#       content {
+#         match {
 
-        }
+#         }
 
-        action {
+#         action {
 
-        }
-      }
-    }
+#         }
+#       }
+#     }
 
-    # TCP ROUTE
-    dynamic "tcp_route" {
-      for_each = each.value.type == "tcp_route" ? [each.value.spec] : []
+#     # TCP ROUTE
+#     dynamic "tcp_route" {
+#       for_each = each.value.type == "tcp_route" ? [each.value.spec] : []
 
-      content {
-        action {
+#       content {
+#         action {
 
-        }
-      }
-    }
-  }
+#         }
+#       }
+#     }
+#   }
 
-  tags = each.value.tags
-}
+#   tags = each.value.tags
+# }
 
 ######################################################################

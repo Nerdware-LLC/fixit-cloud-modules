@@ -342,33 +342,33 @@ variable "appmesh_routers" {
 }
 
 # TODO Finish appmesh_routes var.
-variable "appmesh_routes" {
-  description = <<-EOF
-  Map of AppMesh Route names to route config objects. "spec" must have a
-  "priority" between 0-1000 and a "type", which can be "http_route", "http2_route",
-  "tcp_route", or "grpc_route".
-  EOF
+# variable "appmesh_routes" {
+#   description = <<-EOF
+#   Map of AppMesh Route names to route config objects. "spec" must have a
+#   "priority" between 0-1000 and a "type", which can be "http_route", "http2_route",
+#   "tcp_route", or "grpc_route".
+#   EOF
 
-  type = map(
-    # map keys: AppMesh route names e.g. "serviceB-route"
-    object({
-      virtual_router_name = string
-      type                = string # "http_route", "http2_route", "tcp_route", or "grpc_route"
-      spec = object({
-        action = string
-        match = optional(object({
-          method = string
-          prefix = string
-        }))
-        retry_policy = string
-        timeout      = number
-      })
-      tags = optional(map(string))
-    })
-  )
+#   type = map(
+#     # map keys: AppMesh route names e.g. "serviceB-route"
+#     object({
+#       virtual_router_name = string
+#       type                = string # "http_route", "http2_route", "tcp_route", or "grpc_route"
+#       spec = object({
+#         action = string
+#         match = optional(object({
+#           method = string
+#           prefix = string
+#         }))
+#         retry_policy = string
+#         timeout      = number
+#       })
+#       tags = optional(map(string))
+#     })
+#   )
 
-  default = null
-}
+#   default = null
+# }
 
 # TODO add variable for AppMesh Gateways
 
