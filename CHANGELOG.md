@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.7...v0.10.8) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ECS_Cluster:** correct object refs in ECS_Cluster resources ([ef0749a](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/ef0749a7303b99cc337d838ddece25649e33d7a7))
+
 ## [0.10.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.6...v0.10.7) (2022-07-25)
 
 
