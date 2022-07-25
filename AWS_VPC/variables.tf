@@ -212,7 +212,7 @@ variable "network_acls" {
   validation {
     condition = alltrue([
       for nacl_name, nacl in var.network_acls : alltrue([
-        for access_type, rules_map in lookup(nacl, "access", {}) : alltrue([
+        for access_type, rules_map in coalesce(nacl.access, {}) : alltrue([
           for rule_num, rule in rules_map : alltrue([
             # Ensure cidr_block is a valid CIDR or a supported AWS Service Enum
             (
