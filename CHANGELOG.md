@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.15](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.14...v0.10.15) (2022-07-26)
+
+
+### Bug Fixes
+
+* **SSO:** rm unnecessary coalesce in aws_id_store_grp ([013d93c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/013d93c804dfe7b1935a1ffc4ccce50733674f0d))
+
 ## [0.10.14](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.13...v0.10.14) (2022-07-26)
 
 ## [0.10.13](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.12...v0.10.13) (2022-07-25)
