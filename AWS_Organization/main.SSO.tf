@@ -31,11 +31,8 @@ data "aws_identitystore_group" "Admins_SSO_Group" {
   identity_store_id = one(data.aws_ssoadmin_instances.this.identity_store_ids)
 
   filter {
-    attribute_path = "DisplayName"
-    attribute_value = coalesce(
-      var.admin_sso_config.sso_group_name,
-      "Administrators"
-    )
+    attribute_path  = "DisplayName"
+    attribute_value = var.admin_sso_config.sso_group_name
   }
 }
 
