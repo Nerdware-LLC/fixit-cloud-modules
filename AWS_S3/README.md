@@ -1,4 +1,4 @@
-<h1>Fixit Cloud ☁️ MODULE: AWS S3</h1><!-- html h1, to exclude from auto-ToC -->
+<h1>Fixit Cloud ☁️ MODULE: AWS S3</h1>
 
 Terraform module for defining an S3 Bucket with [opinionated configurations](#opinionated-security-configurations) that reflect security best-practices as well as sensible cost-reduction strategies.
 
