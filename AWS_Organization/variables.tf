@@ -2,7 +2,11 @@
 ### INPUT VARIABLES
 
 variable "organization_config" {
-  description = "Config object for an AWS Organization."
+  description = <<-EOF
+  Config object for an AWS Organization. "enabled_policy_types" must be one
+  of "AISERVICES_OPT_OUT_POLICY", "BACKUP_POLICY", "SERVICE_CONTROL_POLICY",
+  or "TAG_POLICY".
+  EOF
 
   type = object({
     org_trusted_services = list(string)
