@@ -4,12 +4,6 @@ Terraform module for defining an AWS Organization and related resources.
 
 <h2>Table of Contents</h2>
 
-- [AWS Organization](#aws-organization)
-  - [Trusted AWS Service Principals](#trusted-aws-service-principals)
-  - [Policy Types](#policy-types)
-  - [Service Control Policies](#service-control-policies)
-  - [Management Policies](#management-policies)
-- [AWS SSO](#aws-sso)
 - [⚙️ Module Usage](#️-module-usage)
   - [Requirements](#requirements)
   - [Providers](#providers)
@@ -20,21 +14,10 @@ Terraform module for defining an AWS Organization and related resources.
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
 
+<!--
 ## AWS Organization
-
 TODO add quick paragraph about aws orgs
-
-<!-- Below paragraph is from main.Organizations.tf OUs locals block -->
-
-To avoid CYCLE ERRORs in nested organizational_unit resources,
-we need to have separate resource blocks - one for each nesting depth
-within the organization's structure. AWS allows organizations to have a
-maximum nesting depth of 5, which includes the root account as well as
-account leaf-nodes within the org tree. Therefore, our implementation
-can provide 3 OU nesting levels:
-Level_1 --> OUs that are direct children of root
-Level_2 --> OUs that are direct children of L1 OUs
-Level_3 --> OUs that are direct children of L2 OUs
+-->
 
 #### Trusted AWS Service Principals
 
@@ -51,19 +34,22 @@ There are four values that can be included in var.organization_config.enabled_po
 - SERVICE_CONTROL_POLICY
 - TAG_POLICY
 
-TODO expand above explainer
+<!-- TODO expand above explainer -->
 
+<!--
 #### Service Control Policies
 
-TODO add info on our SCPs
+TODO Add info on SCPs -->
 
+<!--
 #### Management Policies
 
-TODO add info on our mgmt policies
+TODO Add info on our mgmt policies -->
 
+<!--
 ## AWS SSO
 
-TODO explain our sso setup
+TODO explain SSO setup -->
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-start -->
@@ -98,6 +84,8 @@ No modules.
 | [aws_organizations_organizational_unit.Level_1_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
 | [aws_organizations_organizational_unit.Level_2_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
 | [aws_organizations_organizational_unit.Level_3_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
+| [aws_organizations_organizational_unit.Level_4_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
+| [aws_organizations_organizational_unit.Level_5_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
 | [aws_organizations_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy) | resource |
 | [aws_organizations_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy_attachment) | resource |
 | [aws_ssoadmin_account_assignment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
@@ -110,20 +98,20 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_admin_sso_config"></a> [admin\_sso\_config](#input\_admin\_sso\_config) | An object for configuring administrator access to accounts via AWS SSO.<br>Please note that SSO requires some setup in the console; for example,<br>GROUPS and USERS cannot be created via the AWS provider - they must be<br>created beforehand. For an overview of the default config values, please<br>refer to the README. | <pre>object({<br>    sso_group_name             = optional(string)<br>    permission_set_name        = optional(string)<br>    permission_set_description = optional(string)<br>    permission_set_tags        = optional(map(string))<br>    session_duration           = optional(number)<br>  })</pre> | `{}` | no |
-| <a name="input_member_accounts"></a> [member\_accounts](#input\_member\_accounts) | A config object for child/member accounts within an AWS Organization.<br>The keys of the object are names of child accounts, with each respective<br>value pointing to the account's config object with params identifying the<br>parent organizational unit and other attributes. Note that best practices<br>entails attaching organization policies to OUs - not accounts - so this<br>module does not permit member accounts to have a "parent" value of "root".<br>The "should\_allow\_iam\_user\_access\_to\_billing" property defaults to "true",<br>and "org\_account\_access\_role\_name" defaults to "OrganizationAccountAccessRole". | <pre>map(object({<br>    parent                                  = string<br>    email                                   = string<br>    should_allow_iam_user_access_to_billing = optional(bool)<br>    org_account_access_role_name            = optional(string)<br>    tags                                    = optional(map(string))<br>  }))</pre> | n/a | yes |
-| <a name="input_organization_config"></a> [organization\_config](#input\_organization\_config) | A config object for an AWS Organization. For more info on these<br>parameters, please refer to the documentation for AWS Organizations and<br>the relevant API/CLI commands. Note that "should\_enable\_all\_features"<br>defaults to "true". | <pre>object({<br>    org_trusted_services = list(string)<br>    enabled_policy_types = list(string)<br>  })</pre> | n/a | yes |
-| <a name="input_organization_policies"></a> [organization\_policies](#input\_organization\_policies) | Map policy names to organization policy config objects to provision<br>organization policies. The "target" property indicates to which<br>organization entity the policy should be attached; valid values are "root" and<br>the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE\_CONTROL\_POLICY, AISERVICES\_OPT\_OUT\_POLICY, BACKUP\_POLICY,<br>or TAG\_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type. | <pre>map(object({<br>    target      = string<br>    type        = string<br>    description = optional(string)<br>    statement   = string<br>    tags        = optional(map(string))<br>  }))</pre> | `null` | no |
-| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | A map of config objects for orginizational units within an AWS<br>Organization. The keys of the map are names of OU entities, with each<br>respective value pointing to the OU's config object with params identifying<br>the OU's parent entity ("root" or the name of another OU) and optional tags. | <pre>map(object({<br>    parent = string<br>    tags   = optional(map(string))<br>  }))</pre> | n/a | yes |
+| <a name="input_admin_sso_config"></a> [admin\_sso\_config](#input\_admin\_sso\_config) | Map of SSO Administrator Object for configuring administrator access to accounts via AWS SSO. | <pre>object({<br>    sso_group_name             = string<br>    permission_set_name        = optional(string)<br>    permission_set_description = optional(string)<br>    permission_set_tags        = optional(map(string))<br>    session_duration           = optional(number)<br>  })</pre> | n/a | yes |
+| <a name="input_member_accounts"></a> [member\_accounts](#input\_member\_accounts) | Map of Organization Account names to config objects. Note that AWS Organization<br>best practices entails attaching organization policies to OUs - not accounts - so<br>this module does not permit member accounts to have a "parent" value of "root".<br>The "should\_allow\_iam\_user\_access\_to\_billing" property defaults to "true",<br>and "org\_account\_access\_role\_name" defaults to "OrganizationAccountAccessRole". | <pre>map(<br>    # map keys:<br>    object({<br>      parent                                  = string<br>      email                                   = string<br>      should_allow_iam_user_access_to_billing = optional(bool)<br>      org_account_access_role_name            = optional(string)<br>      tags                                    = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
+| <a name="input_organization_config"></a> [organization\_config](#input\_organization\_config) | Config object for an AWS Organization. | <pre>object({<br>    org_trusted_services = list(string)<br>    enabled_policy_types = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_organization_policies"></a> [organization\_policies](#input\_organization\_policies) | Map organization policy names to config objects. The "target" property indicates<br>to which organization entity the policy should be attached; valid values are "root"<br>and the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE\_CONTROL\_POLICY, AISERVICES\_OPT\_OUT\_POLICY, BACKUP\_POLICY,<br>or TAG\_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type. | <pre>map(<br>    # map keys: organization policy names<br>    object({<br>      target      = string<br>      type        = string<br>      description = optional(string)<br>      statement   = string<br>      tags        = optional(map(string))<br>    })<br>  )</pre> | `null` | no |
+| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | Map of Organizational Unit names to config objects. "parent" must be<br>"root" or the name of another OU within var.organizational\_units. | <pre>map(<br>    # map keys:<br>    object({<br>      parent = string<br>      tags   = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
 
 ### Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_Organization"></a> [Organization](#output\_Organization) | n/a |
-| <a name="output_Organization_Member_Accounts"></a> [Organization\_Member\_Accounts](#output\_Organization\_Member\_Accounts) | n/a |
-| <a name="output_Organization_Policies"></a> [Organization\_Policies](#output\_Organization\_Policies) | n/a |
-| <a name="output_Organizational_Units"></a> [Organizational\_Units](#output\_Organizational\_Units) | n/a |
+| <a name="output_Organization"></a> [Organization](#output\_Organization) | The AWS Organization resource object. |
+| <a name="output_Organization_Member_Accounts"></a> [Organization\_Member\_Accounts](#output\_Organization\_Member\_Accounts) | Map of Organization Member Account resource objects. |
+| <a name="output_Organization_Policies"></a> [Organization\_Policies](#output\_Organization\_Policies) | Map of Organization Policy resource objects. |
+| <a name="output_Organizational_Units"></a> [Organizational\_Units](#output\_Organizational\_Units) | Map of Organizational Unit resource objects. |
 
 ---
 
@@ -137,22 +125,22 @@ See [LICENSE](/LICENSE) for more information.
 
 ## 💬 Contact
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [trevor@nerdware.cloud](mailto:trevor@nerdware.cloud)
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Nerdware.cloud](mailto:trevor@nerdware.cloud)
 
   <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+    <img src="/.github/assets/YouTube\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
+    <img src="/.github/assets/LinkedIn\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="https://twitter.com/TeeRevTweets">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+    <img src="/.github/assets/Twitter\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="mailto:trevor@nerdware.cloud">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+    <img src="/.github/assets/email\_icon\_circle.svg" height="40" />
   </a>
   <br><br>
 

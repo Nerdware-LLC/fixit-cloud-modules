@@ -1,7 +1,8 @@
 ######################################################################
 ### AWS ORGANIZATION
+######################################################################
+### root "management" account
 
-# The root "management" account
 resource "aws_organizations_organization" "this" {
   feature_set                   = "ALL"
   aws_service_access_principals = var.organization_config.org_trusted_services
@@ -9,26 +10,13 @@ resource "aws_organizations_organization" "this" {
 }
 
 #---------------------------------------------------------------------
-# Organizational Units
+### Organizational Units                    (AWS OU max nest depth: 5)
 
-locals {
-  Level_1_OUs = {
+resource "aws_organizations_organizational_unit" "Level_1_OUs" {
+  for_each = {
     for ou_name, ou_config in var.organizational_units : ou_name => ou_config
     if ou_config.parent == "root"
   }
-  Level_2_OUs = {
-    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
-    if contains(keys(local.Level_1_OUs), ou_config.parent)
-  }
-  Level_3_OUs = {
-    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
-    if contains(keys(local.Level_2_OUs), ou_config.parent)
-  }
-}
-
-
-resource "aws_organizations_organizational_unit" "Level_1_OUs" {
-  for_each = local.Level_1_OUs
 
   name      = each.key
   parent_id = one(aws_organizations_organization.this.roots).id
@@ -36,7 +24,10 @@ resource "aws_organizations_organizational_unit" "Level_1_OUs" {
 }
 
 resource "aws_organizations_organizational_unit" "Level_2_OUs" {
-  for_each = local.Level_2_OUs
+  for_each = {
+    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
+    if contains(keys(aws_organizations_organizational_unit.Level_1_OUs), ou_config.parent)
+  }
 
   name      = each.key
   parent_id = aws_organizations_organizational_unit.Level_1_OUs[each.value.parent].id
@@ -44,10 +35,35 @@ resource "aws_organizations_organizational_unit" "Level_2_OUs" {
 }
 
 resource "aws_organizations_organizational_unit" "Level_3_OUs" {
-  for_each = local.Level_3_OUs
+  for_each = {
+    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
+    if contains(keys(aws_organizations_organizational_unit.Level_2_OUs), ou_config.parent)
+  }
 
   name      = each.key
   parent_id = aws_organizations_organizational_unit.Level_2_OUs[each.value.parent].id
+  tags      = each.value.tags
+}
+
+resource "aws_organizations_organizational_unit" "Level_4_OUs" {
+  for_each = {
+    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
+    if contains(keys(aws_organizations_organizational_unit.Level_3_OUs), ou_config.parent)
+  }
+
+  name      = each.key
+  parent_id = aws_organizations_organizational_unit.Level_3_OUs[each.value.parent].id
+  tags      = each.value.tags
+}
+
+resource "aws_organizations_organizational_unit" "Level_5_OUs" {
+  for_each = {
+    for ou_name, ou_config in var.organizational_units : ou_name => ou_config
+    if contains(keys(aws_organizations_organizational_unit.Level_4_OUs), ou_config.parent)
+  }
+
+  name      = each.key
+  parent_id = aws_organizations_organizational_unit.Level_4_OUs[each.value.parent].id
   tags      = each.value.tags
 }
 
@@ -60,7 +76,9 @@ locals {
   all_org_units = merge(
     aws_organizations_organizational_unit.Level_1_OUs,
     aws_organizations_organizational_unit.Level_2_OUs,
-    aws_organizations_organizational_unit.Level_3_OUs
+    aws_organizations_organizational_unit.Level_3_OUs,
+    aws_organizations_organizational_unit.Level_4_OUs,
+    aws_organizations_organizational_unit.Level_5_OUs
   )
 }
 

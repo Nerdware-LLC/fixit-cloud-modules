@@ -2,19 +2,23 @@
 ### OUTPUTS
 
 output "Organization" {
-  value = aws_organizations_organization.this
+  description = "The AWS Organization resource object."
+  value       = aws_organizations_organization.this
 }
 
 output "Organizational_Units" {
-  value = local.all_org_units
+  description = "Map of Organizational Unit resource objects."
+  value       = local.all_org_units
 }
 
 output "Organization_Member_Accounts" {
-  value = aws_organizations_account.map
+  description = "Map of Organization Member Account resource objects."
+  value       = aws_organizations_account.map
 }
 
 output "Organization_Policies" {
-  value = aws_organizations_policy.map
+  description = "Map of Organization Policy resource objects."
+  value       = aws_organizations_policy.map
 }
 
 ######################################################################
