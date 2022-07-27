@@ -1,14 +1,14 @@
 <div align="center">
 
-# Fixit Cloud ☁️ MODULES
+  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+    <img src="/.github/assets/FCM_repo_banner.png" height="40" />
+  </a>
 
-Terraform modules for defining Fixit Cloud architecture - a [Nerdware](https://github.com/Nerdware-LLC) project.
+Terraform modules for defining Fixit Cloud architecture.
 
 [![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
 [![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
 [![license][license-shield]](/LICENSE)
-
-**Check out the [fixit-cloud-live][fixit-cloud-live] repo to view the Terragrunt files which implement these modules.**
 
 </div>
 
