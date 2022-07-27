@@ -1,7 +1,7 @@
 <div align="center">
 
   <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="/.github/assets/FCM_repo_banner.png" height="150" />
+    <img src="/.github/assets/FCM_repo_banner.png" height="185" />
   </a>
 
 Terraform modules for defining Fixit Cloud architecture.
