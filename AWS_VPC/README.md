@@ -4,22 +4,17 @@ Terraform module for defining secure-by-default VPC resources.
 
 <h2>Table of Contents</h2>
 
-- [VPC Configs](#vpc-configs)
-  - [VPC DNS](#vpc-dns)
-  - [VPC Peering](#vpc-peering)
-- [Subnet Configs](#subnet-configs)
-  - [Subnet Types](#subnet-types)
-  - [Subnet Availability Zones](#subnet-availability-zones)
-  - [Public IP Auto-Assignment](#public-ip-auto-assignment)
-  - [NAT Gateway Placement](#nat-gateway-placement)
-  - [Subnets: `route_table` and `network_acl`](#subnets-route_table-and-network_acl)
-- [Route Tables](#route-tables)
-  - [Subnet-Type Route Tables](#subnet-type-route-tables)
-  - [Custom Route Tables](#custom-route-tables)
-- [Network ACLs](#network-acls)
-  - [NACL Rules](#nacl-rules)
-  - [Subnet-Type Network ACLs](#subnet-type-network-acls)
-  - [Custom Network ACLs](#custom-network-acls)
+- [Subnet Types](#subnet-types)
+  - [Subnet-Type Resources](#subnet-type-resources)
+  - [How to Customize or Disable Subnet-Type Resources](#how-to-customize-or-disable-subnet-type-resources)
+  - [Subnet-Type Network ACLs: Default Rules](#subnet-type-network-acls-default-rules)
+    - [Public_Subnets_NACL](#public_subnets_nacl)
+    - [Private_Subnets_NACL](#private_subnets_nacl)
+    - [IntraOnly_Subnets_NACL](#intraonly_subnets_nacl)
+- [Subnet Availability Zones](#subnet-availability-zones)
+- [PRIVATE Subnet Route Table Associations](#private-subnet-route-table-associations)
+- [NAT Gateways](#nat-gateways)
+- [VPC Peering](#vpc-peering)
 - [Non-Configurable VPC-Default Resources](#non-configurable-vpc-default-resources)
 - [AWS Service CIDR Blocks](#aws-service-cidr-blocks)
 - [⚙️ Module Usage](#️-module-usage)
@@ -32,15 +27,113 @@ Terraform module for defining secure-by-default VPC resources.
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
 
-## VPC Configs
+## Subnet Types
 
-VPC configs are provided using the [`var.vpc` input variable](#inputs).
+This module categorizes subnets into the three distinct types: **PUBLIC**, **PRIVATE**, and **INTRA-ONLY**. <br>These "**Subnet-Type**" categories are based on the target of a subnet's default route (0.0.0.0/0).
 
-### VPC DNS
+| <span style="white-space: nowrap;">Subnet `type`</span> | Default Route Target | Public Ingress | Public Egress | Use Case Examples                                                                                                     |
+| :------------------------------------------------------ | :------------------- | :------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC`                                                | Internet Gateway     |       ✔️       |      ✔️       | • Public-facing workloads <br> • Load balancers <br> • NAT gateways                                                   |
+| `PRIVATE`                                               | NAT Gateway          |       ❌       |      ✔️       | • Non-public-facing workloads <br> • Service layer components <br> • Databases                                        |
+| <span style="white-space: nowrap;">`INTRA-ONLY`</span>  | None                 |       ❌       |      ❌       | • Workloads that don't require internet access <br> • Privacy-critical workloads <br> • Peered ops-management subnets |
 
-AWS DNS features are enabled by default. Set `enable_dns_support` and/or `enable_dns_hostnames` to **false** to disable these features.
+Every subnet must be provided with a `type` value in the [`var.subnets` input variable](#inputs). This module uses subnet `type` values to automatically generate network ACLs and route tables with common rules and routes which reflect the subnet types you provide. These resources are referred to as **Subnet-Type** resources, all of which can be flexibly customized, disabled, or replaced.
 
-### VPC Peering
+### Subnet-Type Resources
+
+All **Subnet-Type** resources are shown below. As documented in the relevant [input variables](#inputs), network ACLs and route tables don't have names in AWS, but this module requires user-provided names for both in order to facilitate a [non-index-based](https://www.youtube.com/watch?v=B6qHPHpoVyA&t=148s) organization of resource configs which implements sensible defaults without negatively impacting flexibility. **Subnet-Type** resources are not created for any types which are not included in the user's `var.subnets` inputs.
+
+| <span style="white-space: nowrap;">Subnet `type`</span> | Subnet-Type<br>Network ACL | Subnet-Type<br>Route Table   | Notes                                                                                                                             |
+| :------------------------------------------------------ | :------------------------- | :--------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC`                                                | Public_Subnets_NACL        | Public_Subnets_RouteTable    | <br><br><br>                                                                                                                      |
+| `PRIVATE`                                               | Private_Subnets_NACL       | &emsp; _PUBLIC subnet CIDR_  | PRIVATE subnet route table names = the CIDR of the PUBLIC subnet which contains the NAT gateway used as the default route target. |
+| <span style="white-space: nowrap;">`INTRA-ONLY`</span>  | IntraOnly_Subnets_NACL     | IntraOnly_Subnets_RouteTable | <br>Custom rules/routes can not be added to INTRA-ONLY resources. You can, however, add tags.<br><br>                             |
+
+### How to Customize or Disable Subnet-Type Resources
+
+TO CUSTOMIZE any module-provided **Subnet-Type** resource, simply use its name as a key in the relevant input variable (`var.network_acls` or `var.route_tables`), and the rules/routes you provide will be merged into its configuration. User-provided inputs are given precedence, so you can add your own configs or override existing ones.
+
+**_Do note, however, the resource configs listed below which can not be overridden:_**
+
+- Route table default routes (0.0.0.0/0) are always defined by the `type` of subnets associated with it and therefore can not be customized.
+- INTRA-ONLY resources can not be customized, as subnets of this type are intended to be entirely closed systems which permit neither ingress nor egress traffic. If you find yourself wanting to add rules/routes to INTRA-ONLY resources, instead either switch the subnet type to PRIVATE and customize the PRIVATE resources, or create your own entirely custom NACLs/route tables.
+
+TO DISABLE any module-provided **Subnet-Type** resource, simply create your own custom NACLs/route tables in `var.network_acls`/`var.route_tables`, and have every subnet of the relevant type configured to use your custom resource using the `network_acl`/`route_table` properties in `var.subnets` config objects.
+
+### Subnet-Type Network ACLs: Default Rules
+
+#### Public_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :------------------ |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP from anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS from anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+#### Private_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
+  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
+  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
+  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
+
+#### IntraOnly_Subnets_NACL
+
+- Ingress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | - | - | - | - | - | **Ingress not permitted** |
+
+- Egress:
+  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
+  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
+  | - | - | - | - | - | **Egress not permitted** |
+
+## Subnet Availability Zones
+
+For each subnet, a valid `availability_zone` must be specified.
+
+<b style="text-decoration:underline;">PRIVATE Subnets: Same-AZ NAT Gateway Required</b>
+
+In each availability zone used by your PRIVATE subnets, there must also be at least one PUBLIC subnet configured with `contains_nat_gateway = true`.
+This module does not support the creation of PRIVATE subnets with default routes pointing to NAT gateways in different availability zones, for two reasons:
+
+1.  Cross-AZ NAT incurs a slight latency hit
+2.  Such a design undermines high-availability
+
+## PRIVATE Subnet Route Table Associations
+
+As described in the [NAT Gateways section](#nat-gateways), all NAT gateways have a 1:1 relationship with a corresponding route table - we'll refer to these here as "NAT route tables".
+
+To explicitly associate a PRIVATE subnet with any particular NAT route table, simply set the PRIVATE subnet's `route_table` property in `var.subnets` to the CIDR of the PUBLIC subnet which contains the NAT gateway of your choosing.
+
+<b style="text-decoration:underline;">Any PRIVATE subnets which are not explicitly associated with a NAT are evenly distributed among the NAT route tables within their availability zone.</b>
+
+## NAT Gateways
+
+This module creates one NAT gateway for each PUBLIC subnet configured with `contains_nat_gateway = true`. This module identifies NAT gateways and their associated resources (below) by the CIDR of the PUBLIC subnet in which they're placed. For each NAT gateway, the following resources are also created:
+
+- 1x elastic IP address
+- 1x route table, for which the NAT gateway is the default route
+
+As mentioned in the [section on availability zones](#subnet-availability-zones), there must be at least one PUBLIC subnet configured with `contains_nat_gateway = true` in each AZ used by your PRIVATE subnets.
+
+## VPC Peering
 
 There are two input variables which can be used to configure [VPC peering connections](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html):
 
@@ -67,188 +160,7 @@ Once a VPC peering connection has been established, the following subnet-level r
 
 To see how this module is used to configure VPC peering, check out [this usage example](examples/terragrunt.hcl).
 
-## Subnet Configs
-
-Subnet configs are provided using the [`var.subnets` input variable](#inputs), which maps subnet CIDRs to config objects.
-
-### Subnet Types
-
-Each subnet must have a specified `type`, the value of which is an enum which reflects the subnet's default route ("0.0.0.0/0"). This module uses subnet `type` values to automatically generate network ACLs and route tables with common rules and routes which reflect the subnet types you provide. These resources are referred to as [**Subnet-Type** resources](#subnet-type-resources), all of which can be flexibly customized, disabled, or replaced. Valid `type` values:
-
-| Subnet `type` | Default Route Target | Public Ingress | Public Egress | Use Case Examples                                                                                                     |
-| :------------ | :------------------- | :------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------- |
-| `PUBLIC`      | Internet Gateway     |       ✔️       |      ✔️       | • Public-facing workloads <br> • Load balancers <br> • NAT gateways                                                   |
-| `PRIVATE`     | NAT Gateway          |       ❌       |      ✔️       | • Non-public-facing workloads <br> • Service layer components <br> • Databases                                        |
-| `INTRA-ONLY`  | None                 |       ❌       |      ❌       | • Workloads that don't require internet access <br> • Privacy-critical workloads <br> • Peered ops-management subnets |
-
-### Subnet Availability Zones
-
-For each subnet, a valid `availability_zone` must be specified.
-
-> <b style="text-decoration:underline;">PRIVATE Subnets: Same-AZ NAT Gateway Required</b>
->
-> In each availability zone used by your PRIVATE subnets, there must also be at least one PUBLIC subnet configured with `"contains_nat_gateway" = true`.
-> This module does not support the creation of PRIVATE subnets with default routes pointing to NAT gateways in different availability zones, for two reasons:
->
-> 1.  Cross-AZ NAT incurs a slight latency hit
-> 2.  Such a design undermines high-availability
-
-### Public IP Auto-Assignment
-
-By default, the AWS public IP auto-assignment feature is disabled in all subnets. Set `map_public_ip_on_launch` to **true** to enable this feature in any PUBLIC subnet (no effect on non-public subnet configs).
-
-### NAT Gateway Placement
-
-By default, no subnets will contain a NAT gateway. Set `contains_nat_gateway` to **true** to create a NAT gateway in any PUBLIC subnet (no effect on non-public subnet configs). As mentioned in the [section on availability zones](#subnet-availability-zones), there must be at least one PUBLIC subnet configured with `"contains_nat_gateway" = true` in each AZ used by your PRIVATE subnets.
-
-<!--
-### NAT Gateway Assignment
-
-TODO explain PRIVATE subnet NAT gateway assignment
-
-  - NATs are IDd by CIDR
-  - Each NAT gets a RT, 1:1
-  - can be explicit via `route_table`
--->
-
-### Subnets: `route_table` and `network_acl`
-
-<!--
-FIXME update this section:
-    - private subnets can specify a SPECIFIC RT without adding routes/tags w the CIDR of the NAT
-    - else they can do a custom NAME, like PUBLIC subnets can
-      - this is necessary to allow 2 RTs with same Default Route, but only 1 has peering
--->
-
-Subnets can be associated with a specific route table or network ACL via the `route_table` and `network_acl` subnet properties. These resources must be configured in their respective input variables: [`var.route_tables`](#route-tables) and [`var.network_acls`](#network-acls) (click links for more info).
-
-<!-- TODO Below comment is from other section, fold it in here.
-
-To assign a PRIVATE subnet to a particular route table, set its "route_table" property in var.subnets to the CIDR of the PUBLIC subnet which contains the desired NAT gateway; unless that route table will also contain custom routes (e.g., a VPC peering connection), it need not be provided in this variable. -->
-
-## Route Tables
-
-Route table configs are provided using the [`var.route_tables` input variable](#inputs), which maps arbitrary route table _"names"_ to config objects. Route tables do not have names in AWS, but the name values you provide will be used by this module to properly identify route tables for the purposes of route customization and subnet association. Use the **route_table** subnet config property to explicitly associate a subnet with a specific route table.
-
-> For PRIVATE subnet route tables, the name of the route table must be the CIDR of a PUBLIC subnet within the same AZ which contains a NAT gateway.
-
-The route table config objects can contain custom `routes` and/or `tags`. "routes" maps CIDRs of route destinations to objects configuring each respective route. Any valid CIDR block can used except for the default route CIDR ("0.0.0.0/0"), which is automatically configured for each subnet based on its `type` and cannot be overridden.
-
-**Route Configs:**
-
-- VPC peering connections can be configured in one of two ways:
-  1. If VPC is the peering REQUESTER, use "peering_request_vpc_id"
-  2. If VPC is the peering ACCEPTER, use "peering_connection_id"
-
-### Subnet-Type Route Tables
-
-By default, route tables will be created which reflect the "type" of subnets included in your `var.subnets` input, which this module refers to as **Subnet-Type** route tables.
-
-- For PUBLIC subnets, one route table is created named **Public_Subnets_RouteTable** which routes egress traffic to the VPC's internet gateway.
-- For INTRA-ONLY subnets, one route table is created named **IntraOnly_Subnets_RouteTable** which does not contain any routes, thereby disabling both ingress and egress traffic for associated subnets.
-- For PRIVATE subnets, one route table is created for each NAT gateway included in your `var.subnets` config; like the NAT gateways themselves, this module identifies NAT-connected route tables by the CIDR of the PUBLIC subnet which contains the NAT gateway. To add routes and/or tags to any of the Subnet-Type route tables, simply use their identifier (route table name, or for private subnets the CIDR of the subnet which contains the NAT) as a key in `var.route_tables`, with the value set to an object with your desired configs.
-
-<!--
-FIXME update this section:
-    - private subnets can specify a SPECIFIC RT without adding routes/tags w the CIDR of the NAT
-    - else they can do a custom NAME, like PUBLIC subnets can
-      - this is necessary to allow 2 RTs with same Default Route, but only 1 has peering
--->
-
-- PUBLIC Subnet-Type route table:
-  - A single route table named **Public_Subnets_RouteTable** which routes egress traffic to the VPC's internet gateway.
-  - By default all PUBLIC subnets are associated with it.
-  - To override the default Subnet-Type route table for PUBLIC subnets, set `route_table` to any custom route table named in `var.route_tables`.
-- PRIVATE Subnet-Type route tables:
-  - One route table is created per NAT gateway; like the NAT gateways themselves, this module identifies NAT-connected route tables by the CIDR of the public subnet which contains the NAT gateway.
-  - By default PRIVATE subnets are evenly distributed among route tables within the same AZ to spread out the load.
-  - To explicitly set a specific route table for PRIVATE subnets, set `route_table` to the CIDR of any PUBLIC subnet within the same AZ which contains a NAT gateway. Unless the desired route table will also contain custom non-default routes (e.g., a VPC peering connection) or tags, it need not be provided in `var.route_tables` since it will already exist.
-- INTRA-ONLY Subnet-Type route table:
-  - A single route table named **IntraOnly_Subnets_RouteTable** which does not contain any routes, thereby disabling egress traffic.
-  - All INTRA-ONLY subnets are associated with it.
-  - The default Subnet-Type route table for INTRA-ONLY subnets cannot be overridden (use a different subnet type instead). Only tags can be added, using the RT's name.
-
-### Custom Route Tables
-
-To create your own route table, simply use your own custom route table name as a key in `var.route_tables`, and then associate subnets with the route table via the `route_table` property in your `var.subnets` input. If all subnets of any given type are assigned to custom route tables, then the module-provided route table for that Subnet-Type will not be created.
-
-<!-- TODO explain that all RT egress routes can NOT be overridden
-
-  PUBLIC subnet RTs cannot customize egress "0.0.0.0/0" route, MUST be IGW
-  PRIVATE subnet RTs are defined by the CIDR of the NAT's public subnet;
-      by definition, that NAT-RT's egress MUST go to its NAT GW.
-
-      TODO explain that any "route_table" or "network_acl" values
-      for INTRA-ONLY subnets will simply be ignored (no error - should we error?)
-
-
-    TODO go thru docs, ensure refs to "0.0.0.0/0" refer to it as the "zero"/"quad-zero"/"default" route,
-          NOT "the egress route"
--->
-
-## Network ACLs
-
-Network ACL configs are provided using the [`var.network_acls` input variable](#inputs), which maps arbitrary NACL _"names"_ to config objects. NACLs do not have names in AWS, but the name values you provide will be used by this module to properly identify NACLs for the purposes of rule customization and subnet assignment.
-
-### NACL Rules
-
-Both the `ingress` and `egress` properties map quoted rule numbers (e.g., "100") to rule config objects. If not provided, `protocol` defaults to **"tcp"**. If `from_port` and `to_port` are the same, you can simply provide just `port`, which will map to both. If you need the CIDR of a particular AWS service, like EC2 Instance Connect, you can pass values like **"ec2_instance_connect"** to the `cidr_block` property.
-
-[Click to view the list of supported AWS service values](#cidr-blocks-aws-services).
-
-### Subnet-Type Network ACLs
-
-By default, a network ACL will be created for each subnet type included in your `var.subnets` input, which this module refers to as **Subnet-Type** NACLs. The default rules for each are provided in the tables below; to add or modify rules or tags for any of the Subnet-Type NACLs, simply use the NACL's name as a key, and any rules/tags you include will be merged in. User input is given merge precedence, so using any module-provided rule numbers like "100" will result in the rule being overwritten.
-
-**Default Rules: Public_Subnets_NACL**
-
-- Ingress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :------------------ |
-  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP from anywhere |
-  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS from anywhere |
-  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
-
-- Egress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
-  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
-  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
-  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
-
-**Default Rules: Private_Subnets_NACL**
-
-- Ingress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
-  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
-
-- Egress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :---------------- |
-  | 100 | tcp | 0.0.0.0/0 | 80 | 80 | HTTP to anywhere |
-  | 200 | tcp | 0.0.0.0/0 | 443 | 443 | HTTPS to anywhere |
-  | 500 | tcp | 0.0.0.0/0 | 1024 | 65535 | Ephemeral ports |
-
-**Default Rules: IntraOnly_Subnets_NACL**
-
-- Ingress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
-  | - | - | - | - | - | **Ingress not permitted** |
-
-- Egress:
-  | Rule Num | Protocol | CIDR Block | From Port | To Port | Description |
-  | :------: | :------: | :--------: | --------: | ------: | :-------------- |
-  | - | - | - | - | - | **Egress not permitted** |
-
-### Custom Network ACLs
-
-To create your own NACL, simply use your own custom NACL name as a key in this variable, and then associate subnets with the NACL via the `network_acl` property in your `var.subnets` configs. If all subnets of any given type are assigned to custom NACLs, then the **Subnet-Type** NACL for that type will not be created.
-
-<!-- TODO
-## VPC Endpoints
-add info for VPC Endpoints -->
+<!-- TODO Add info here on VPC Endpoints -->
 
 ## Non-Configurable VPC-Default Resources
 
@@ -324,16 +236,16 @@ To address the NACL CIDR param issues, the following approaches are under consid
 
 ### Requirements
 
-| Name                                                                     | Version   |
-| ------------------------------------------------------------------------ | --------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.5     |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
 
-| Name                                             | Version   |
-| ------------------------------------------------ | --------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
 
 ### Modules
 
@@ -341,66 +253,66 @@ No modules.
 
 ### Resources
 
-| Name                                                                                                                                                   | Type        |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| [aws_default_network_acl.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_network_acl)                        | resource    |
-| [aws_default_route_table.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table)                        | resource    |
-| [aws_default_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group)                  | resource    |
-| [aws_eip.nat_gw_elastic_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip)                                          | resource    |
-| [aws_internet_gateway.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway)                              | resource    |
-| [aws_nat_gateway.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway)                                         | resource    |
-| [aws_network_acl.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl)                                         | resource    |
-| [aws_route_table.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table)                                         | resource    |
-| [aws_route_table_association.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association)                 | resource    |
-| [aws_security_group.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)                                   | resource    |
-| [aws_security_group_rule.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule)                        | resource    |
-| [aws_subnet.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet)                                                   | resource    |
-| [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc)                                                        | resource    |
-| [aws_vpc_endpoint.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint)                                       | resource    |
-| [aws_vpc_peering_connection.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection)                   | resource    |
-| [aws_vpc_peering_connection_accepter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter) | resource    |
-| [aws_vpc_peering_connection_options.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options)   | resource    |
-| [aws_ip_ranges.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ip_ranges)                                          | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region)                                            | data source |
+| Name | Type |
+|------|------|
+| [aws_default_network_acl.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_network_acl) | resource |
+| [aws_default_route_table.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) | resource |
+| [aws_default_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) | resource |
+| [aws_eip.nat_gw_elastic_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
+| [aws_internet_gateway.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
+| [aws_nat_gateway.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
+| [aws_network_acl.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl) | resource |
+| [aws_route_table.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table_association.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_security_group.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_security_group_rule.list](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_subnet.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
+| [aws_vpc_endpoint.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_peering_connection.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection) | resource |
+| [aws_vpc_peering_connection_accepter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter) | resource |
+| [aws_vpc_peering_connection_options.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
+| [aws_ip_ranges.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ip_ranges) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ### Inputs
 
-| Name                                                                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default | Required |
-| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | :------: |
-| <a name="input_default_network_acl_tags"></a> [default_network_acl_tags](#input_default_network_acl_tags)                | Tags for the VPC's default network ACL.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `map(string)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `null`  |    no    |
-| <a name="input_default_route_table_tags"></a> [default_route_table_tags](#input_default_route_table_tags)                | Tags for the VPC's default route table.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `map(string)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `null`  |    no    |
-| <a name="input_default_security_group_tags"></a> [default_security_group_tags](#input_default_security_group_tags)       | Tags for the VPC's default security group.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `map(string)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `null`  |    no    |
-| <a name="input_internet_gateway_tags"></a> [internet_gateway_tags](#input_internet_gateway_tags)                         | Tags for the internet gateway.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `map(string)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `null`  |    no    |
-| <a name="input_nat_gateway_elastic_ip_tags"></a> [nat_gateway_elastic_ip_tags](#input_nat_gateway_elastic_ip_tags)       | Map of NAT-containing public subnet CIDRs to tags for each respective<br>subnet's NAT-associated elastic IP address.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `map(map(string))`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `null`  |    no    |
-| <a name="input_nat_gateway_tags"></a> [nat_gateway_tags](#input_nat_gateway_tags)                                        | Map of NAT-containing public subnet CIDRs to tags for each respective<br>subnet's NAT gateway.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `map(map(string))`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `null`  |    no    |
-| <a name="input_network_acls"></a> [network_acls](#input_network_acls)                                                    | Map of network ACL names to config objects. For more info:<br> - [`Network ACLs` README](#network-acls)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | <pre>map(<br> # map keys: internal NACL "names"<br> object({<br> access = optional(object({<br> ingress = optional(map(<br> # map keys: quoted rule numbers (e.g., "100")<br> object({<br> cidr_block = string<br> protocol = optional(string)<br> port = optional(number)<br> from_port = optional(number)<br> to_port = optional(number)<br> })<br> ))<br> egress = optional(map(<br> # map keys: quoted rule numbers (e.g., "100")<br> object({<br> cidr_block = string<br> protocol = optional(string)<br> port = optional(number)<br> from_port = optional(number)<br> to_port = optional(number)<br> })<br> ))<br> }))<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                                                                                                                                                                                             | `{}`    |    no    |
-| <a name="input_peering_accept_connection_ids"></a> [peering_accept_connection_ids](#input_peering_accept_connection_ids) | (Optional) VPC Peering connection accepts config; use this variable for<br>peering connections in which your VPC is the ACCEPTER VPC. Map peering<br>connection IDs to config objects for each respective peering connection<br>to accept. If the peering connection was configured for auto-acceptance,<br>manual acceptance is not required to establish the connection.<br>"allow_remote_vpc_dns_resolution" defaults to "true". For more info:<br> - [`VPC Peering` README](#vpc-peering)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | <pre>map(<br> # map keys: peering connection IDs<br> object({<br> allow_remote_vpc_dns_resolution = optional(bool)<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `{}`    |    no    |
-| <a name="input_peering_request_vpc_ids"></a> [peering_request_vpc_ids](#input_peering_request_vpc_ids)                   | (Optional) VPC Peering connection requests config; use this variable for<br>peering connections in which your VPC is the REQUESTER VPC. Map accepter<br>VPC IDs to config objects for each respective peering connection request.<br>"allow_remote_vpc_dns_resolution" defaults to "true". For more info:<br> - [`VPC Peering` README](#vpc-peering)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | <pre>map(<br> # map keys: peer VPC IDs<br> object({<br> peer_vpc_owner_account_id = optional(string)<br> peer_vpc_region = optional(string)<br> allow_remote_vpc_dns_resolution = optional(bool)<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `{}`    |    no    |
-| <a name="input_route_tables"></a> [route_tables](#input_route_tables)                                                    | Map of route table names to route table config objects. Peering connection<br>routes can be configured in one of two ways: if VPC is the peering REQUESTER,<br>use "peering_request_vpc_id", otherwise if VPC is the peering ACCEPTER, use<br>"peering_connection_id". Custom route tables for PRIVATE subnets can set their<br>default route ("0.0.0.0/0") using "nat_gateway_subnet_cidr", which must be set<br>to the CIDR of a NAT-containing PUBLIC subnet. For more info:<br> - [`Route Tables` README](#route-tables)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | <pre>map(<br> # map keys: internal route table "names"<br> object({<br> routes = optional(map(<br> # map keys: CIDRs of route destinations<br> object({<br> nat_gateway_subnet_cidr = optional(string)<br> peering_request_vpc_id = optional(string)<br> peering_accept_connection_id = optional(string)<br> })<br> ))<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `{}`    |    no    |
-| <a name="input_security_groups"></a> [security_groups](#input_security_groups)                                           | Map of Security Group names to config objects. For more info:<br> - [`Security Groups` README](#security_groups)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | <pre>map(<br> # map keys: security group names<br> object({<br> description = string<br> access = object({<br> ingress = optional(list(<br> object({<br> description = string<br> protocol = optional(string)<br> port = optional(number)<br> from_port = optional(number)<br> to_port = optional(number)<br> peer_security_group_id = optional(string)<br> peer_security_group = optional(string)<br> aws_service = optional(string)<br> cidr_blocks = optional(list(string))<br> self = optional(bool)<br> })<br> ))<br> egress = optional(list(<br> object({<br> description = string<br> protocol = optional(string)<br> port = optional(number)<br> from_port = optional(number)<br> to_port = optional(number)<br> peer_security_group_id = optional(string)<br> peer_security_group = optional(string)<br> aws_service = optional(string)<br> cidr_blocks = optional(list(string))<br> self = optional(bool)<br> })<br> ))<br> })<br> tags = optional(map(string))<br> })<br> )</pre> | `{}`    |    no    |
-| <a name="input_subnets"></a> [subnets](#input_subnets)                                                                   | Map of subnet CIDRs to subnet config objects. For each subnet, "type"<br>must be either "PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties<br>"map_public_ip_on_launch" and "contains_nat_gateway" both default to<br>false, and have no effect on non-public subnets. Public and private<br>subnets can be configured to use specific route tables and/or NACLs<br>via the "route_table" and "network_acl" properties respectively;<br>these have no effect on intra-only subnets. For more info:<br> - [`Subnets` README](#subnets)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | <pre>map(<br> # map keys: subnet CIDRs<br> object({<br> availability_zone = string<br> type = string<br> map_public_ip_on_launch = optional(bool)<br> contains_nat_gateway = optional(bool)<br> route_table = optional(string)<br> network_acl = optional(string)<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | n/a     |   yes    |
-| <a name="input_vpc"></a> [vpc](#input_vpc)                                                                               | Config object for the VPC. The optional bools "enable_dns_support"<br>and "enable_dns_hostnames" both default to "true". For more info:<br> - [`VPC` README](#vpc)<br> - [Usage example](examples/terragrunt.hcl)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | <pre>object({<br> cidr_block = string<br> enable_dns_support = optional(bool)<br> enable_dns_hostnames = optional(bool)<br> tags = optional(map(string))<br> })</pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | n/a     |   yes    |
-| <a name="input_vpc_endpoints"></a> [vpc_endpoints](#input_vpc_endpoints)                                                 | Map of VPC Endpoint services to endpoint config objects. Service-keys are<br>all normalized to lower-case and are therefore case-insensitive. A list of<br>valid services is available at the link below.<br>https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html<br><br>"type" can be "Interface" (default), "Gateway", or "GatewayLoadBalancer".<br>Gateway endpoints can only be created for the S3 and DynamoDB services.<br>All "Gateway" and some "Interface" endpoints can provide "policy", which if<br>provided must be a valid IAM policy formatted as a JSON string.<br>If the endpoint and service are owned by the same account, "auto-accept" can<br>be used to either enable or disable automatic acceptance of the connection.<br>"enable_private_dns" is only applicable to "Interface" endpoints and defaults<br>to true. "timeouts" are all optional and default to "10m" if not provided.<br><br>Endpoint Resource Associations<br>"Interface" and "GatewayLoadBalancer" endpoints must provide "subnet_cidrs", a<br>list of subnet CIDRs in which to place the interface/GWLB. "Interface" endpoints<br>must additionally provide "security_groups", a list of names of security groups<br>which should be associated with the endpoint's interface. "Gateway" endpoints<br>must specify "route_tables"; AWS will automatically add/remove routes to these<br>route tables which connect the service's AWS-managed prefix-list to the gateway<br>endpoint.<br><br>For more info:<br> - [`VPC Endpoints` README](#vpc-endpoints)<br> - [Usage example](examples/terragrunt.hcl) | <pre>map(object({<br> # map keys: names of VPC endpoint services<br> type = optional(string) # Interface (default), Gateway, or GatewayLoadBalancer<br> policy = optional(string)<br> auto_accept = optional(bool)<br> enable_private_dns = optional(bool) # Only for types: Interface<br> subnet_cidrs = optional(list(string)) # Only for types: Interface, GWLB<br> security_groups = optional(list(string)) # Only for types: Interface<br> route_tables = optional(list(string)) # Only for types: Gateway<br> timeouts = optional(object({<br> create = optional(string)<br> update = optional(string)<br> delete = optional(string)<br> }))<br> tags = optional(map(string))<br> }))</pre>                                                                                                                                                                                                                                                                                            | `{}`    |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_default_network_acl_tags"></a> [default\_network\_acl\_tags](#input\_default\_network\_acl\_tags) | Tags for the VPC's default network ACL. | `map(string)` | `null` | no |
+| <a name="input_default_route_table_tags"></a> [default\_route\_table\_tags](#input\_default\_route\_table\_tags) | Tags for the VPC's default route table. | `map(string)` | `null` | no |
+| <a name="input_default_security_group_tags"></a> [default\_security\_group\_tags](#input\_default\_security\_group\_tags) | Tags for the VPC's default security group. | `map(string)` | `null` | no |
+| <a name="input_internet_gateway_tags"></a> [internet\_gateway\_tags](#input\_internet\_gateway\_tags) | Tags for the internet gateway. | `map(string)` | `null` | no |
+| <a name="input_nat_gateway_elastic_ip_tags"></a> [nat\_gateway\_elastic\_ip\_tags](#input\_nat\_gateway\_elastic\_ip\_tags) | Map of NAT-containing public subnet CIDRs to tags for each respective<br>subnet's NAT-associated elastic IP address. | `map(map(string))` | `null` | no |
+| <a name="input_nat_gateway_tags"></a> [nat\_gateway\_tags](#input\_nat\_gateway\_tags) | Map of NAT-containing public subnet CIDRs to tags for each respective<br>subnet's NAT gateway. | `map(map(string))` | `null` | no |
+| <a name="input_network_acls"></a> [network\_acls](#input\_network\_acls) | Map of network ACL names to config objects. Network ACLs do not have names in AWS,<br>but the name values you provide will be used by this module to properly identify<br>network ACLs for the purposes of rule customization and subnet association.<br><br>"access.ingress" and "access.egress" map quoted rule numbers (e.g., "100") to objects<br>configuring each respective rule. For each rule, if "from\_port" and "to\_port" are the<br>same, you can simply provide just "port" which will be mapped to both. "protocol"<br>defaults to "tcp" if not provided. | <pre>map(<br>    # map keys: internal NACL "names"<br>    object({<br>      access = optional(object({<br>        ingress = optional(map(<br>          # map keys: quoted rule numbers (e.g., "100")<br>          object({<br>            cidr_block = string<br>            protocol   = optional(string)<br>            port       = optional(number)<br>            from_port  = optional(number)<br>            to_port    = optional(number)<br>          })<br>        ))<br>        egress = optional(map(<br>          # map keys: quoted rule numbers (e.g., "100")<br>          object({<br>            cidr_block = string<br>            protocol   = optional(string)<br>            port       = optional(number)<br>            from_port  = optional(number)<br>            to_port    = optional(number)<br>          })<br>        ))<br>      }))<br>      tags = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_peering_accept_connection_ids"></a> [peering\_accept\_connection\_ids](#input\_peering\_accept\_connection\_ids) | (Optional) VPC Peering connection accepts config; use this variable for<br>peering connections in which your VPC is the ACCEPTER VPC. Map peering<br>connection IDs to config objects for each respective peering connection<br>to accept. If the peering connection was configured for auto-acceptance,<br>manual acceptance is not required to establish the connection.<br>"allow\_remote\_vpc\_dns\_resolution" defaults to "true". For more info, see<br>the [`VPC Peering` section of the README](#vpc-peering). | <pre>map(<br>    # map keys: peering connection IDs<br>    object({<br>      allow_remote_vpc_dns_resolution = optional(bool)<br>      tags                            = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_peering_request_vpc_ids"></a> [peering\_request\_vpc\_ids](#input\_peering\_request\_vpc\_ids) | (Optional) VPC Peering connection requests config; use this variable for<br>peering connections in which your VPC is the REQUESTER VPC. Map accepter<br>VPC IDs to config objects for each respective peering connection request.<br>"allow\_remote\_vpc\_dns\_resolution" defaults to "true". For more info, see<br>the [`VPC Peering` section of the README](#vpc-peering). | <pre>map(<br>    # map keys: peer VPC IDs<br>    object({<br>      peer_vpc_owner_account_id       = optional(string)<br>      peer_vpc_region                 = optional(string)<br>      allow_remote_vpc_dns_resolution = optional(bool)<br>      tags                            = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_route_tables"></a> [route\_tables](#input\_route\_tables) | Map of route table names to route table config objects. Route tables do not have names in<br>AWS, but the name values you provide will be used by this module to properly identify route<br>tables for the purposes of route customization and subnet association.<br><br>"routes" maps CIDRs of route destinations to objects configuring each respective route.<br>Custom route tables for PRIVATE subnets can set their default route ("0.0.0.0/0") using<br><br>"nat\_gateway\_subnet\_cidr", which must be set to the CIDR of a NAT-containing PUBLIC subnet.<br>Peering connection routes can be configured in one of two ways: if VPC is the peering<br>REQUESTER, use "peering\_request\_vpc\_id", otherwise if VPC is the peering ACCEPTER, use<br>"peering\_connection\_id". | <pre>map(<br>    # map keys: internal route table "names"<br>    object({<br>      routes = optional(map(<br>        # map keys: CIDRs of route destinations<br>        object({<br>          nat_gateway_subnet_cidr      = optional(string)<br>          peering_request_vpc_id       = optional(string)<br>          peering_accept_connection_id = optional(string)<br>        })<br>      ))<br>      tags = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | Map of Security Group names to config objects. For each ingress/egress rule,<br>"protocol" defaults to "tcp" if not provided. If "from\_port" and "to\_port" are<br>the same, you can provide just "port" which will be mapped to both. If a rule<br>will use the CIDR block of an AWS service, you can provide an enum string to<br>"aws\_service" to have the lookup performed by the module; see the [AWS Service<br>CIDR Blocks section of the README](#aws-service-cidr-blocks) for a list of<br>supported services and their enum values. | <pre>map(<br>    # map keys: security group names<br>    object({<br>      description = string<br>      access = object({<br>        ingress = optional(list(<br>          object({<br>            description            = string<br>            protocol               = optional(string)<br>            port                   = optional(number)<br>            from_port              = optional(number)<br>            to_port                = optional(number)<br>            peer_security_group_id = optional(string)<br>            peer_security_group    = optional(string)<br>            aws_service            = optional(string)<br>            cidr_blocks            = optional(list(string))<br>            self                   = optional(bool)<br>          })<br>        ))<br>        egress = optional(list(<br>          object({<br>            description            = string<br>            protocol               = optional(string)<br>            port                   = optional(number)<br>            from_port              = optional(number)<br>            to_port                = optional(number)<br>            peer_security_group_id = optional(string)<br>            peer_security_group    = optional(string)<br>            aws_service            = optional(string)<br>            cidr_blocks            = optional(list(string))<br>            self                   = optional(bool)<br>          })<br>        ))<br>      })<br>      tags = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | Map of subnet CIDRs to subnet config objects. For each subnet, "type" must be either<br>"PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties "map\_public\_ip\_on\_launch" and<br>"contains\_nat\_gateway" both default to false, and have no effect on non-public subnets.<br>Public and private subnets can be configured to use specific route tables and/or NACLs<br>via the "route\_table" and "network\_acl" properties respectively; these have no effect<br>on INTRA-ONLY subnets. | <pre>map(<br>    # map keys: subnet CIDRs<br>    object({<br>      availability_zone       = string<br>      type                    = string<br>      map_public_ip_on_launch = optional(bool)<br>      contains_nat_gateway    = optional(bool)<br>      route_table             = optional(string)<br>      network_acl             = optional(string)<br>      tags                    = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
+| <a name="input_vpc"></a> [vpc](#input\_vpc) | Config object for the VPC. The optional bools "enable\_dns\_support"<br>and "enable\_dns\_hostnames" both default to "true". | <pre>object({<br>    cidr_block           = string<br>    enable_dns_support   = optional(bool)<br>    enable_dns_hostnames = optional(bool)<br>    tags                 = optional(map(string))<br>  })</pre> | n/a | yes |
+| <a name="input_vpc_endpoints"></a> [vpc\_endpoints](#input\_vpc\_endpoints) | Map of VPC Endpoint services to endpoint config objects. Service-keys are<br>all normalized to lower-case and are therefore case-insensitive. A list of<br>valid services is available at the link below.<br>https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html<br><br>"type" can be "Interface" (default), "Gateway", or "GatewayLoadBalancer".<br>Gateway endpoints can only be created for the S3 and DynamoDB services.<br>All "Gateway" and some "Interface" endpoints can provide "policy", which if<br>provided must be a valid IAM policy formatted as a JSON string.<br>If the endpoint and service are owned by the same account, "auto-accept" can<br>be used to either enable or disable automatic acceptance of the connection.<br>"enable\_private\_dns" is only applicable to "Interface" endpoints and defaults<br>to true. "timeouts" are all optional and default to "10m" if not provided.<br><br>Endpoint Resource Associations<br>"Interface" and "GatewayLoadBalancer" endpoints must provide "subnet\_cidrs", a<br>list of subnet CIDRs in which to place the interface/GWLB. "Interface" endpoints<br>must additionally provide "security\_groups", a list of names of security groups<br>which should be associated with the endpoint's interface. "Gateway" endpoints<br>must specify "route\_tables"; AWS will automatically add/remove routes to these<br>route tables which connect the service's AWS-managed prefix-list to the gateway<br>endpoint. | <pre>map(object({<br>    # map keys: names of VPC endpoint services<br>    type               = optional(string) # Interface (default), Gateway, or GatewayLoadBalancer<br>    policy             = optional(string)<br>    auto_accept        = optional(bool)<br>    enable_private_dns = optional(bool)         # Only for types: Interface<br>    subnet_cidrs       = optional(list(string)) # Only for types: Interface, GWLB<br>    security_groups    = optional(list(string)) # Only for types: Interface<br>    route_tables       = optional(list(string)) # Only for types: Gateway<br>    timeouts = optional(object({<br>      create = optional(string)<br>      update = optional(string)<br>      delete = optional(string)<br>    }))<br>    tags = optional(map(string))<br>  }))</pre> | `{}` | no |
 
 ### Outputs
 
-| Name                                                                                                                             | Description                                                               |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| <a name="output_Default_NetworkACL"></a> [Default_NetworkACL](#output_Default_NetworkACL)                                        | The VPC's default network ACL resource object.                            |
-| <a name="output_Default_RouteTable"></a> [Default_RouteTable](#output_Default_RouteTable)                                        | The VPC's default route table resource object.                            |
-| <a name="output_Default_SecurityGroup"></a> [Default_SecurityGroup](#output_Default_SecurityGroup)                               | The VPC's default security group resource object.                         |
-| <a name="output_Internet_Gateway"></a> [Internet_Gateway](#output_Internet_Gateway)                                              | The internet gateway resource object.                                     |
-| <a name="output_NAT_Gateway_Elastic_IPs"></a> [NAT_Gateway_Elastic_IPs](#output_NAT_Gateway_Elastic_IPs)                         | Map of NAT gateway elastic IP address resource objects.                   |
-| <a name="output_NAT_Gateways"></a> [NAT_Gateways](#output_NAT_Gateways)                                                          | Map of NAT gateway resource objects.                                      |
-| <a name="output_Network_ACLs"></a> [Network_ACLs](#output_Network_ACLs)                                                          | Map of network ACL resource objects.                                      |
-| <a name="output_RouteTables"></a> [RouteTables](#output_RouteTables)                                                             | Map of route table resource objects.                                      |
-| <a name="output_Security_Groups"></a> [Security_Groups](#output_Security_Groups)                                                 | Map of security group resource objects.                                   |
-| <a name="output_Subnets"></a> [Subnets](#output_Subnets)                                                                         | Map of subnet resource objects merged with their respective input params. |
-| <a name="output_VPC"></a> [VPC](#output_VPC)                                                                                     | The VPC resource object.                                                  |
-| <a name="output_VPC_Endpoints"></a> [VPC_Endpoints](#output_VPC_Endpoints)                                                       | Map of VPC Endpoint resource objects.                                     |
-| <a name="output_VPC_Peering_Connection_Accepts"></a> [VPC_Peering_Connection_Accepts](#output_VPC_Peering_Connection_Accepts)    | Map of VPC Peering Connection Accepter resource objects.                  |
-| <a name="output_VPC_Peering_Connection_Options"></a> [VPC_Peering_Connection_Options](#output_VPC_Peering_Connection_Options)    | Map of VPC Peering Connection Options resource objects.                   |
-| <a name="output_VPC_Peering_Connection_Requests"></a> [VPC_Peering_Connection_Requests](#output_VPC_Peering_Connection_Requests) | Map of VPC Peering Connection resource objects.                           |
+| Name | Description |
+|------|-------------|
+| <a name="output_Default_NetworkACL"></a> [Default\_NetworkACL](#output\_Default\_NetworkACL) | The VPC's default network ACL resource object. |
+| <a name="output_Default_RouteTable"></a> [Default\_RouteTable](#output\_Default\_RouteTable) | The VPC's default route table resource object. |
+| <a name="output_Default_SecurityGroup"></a> [Default\_SecurityGroup](#output\_Default\_SecurityGroup) | The VPC's default security group resource object. |
+| <a name="output_Internet_Gateway"></a> [Internet\_Gateway](#output\_Internet\_Gateway) | The internet gateway resource object. |
+| <a name="output_NAT_Gateway_Elastic_IPs"></a> [NAT\_Gateway\_Elastic\_IPs](#output\_NAT\_Gateway\_Elastic\_IPs) | Map of NAT gateway elastic IP address resource objects. |
+| <a name="output_NAT_Gateways"></a> [NAT\_Gateways](#output\_NAT\_Gateways) | Map of NAT gateway resource objects. |
+| <a name="output_Network_ACLs"></a> [Network\_ACLs](#output\_Network\_ACLs) | Map of network ACL resource objects. |
+| <a name="output_RouteTables"></a> [RouteTables](#output\_RouteTables) | Map of route table resource objects. |
+| <a name="output_Security_Groups"></a> [Security\_Groups](#output\_Security\_Groups) | Map of security group resource objects. |
+| <a name="output_Subnets"></a> [Subnets](#output\_Subnets) | Map of subnet resource objects merged with their respective input params. |
+| <a name="output_VPC"></a> [VPC](#output\_VPC) | The VPC resource object. |
+| <a name="output_VPC_Endpoints"></a> [VPC\_Endpoints](#output\_VPC\_Endpoints) | Map of VPC Endpoint resource objects. |
+| <a name="output_VPC_Peering_Connection_Accepts"></a> [VPC\_Peering\_Connection\_Accepts](#output\_VPC\_Peering\_Connection\_Accepts) | Map of VPC Peering Connection Accepter resource objects. |
+| <a name="output_VPC_Peering_Connection_Options"></a> [VPC\_Peering\_Connection\_Options](#output\_VPC\_Peering\_Connection\_Options) | Map of VPC Peering Connection Options resource objects. |
+| <a name="output_VPC_Peering_Connection_Requests"></a> [VPC\_Peering\_Connection\_Requests](#output\_VPC\_Peering\_Connection\_Requests) | Map of VPC Peering Connection resource objects. |
 
 ---
 

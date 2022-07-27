@@ -1,6 +1,6 @@
 <h1>Fixit Cloud ☁️ MODULE: AWS ECS Cluster</h1>
 
-Terraform module for defining an ECS Cluster with related resources.
+Terraform module for defining an ECS Cluster, complete with AppMesh and other related resources.
 
 - [⚙️ Module Usage](#️-module-usage)
   - [Requirements](#requirements)

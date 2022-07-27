@@ -4,6 +4,8 @@ Terraform module for defining an AWS Organization and related resources.
 
 <h2>Table of Contents</h2>
 
+- [Trusted AWS Service Principals](#trusted-aws-service-principals)
+- [Useful Links](#useful-links)
 - [⚙️ Module Usage](#️-module-usage)
   - [Requirements](#requirements)
   - [Providers](#providers)
@@ -14,42 +16,21 @@ Terraform module for defining an AWS Organization and related resources.
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
 
-<!--
-## AWS Organization
-TODO add quick paragraph about aws orgs
--->
+<!-- TODO Add info here, explainer re: AWS Orgs, relevant AWS CIS Benchmarks & SecHub Standards on Org resources -->
 
-#### Trusted AWS Service Principals
+## Trusted AWS Service Principals
 
 You can use trusted access to enable supported AWS services to perform tasks in your Organization and its accounts on your behalf. This involves granting permissions to the trusted service but does not otherwise affect the permissions for IAM Users or Roles. When you enable access, the trusted service can create an IAM Service-Linked Role in every account in your Organization whenever that Role is needed. That Role has a permissions policy that allows the trusted service to do the tasks that are described in that service's documentation. This enables you to specify settings and configuration details that you would like the trusted service to maintain in your Organization's Accounts on your behalf. The trusted service only creates Service-Linked Roles when it needs to perform management actions on Accounts, and not necessarily in all Accounts of the Organization.
 
-For more info, please review the [list of AWS services][org-services] which work with AWS Organizations.
+For more info, please review the [list of AWS services](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services_list.html) which work with AWS Organizations.
 
-#### Policy Types
+## Useful Links
 
-There are four values that can be included in `var.organization_config.enabled_policy_types`:
+- [AWS Docs: Organization Service Control Policies](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html)
+- [AWS Docs: Organization Management Policies](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies.html)
+- [AWS Docs: Organization IAM Identity Center (formerly SSO)](https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html)
 
-- AISERVICES_OPT_OUT_POLICY
-- BACKUP_POLICY
-- SERVICE_CONTROL_POLICY
-- TAG_POLICY
-
-<!-- TODO expand above explainer -->
-
-<!--
-#### Service Control Policies
-
-TODO Add info on SCPs -->
-
-<!--
-#### Management Policies
-
-TODO Add info on our mgmt policies -->
-
-<!--
-## AWS SSO
-
-TODO explain SSO setup -->
+<!-- TODO Add more info here explaining the following AWS Org concepts: SCPs, Mgmt Policies, SSO -->
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-start -->
@@ -60,16 +41,16 @@ TODO explain SSO setup -->
 
 ### Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
+| Name                                                                     | Version   |
+| ------------------------------------------------------------------------ | --------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.5     |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
 
 ### Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
+| Name                                             | Version   |
+| ------------------------------------------------ | --------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
 
 ### Modules
 
@@ -77,41 +58,41 @@ No modules.
 
 ### Resources
 
-| Name | Type |
-|------|------|
-| [aws_organizations_account.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_account) | resource |
-| [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organization) | resource |
-| [aws_organizations_organizational_unit.Level_1_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_2_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_3_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_4_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_organizational_unit.Level_5_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit) | resource |
-| [aws_organizations_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy) | resource |
-| [aws_organizations_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy_attachment) | resource |
-| [aws_ssoadmin_account_assignment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
-| [aws_ssoadmin_managed_policy_attachment.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_managed_policy_attachment) | resource |
-| [aws_ssoadmin_permission_set.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set) | resource |
-| [aws_identitystore_group.Admins_SSO_Group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group) | data source |
-| [aws_ssoadmin_instances.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_instances) | data source |
+| Name                                                                                                                                                                         | Type        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| [aws_organizations_account.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_account)                                           | resource    |
+| [aws_organizations_organization.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organization)                                | resource    |
+| [aws_organizations_organizational_unit.Level_1_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_2_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_3_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_4_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_organizational_unit.Level_5_OUs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_organizational_unit)           | resource    |
+| [aws_organizations_policy.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy)                                             | resource    |
+| [aws_organizations_policy_attachment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/organizations_policy_attachment)                       | resource    |
+| [aws_ssoadmin_account_assignment.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment)                               | resource    |
+| [aws_ssoadmin_managed_policy_attachment.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_managed_policy_attachment) | resource    |
+| [aws_ssoadmin_permission_set.AdministratorAccess](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set)                       | resource    |
+| [aws_identitystore_group.Admins_SSO_Group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group)                               | data source |
+| [aws_ssoadmin_instances.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_instances)                                             | data source |
 
 ### Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_admin_sso_config"></a> [admin\_sso\_config](#input\_admin\_sso\_config) | Map of SSO Administrator Object for configuring administrator access to accounts via AWS SSO. | <pre>object({<br>    sso_group_name             = string<br>    permission_set_name        = optional(string)<br>    permission_set_description = optional(string)<br>    permission_set_tags        = optional(map(string))<br>    session_duration           = optional(number)<br>  })</pre> | n/a | yes |
-| <a name="input_member_accounts"></a> [member\_accounts](#input\_member\_accounts) | Map of Organization Account names to config objects. Note that AWS Organization<br>best practices entails attaching organization policies to OUs - not accounts - so<br>this module does not permit member accounts to have a "parent" value of "root".<br>The "should\_allow\_iam\_user\_access\_to\_billing" property defaults to "true",<br>and "org\_account\_access\_role\_name" defaults to "OrganizationAccountAccessRole". | <pre>map(<br>    # map keys:<br>    object({<br>      parent                                  = string<br>      email                                   = string<br>      should_allow_iam_user_access_to_billing = optional(bool)<br>      org_account_access_role_name            = optional(string)<br>      tags                                    = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
-| <a name="input_organization_config"></a> [organization\_config](#input\_organization\_config) | Config object for an AWS Organization. "enabled\_policy\_types" must be one<br>of "AISERVICES\_OPT\_OUT\_POLICY", "BACKUP\_POLICY", "SERVICE\_CONTROL\_POLICY",<br>or "TAG\_POLICY". | <pre>object({<br>    org_trusted_services = list(string)<br>    enabled_policy_types = list(string)<br>  })</pre> | n/a | yes |
-| <a name="input_organization_policies"></a> [organization\_policies](#input\_organization\_policies) | Map organization policy names to config objects. The "target" property indicates<br>to which organization entity the policy should be attached; valid values are "root"<br>and the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE\_CONTROL\_POLICY, AISERVICES\_OPT\_OUT\_POLICY, BACKUP\_POLICY,<br>or TAG\_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type. | <pre>map(<br>    # map keys: organization policy names<br>    object({<br>      target      = string<br>      type        = string<br>      description = optional(string)<br>      statement   = string<br>      tags        = optional(map(string))<br>    })<br>  )</pre> | `null` | no |
-| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | Map of Organizational Unit names to config objects. "parent" must be<br>"root" or the name of another OU within var.organizational\_units. | <pre>map(<br>    # map keys:<br>    object({<br>      parent = string<br>      tags   = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
+| Name                                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Type                                                                                                                                                                                                                                               | Default | Required |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | :------: |
+| <a name="input_admin_sso_config"></a> [admin_sso_config](#input_admin_sso_config)                | Map of SSO Administrator Object for configuring administrator access to accounts via AWS SSO.                                                                                                                                                                                                                                                                                                                                                                                                  | <pre>object({<br> sso_group_name = string<br> permission_set_name = optional(string)<br> permission_set_description = optional(string)<br> permission_set_tags = optional(map(string))<br> session_duration = optional(number)<br> })</pre>        | n/a     |   yes    |
+| <a name="input_member_accounts"></a> [member_accounts](#input_member_accounts)                   | Map of Organization Account names to config objects. Note that AWS Organization<br>best practices entails attaching organization policies to OUs - not accounts - so<br>this module does not permit member accounts to have a "parent" value of "root".<br>The "should_allow_iam_user_access_to_billing" property defaults to "true",<br>and "org_account_access_role_name" defaults to "OrganizationAccountAccessRole".                                                                       | <pre>map(<br> # map keys:<br> object({<br> parent = string<br> email = string<br> should_allow_iam_user_access_to_billing = optional(bool)<br> org_account_access_role_name = optional(string)<br> tags = optional(map(string))<br> })<br> )</pre> | n/a     |   yes    |
+| <a name="input_organization_config"></a> [organization_config](#input_organization_config)       | Config object for an AWS Organization. "enabled_policy_types" must be one<br>of "AISERVICES_OPT_OUT_POLICY", "BACKUP_POLICY", "SERVICE_CONTROL_POLICY",<br>or "TAG_POLICY".                                                                                                                                                                                                                                                                                                                    | <pre>object({<br> org_trusted_services = list(string)<br> enabled_policy_types = list(string)<br> })</pre>                                                                                                                                         | n/a     |   yes    |
+| <a name="input_organization_policies"></a> [organization_policies](#input_organization_policies) | Map organization policy names to config objects. The "target" property indicates<br>to which organization entity the policy should be attached; valid values are "root"<br>and the name of any OU. The "type" for each policy config object can be one one of<br>the following: SERVICE_CONTROL_POLICY, AISERVICES_OPT_OUT_POLICY, BACKUP_POLICY,<br>or TAG_POLICY. "statement" must be a valid JSON string. Please refer to AWS docs<br>for info regarding how to structure each policy type. | <pre>map(<br> # map keys: organization policy names<br> object({<br> target = string<br> type = string<br> description = optional(string)<br> statement = string<br> tags = optional(map(string))<br> })<br> )</pre>                               | `null`  |    no    |
+| <a name="input_organizational_units"></a> [organizational_units](#input_organizational_units)    | Map of Organizational Unit names to config objects. "parent" must be<br>"root" or the name of another OU within var.organizational_units.                                                                                                                                                                                                                                                                                                                                                      | <pre>map(<br> # map keys:<br> object({<br> parent = string<br> tags = optional(map(string))<br> })<br> )</pre>                                                                                                                                     | n/a     |   yes    |
 
 ### Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_Organization"></a> [Organization](#output\_Organization) | The AWS Organization resource object. |
-| <a name="output_Organization_Member_Accounts"></a> [Organization\_Member\_Accounts](#output\_Organization\_Member\_Accounts) | Map of Organization Member Account resource objects. |
-| <a name="output_Organization_Policies"></a> [Organization\_Policies](#output\_Organization\_Policies) | Map of Organization Policy resource objects. |
-| <a name="output_Organizational_Units"></a> [Organizational\_Units](#output\_Organizational\_Units) | Map of Organizational Unit resource objects. |
+| Name                                                                                                                    | Description                                          |
+| ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| <a name="output_Organization"></a> [Organization](#output_Organization)                                                 | The AWS Organization resource object.                |
+| <a name="output_Organization_Member_Accounts"></a> [Organization_Member_Accounts](#output_Organization_Member_Accounts) | Map of Organization Member Account resource objects. |
+| <a name="output_Organization_Policies"></a> [Organization_Policies](#output_Organization_Policies)                      | Map of Organization Policy resource objects.         |
+| <a name="output_Organizational_Units"></a> [Organizational_Units](#output_Organizational_Units)                         | Map of Organizational Unit resource objects.         |
 
 ---
 

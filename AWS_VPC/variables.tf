@@ -6,9 +6,7 @@
 variable "vpc" {
   description = <<-EOF
   Config object for the VPC. The optional bools "enable_dns_support"
-  and "enable_dns_hostnames" both default to "true". For more info:
-    - [`VPC` README](#vpc)
-    - [Usage example](examples/terragrunt.hcl)
+  and "enable_dns_hostnames" both default to "true".
   EOF
 
   type = object({
@@ -27,9 +25,8 @@ variable "peering_request_vpc_ids" {
   (Optional) VPC Peering connection requests config; use this variable for
   peering connections in which your VPC is the REQUESTER VPC. Map accepter
   VPC IDs to config objects for each respective peering connection request.
-  "allow_remote_vpc_dns_resolution" defaults to "true". For more info:
-    - [`VPC Peering` README](#vpc-peering)
-    - [Usage example](examples/terragrunt.hcl)
+  "allow_remote_vpc_dns_resolution" defaults to "true". For more info, see
+  the [`VPC Peering` section of the README](#vpc-peering).
   EOF
 
   type = map(
@@ -52,9 +49,8 @@ variable "peering_accept_connection_ids" {
   connection IDs to config objects for each respective peering connection
   to accept. If the peering connection was configured for auto-acceptance,
   manual acceptance is not required to establish the connection.
-  "allow_remote_vpc_dns_resolution" defaults to "true". For more info:
-    - [`VPC Peering` README](#vpc-peering)
-    - [Usage example](examples/terragrunt.hcl)
+  "allow_remote_vpc_dns_resolution" defaults to "true". For more info, see
+  the [`VPC Peering` section of the README](#vpc-peering).
   EOF
 
   type = map(
@@ -73,15 +69,12 @@ variable "peering_accept_connection_ids" {
 
 variable "subnets" {
   description = <<-EOF
-  Map of subnet CIDRs to subnet config objects. For each subnet, "type"
-  must be either "PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties
-  "map_public_ip_on_launch" and "contains_nat_gateway" both default to
-  false, and have no effect on non-public subnets. Public and private
-  subnets can be configured to use specific route tables and/or NACLs
-  via the "route_table" and "network_acl" properties respectively;
-  these have no effect on intra-only subnets. For more info:
-    - [`Subnets` README](#subnets)
-    - [Usage example](examples/terragrunt.hcl)
+  Map of subnet CIDRs to subnet config objects. For each subnet, "type" must be either
+  "PUBLIC", "PRIVATE", or "INTRA-ONLY". The properties "map_public_ip_on_launch" and
+  "contains_nat_gateway" both default to false, and have no effect on non-public subnets.
+  Public and private subnets can be configured to use specific route tables and/or NACLs
+  via the "route_table" and "network_acl" properties respectively; these have no effect
+  on INTRA-ONLY subnets.
   EOF
 
   type = map(
@@ -129,14 +122,17 @@ variable "subnets" {
 
 variable "route_tables" {
   description = <<-EOF
-  Map of route table names to route table config objects. Peering connection
-  routes can be configured in one of two ways: if VPC is the peering REQUESTER,
-  use "peering_request_vpc_id", otherwise if VPC is the peering ACCEPTER, use
-  "peering_connection_id". Custom route tables for PRIVATE subnets can set their
-  default route ("0.0.0.0/0") using "nat_gateway_subnet_cidr", which must be set
-  to the CIDR of a NAT-containing PUBLIC subnet. For more info:
-    - [`Route Tables` README](#route-tables)
-    - [Usage example](examples/terragrunt.hcl)
+  Map of route table names to route table config objects. Route tables do not have names in
+  AWS, but the name values you provide will be used by this module to properly identify route
+  tables for the purposes of route customization and subnet association.
+
+  "routes" maps CIDRs of route destinations to objects configuring each respective route.
+  Custom route tables for PRIVATE subnets can set their default route ("0.0.0.0/0") using
+
+  "nat_gateway_subnet_cidr", which must be set to the CIDR of a NAT-containing PUBLIC subnet.
+  Peering connection routes can be configured in one of two ways: if VPC is the peering
+  REQUESTER, use "peering_request_vpc_id", otherwise if VPC is the peering ACCEPTER, use
+  "peering_connection_id".
   EOF
 
   type = map(
@@ -172,9 +168,14 @@ variable "route_tables" {
 
 variable "network_acls" {
   description = <<-EOF
-  Map of network ACL names to config objects. For more info:
-    - [`Network ACLs` README](#network-acls)
-    - [Usage example](examples/terragrunt.hcl)
+  Map of network ACL names to config objects. Network ACLs do not have names in AWS,
+  but the name values you provide will be used by this module to properly identify
+  network ACLs for the purposes of rule customization and subnet association.
+
+  "access.ingress" and "access.egress" map quoted rule numbers (e.g., "100") to objects
+  configuring each respective rule. For each rule, if "from_port" and "to_port" are the
+  same, you can simply provide just "port" which will be mapped to both. "protocol"
+  defaults to "tcp" if not provided.
   EOF
 
   type = map(
@@ -238,9 +239,13 @@ variable "network_acls" {
 
 variable "security_groups" {
   description = <<-EOF
-  Map of Security Group names to config objects. For more info:
-    - [`Security Groups` README](#security_groups)
-    - [Usage example](examples/terragrunt.hcl)
+  Map of Security Group names to config objects. For each ingress/egress rule,
+  "protocol" defaults to "tcp" if not provided. If "from_port" and "to_port" are
+  the same, you can provide just "port" which will be mapped to both. If a rule
+  will use the CIDR block of an AWS service, you can provide an enum string to
+  "aws_service" to have the lookup performed by the module; see the [AWS Service
+  CIDR Blocks section of the README](#aws-service-cidr-blocks) for a list of
+  supported services and their enum values.
   EOF
 
   type = map(
@@ -331,10 +336,6 @@ variable "vpc_endpoints" {
   must specify "route_tables"; AWS will automatically add/remove routes to these
   route tables which connect the service's AWS-managed prefix-list to the gateway
   endpoint.
-
-  For more info:
-    - [`VPC Endpoints` README](#vpc-endpoints)
-    - [Usage example](examples/terragrunt.hcl)
   EOF
 
   type = map(object({
