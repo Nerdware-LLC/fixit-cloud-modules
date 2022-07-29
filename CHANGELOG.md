@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.10.26](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.25...v0.10.26) (2022-07-29)
+
+
+### Bug Fixes
+
+* **tfupdate:** bump TF required_version to 1.2.6; update READMEs ([c4f2fd7](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/c4f2fd7caf44d662ee09c84c89ddb0bd21ade2c2))
+
 ## [0.10.25](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.24...v0.10.25) (2022-07-27)
 
 ## [0.10.24](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.23...v0.10.24) (2022-07-27)
