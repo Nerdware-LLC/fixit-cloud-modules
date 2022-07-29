@@ -24,6 +24,7 @@ Terraform modules for defining Fixit Cloud architecture.
   - [GuardDuty](AWS_GuardDuty/README.md)
   - [IAM](AWS_IAM/README.md)
   - [KMS](AWS_KMS/README.md)
+  - [Lambda](AWS_Lambda/README.md)
   - [OpenID Connect Providers](AWS_OpenID_Connect_Providers/README.md)
   - [Organization](AWS_Organization/README.md)
   - [S3](AWS_S3/README.md)
@@ -39,7 +40,6 @@ The following modules have WIP feature branches which will be merged into the **
 | **Module**     | **Branch**          | **Description**                                                        |
 | :------------- | :------------------ | :--------------------------------------------------------------------- |
 | AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources; currently CloudFront resources are embedded. |
-| AWS Lambda     | feat/AWS_Lambda     | AWS Lambda functions and related resources.                            |
 | AWS SNS        | feat/AWS_SNS        | AWS SNS resources isolated in their own separate module.               |
 
 ## ⚙️ Developer Setup
