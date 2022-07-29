@@ -32,34 +32,37 @@ variable "ecs_cluster" {
 
 variable "task_definitions" {
   description = <<-EOF
-  Map of ECS Task Definition names to config objects. All "ecs_service" values
-  must be unique, and must point to an ECS Service defined in var.ecs_services.
-  If "cpu" or "memory" are not provided, their values will be computed using
-  "instance_type" if provided. "container_definitions_json" must be a JSON-encoded
-  string which decodes into valid container definitions, which must at least contain
-  a definition for an Envoy proxy container. Refer to AWS docs for help regarding
-  valid container definitions. All "envoy_proxy_config.appmesh_node_name" values
-  must be unique, and must point to an AppMesh Node defined in var.appmesh_nodes.
-  "envoy_proxy_config.egress_ignored_ips" must be a comma-separated list of IP
-  addresses formatted as a single string.
+  Map of ECS Task Definition names to config objects. All "ecs_service" values must
+  be unique, and must point to an ECS Service defined in var.ecs_services. All Task
+  Definitions must include "container_definitions" config objects for the service and
+  Envoy containers - any other containers may be provided via "other_container_defs".
+  Please refer to AWS docs regarding the keys/values of ECS container definitions
+  ([link here](#🔗-helpful-links)). Regarding "proxy_config", all "appmesh_node_name"
+  values must be unique, and must point to an AppMesh Node defined in var.appmesh_nodes.
+  "egress_ignored_ips" defaults to "169.254.170.2,169.254.169.254" if not provided.
+  The ingress/egress port values default to 15000/15001. If "cpu" or "memory" are not
+  provided, their values will be computed using "instance_type" if provided.
   EOF
 
   type = map(
     # map keys: task definition names
     object({
-      ecs_service                = string
-      instance_type              = optional(string)
-      cpu                        = optional(number)
-      memory                     = optional(number)
-      container_definitions_json = string
-      task_execution_role_arn    = string # Used to start containers
-      task_role_arn              = string # Used to access AWS resources during runtime
-      envoy_proxy_config = object({       # Example envoy_proxy_config values:
-        appmesh_node_name  = string       #   "Nginx_node1"
-        app_ports          = string       #   "8080"
-        egress_ignored_ips = string       #   "169.254.170.2,169.254.169.254"
-        proxy_ingress_port = number       #   15000
-        proxy_egress_port  = number       #   15001
+      ecs_service = string
+      container_definitions = object({
+        service_container_def = map(any)
+        envoy_container_def   = map(any)
+        other_container_defs  = optional(list(map(any)))
+      })
+      task_execution_role_arn = string # Used to start containers
+      task_role_arn           = string # Used to access AWS resources during runtime
+      instance_type           = optional(string)
+      cpu                     = optional(number)
+      memory                  = optional(number)
+      proxy_config = object({
+        appmesh_node_name  = string           # Example: "Nginx_node1"
+        egress_ignored_ips = optional(string) # Default: "169.254.170.2,169.254.169.254"
+        proxy_ingress_port = optional(number) # Default: 15000
+        proxy_egress_port  = optional(number) # Default: 15001
       })
       tags = optional(map(string))
     })
