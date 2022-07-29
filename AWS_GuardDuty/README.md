@@ -25,7 +25,7 @@ Terraform module for managing GuardDuty resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.6 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
@@ -140,22 +140,22 @@ See [LICENSE](/LICENSE) for more information.
 
 ## 💬 Contact
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [trevor@nerdware.cloud](mailto:trevor@nerdware.cloud)
+Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Nerdware.cloud](mailto:trevor@nerdware.cloud)
 
   <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" />
+    <img src="/.github/assets/YouTube\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" />
+  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
+    <img src="/.github/assets/LinkedIn\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="https://twitter.com/TeeRevTweets">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" />
+    <img src="/.github/assets/Twitter\_icon\_circle.svg" height="40" />
   </a>
   &nbsp;
   <a href="mailto:trevor@nerdware.cloud">
-    <img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" />
+    <img src="/.github/assets/email\_icon\_circle.svg" height="40" />
   </a>
   <br><br>
 

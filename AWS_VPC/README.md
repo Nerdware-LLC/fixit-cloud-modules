@@ -238,7 +238,7 @@ To address the NACL CIDR param issues, the following approaches are under consid
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.6 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
