@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.11.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.26...v0.11.0) (2022-07-29)
+
+
+### Features
+
+* **AWS_Lambda:** add Lambda fn vars,resource,output ([#5](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/5)) ([68086fb](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/68086fb15998777a5123bd7273c0675a0f3fd7d1))
+
 ## [0.10.26](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.25...v0.10.26) (2022-07-29)
 
 
