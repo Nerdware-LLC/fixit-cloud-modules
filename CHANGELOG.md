@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.12.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.11.1...v0.12.0) (2022-07-31)
+
+
+### Bug Fixes
+
+* **pre-commit:** disable tf-docs 'create-file-if-not-exists' setting ([fdaf699](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/fdaf699ac46437bd5310152c8085d7c032099bbf))
+* **tf-docs:** bring back 'Usage Examples' in tf-docs config now that hook is fixed ([91a511c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/91a511c98a2d24f6a5fe5580f0964a54eb27c83a))
+* **tf-docs:** rm 'Usage Examples', messes up pre-commit hook ([aba39ae](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/aba39ae5ce176a57b89cbcac5e9bb51a896e9303))
+
+
+### Features
+
+* **Org:** add access analyzer, delegated admin, and usage examples ([a95bf44](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/a95bf44f4972ba5dcfdf92dfdac91721a85ae072))
+* **pre-commit:** add exclude examples to tflint hook ([858a01c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/858a01c104d38a265f69316440ce6c5b8ab9cb3d))
+
 ## [0.11.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.11.0...v0.11.1) (2022-07-29)
 
 # [0.11.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.10.26...v0.11.0) (2022-07-29)
