@@ -15,7 +15,7 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 ---
 
-### 🧱 Available Modules
+### ☁️ Available Modules
 
 - AWS
   - [Account Baseline](AWS_AccountBaseline/README.md)
