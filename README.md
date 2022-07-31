@@ -5,7 +5,7 @@
   </a>
   <br><br>
 
-Terraform modules for defining Fixit Cloud architecture.
+Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 [![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
 [![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
