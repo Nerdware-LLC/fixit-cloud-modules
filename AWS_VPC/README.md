@@ -19,6 +19,7 @@ Terraform module for defining secure-by-default VPC resources.
 - [Non-Configurable VPC-Default Resources](#non-configurable-vpc-default-resources)
 - [AWS Service CIDR Blocks](#aws-service-cidr-blocks)
 - [⚙️ Module Usage](#️-module-usage)
+  - [Usage Examples](#usage-examples-1)
   - [Requirements](#requirements)
   - [Providers](#providers)
   - [Modules](#modules)
@@ -239,6 +240,11 @@ To address the NACL CIDR param issues, the following approaches are under consid
 ---
 
 ## ⚙️ Module Usage
+
+### Usage Examples
+
+- Terragrunt: [view Terragrunt usage exmaple](examples/terragrunt.hcl)
+- Terraform: &nbsp;[view vanilla Terraform usage exmaple](examples/terraform.tf)
 
 ### Requirements
 
