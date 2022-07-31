@@ -1,6 +1,11 @@
 ######################################################################
 ### INPUT VARIABLES
 
+variable "terraform_cloud_organization" {
+  description = "The Terraform Cloud Organization name."
+  type        = string
+}
+
 variable "workspaces" {
   description = <<-EOF
   Map of TF Cloud Workspace names to corresponding workspace config objects.

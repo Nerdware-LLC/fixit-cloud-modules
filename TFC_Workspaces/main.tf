@@ -1,16 +1,10 @@
 ######################################################################
 ### Terraform Cloud
 
-data "tfe_organization" "Nerdware" {
-  name = "Nerdware"
-}
-
-#---------------------------------------------------------------------
-
 resource "tfe_workspace" "map" {
   for_each = var.workspaces
 
-  organization      = data.tfe_organization.Nerdware.name
+  organization      = var.terraform_cloud_organization
   name              = each.key
   description       = each.value.description
   tag_names         = each.value.tag_names

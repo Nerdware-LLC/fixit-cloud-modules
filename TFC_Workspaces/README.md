@@ -1,6 +1,6 @@
 <h1>Fixit Cloud ☁️ MODULE: TFC Workspaces</h1>
 
-Terraform module for managing Terraform Cloud Workspaces.
+Terraform module for managing Terraform Cloud Workspace resources.
 
 <h2>Table of Contents</h2>
 
@@ -44,19 +44,18 @@ No modules.
 |------|------|
 | [tfe_variable.map](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/variable) | resource |
 | [tfe_workspace.map](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/workspace) | resource |
-| [tfe_organization.Nerdware](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/data-sources/organization) | data source |
 
 ### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_terraform_cloud_organization"></a> [terraform\_cloud\_organization](#input\_terraform\_cloud\_organization) | The Terraform Cloud Organization name. | `string` | n/a | yes |
 | <a name="input_workspaces"></a> [workspaces](#input\_workspaces) | Map of TF Cloud Workspace names to corresponding workspace config objects.<br>The optional boolean properties all default to false. If "terraform\_version"<br>is provided, the specified semver will be used to constrain the versions of<br>TF permitted to run within the workspace. Use the "remote\_execution" property<br>to configure workspace plan/apply operations to run remotely on TFC VMs instead<br>of your local machine. With remote execution, you can also setup the VCS-driven<br>workflow via the "vcs\_config" property, which will cause apply operations to be<br>initiated by new changes to "vcs\_repo.branch" (default: "main") rather than via<br>manual CLI/API calls. Note that enabling the VCS-driven workflow will DISABLE<br>the ability to trigger runs via the CLI/API, which at this time can only be<br>reversed by manually removing the repository from the workspace via the TF<br>Cloud console. Instructions for obtaining a "vcs\_oauth\_token\_id" for GitHub<br>can be found at https://www.terraform.io/cloud-docs/vcs/github. | <pre>map(object({<br>    description             = optional(string)<br>    tag_names               = optional(list(string))<br>    working_directory       = optional(string)<br>    terraform_version       = optional(string)<br>    allow_destroy_plans     = optional(bool)<br>    allow_speculative_plans = optional(bool)<br>    should_queue_all_runs   = optional(bool)<br>    remote_execution = optional(object({<br>      variables = optional(list(object({<br>        key          = string<br>        value        = string<br>        description  = optional(string)<br>        is_env_var   = optional(bool)<br>        is_value_hcl = optional(bool)<br>        is_sensitive = optional(bool)<br>      })))<br>      vcs_config = optional(object({<br>        identifier         = string # e.g., Nerdware-LLC/fixit-cloud-modules<br>        vcs_oauth_token_id = string<br>        branch             = optional(string) # default "main"<br>        ingress_submodules = optional(bool)   # default false<br>      }))<br>    }))<br>  }))</pre> | n/a | yes |
 
 ### Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_Organization"></a> [Organization](#output\_Organization) | The TFC Organization data-block attributes. |
 | <a name="output_Workspace_Variables"></a> [Workspace\_Variables](#output\_Workspace\_Variables) | Map of TFC Workspace Variable resources (sensitive). |
 | <a name="output_Workspaces"></a> [Workspaces](#output\_Workspaces) | Map of TFC Workspace resource objects. |
 
@@ -98,10 +97,3 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Ne
 </div>
 <!-- prettier-ignore-end -->
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-<!-- LINKS -->
-
-[tfe_provider_url]: (https://registry.terraform.io/providers/hashicorp/tfe/latest/docs)
-[tfe_org_docs_url]: (https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/data-sources/organization)
-[tfe_ws_docs_url]: (https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/workspace)
-[tfe_var_docs_url]: (https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/variable)
