@@ -1,15 +1,9 @@
 ######################################################################
 ### EXAMPLE USAGE: AWS_Organization
 
-/* As in any Terragrunt configuration, the inputs below can be
-provided in a single standalone resource config, or may be broken up
-across multiple resource configs and utilized with a combination of
-include-blocks and/or the read_terragrunt_config() Terragrunt fn. */
+module "AWS_Organization" {
+  source = "git@github.com:Nerdware-LLC/fixit-cloud-modules.git//AWS_Organization"
 
-#---------------------------------------------------------------------
-### Inputs
-
-inputs = {
   organization_config = {
     org_trusted_services = [
       "access-analyzer.amazonaws.com",

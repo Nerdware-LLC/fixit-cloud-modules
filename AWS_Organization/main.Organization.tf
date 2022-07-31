@@ -82,8 +82,8 @@ locals {
   )
 }
 
-#--------------------------------------------------
-# Member/Child Accounts
+#---------------------------------------------------------------------
+### Member/Child Accounts
 
 resource "aws_organizations_account" "map" {
   for_each = var.member_accounts
@@ -92,7 +92,7 @@ resource "aws_organizations_account" "map" {
   email     = each.value.email
   parent_id = local.all_org_units[each.value.parent].id
   iam_user_access_to_billing = (
-    coalesce(each.value.should_allow_iam_user_access_to_billing, true)
+    each.value.should_allow_iam_user_access_to_billing != false
     ? "ALLOW"
     : "DENY"
   )
@@ -106,6 +106,16 @@ resource "aws_organizations_account" "map" {
     # Recommended by TF registry docs:
     ignore_changes = [role_name]
   }
+}
+
+#---------------------------------------------------------------------
+### Delegated Administrator Accounts
+
+resource "aws_organizations_delegated_administrator" "map" {
+  for_each = var.delegated_administrators
+
+  service_principal = each.key
+  account_id        = aws_organizations_account.map[each.value].id
 }
 
 ######################################################################

@@ -15,6 +15,7 @@ variable "organization_config" {
 }
 
 #---------------------------------------------------------------------
+### Org Units
 
 variable "organizational_units" {
   description = <<-EOF
@@ -23,7 +24,7 @@ variable "organizational_units" {
   EOF
 
   type = map(
-    # map keys:
+    # map keys: OU names
     object({
       parent = string
       tags   = optional(map(string))
@@ -42,6 +43,7 @@ variable "organizational_units" {
 }
 
 #---------------------------------------------------------------------
+### Member Accounts
 
 variable "member_accounts" {
   description = <<-EOF
@@ -53,7 +55,7 @@ variable "member_accounts" {
   EOF
 
   type = map(
-    # map keys:
+    # map keys: account names
     object({
       parent                                  = string
       email                                   = string
@@ -72,28 +74,20 @@ variable "member_accounts" {
 }
 
 #---------------------------------------------------------------------
+### Delegated Admin Accounts
 
-variable "admin_sso_config" {
-  description = "Map of SSO Administrator Object for configuring administrator access to accounts via AWS SSO."
+variable "delegated_administrators" {
+  description = <<-EOF
+  Map of AWS service principals to delegated administrator account names. Delegated
+  admin accounts must already be members of the root account's Organization.
+  EOF
 
-  type = object({
-    sso_group_name             = string
-    permission_set_name        = optional(string)
-    permission_set_description = optional(string)
-    permission_set_tags        = optional(map(string))
-    session_duration           = optional(number)
-  })
-
-  # Ensure "session_duration", if provided, is a number between 1-12.
-  validation {
-    condition = var.admin_sso_config.session_duration == null || (
-      1 <= var.admin_sso_config.session_duration && var.admin_sso_config.session_duration <= 12
-    )
-    error_message = "\"session_duration\" must be either a number between 1-12 or null."
-  }
+  type    = map(string)
+  default = {}
 }
 
 #---------------------------------------------------------------------
+### Org Policies
 
 variable "organization_policies" {
   description = <<-EOF
@@ -129,6 +123,40 @@ variable "organization_policies" {
     )
     error_message = "Invalid \"type\" property on one or more organization policies."
   }
+}
+
+#---------------------------------------------------------------------
+### SSO Administation
+
+variable "admin_sso_config" {
+  description = "Map of SSO Administrator Object for configuring administrator access to accounts via AWS SSO."
+
+  type = object({
+    sso_group_name             = string
+    permission_set_name        = optional(string)
+    permission_set_description = optional(string)
+    permission_set_tags        = optional(map(string))
+    session_duration           = optional(number)
+  })
+
+  # Ensure "session_duration", if provided, is a number between 1-12.
+  validation {
+    condition = var.admin_sso_config.session_duration == null || (
+      1 <= var.admin_sso_config.session_duration && var.admin_sso_config.session_duration <= 12
+    )
+    error_message = "\"session_duration\" must be either a number between 1-12 or null."
+  }
+}
+
+#---------------------------------------------------------------------
+### Access Analyzer
+
+variable "org_access_analyzer" {
+  description = "Config object for the Organization's Access Analyzer."
+  type = object({
+    name = string
+    tags = optional(map(string))
+  })
 }
 
 ######################################################################
