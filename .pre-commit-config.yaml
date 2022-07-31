@@ -30,6 +30,7 @@ repos:
       - id: shellcheck
       - id: terraform-fmt
       - id: tflint
+        exclude: examples/*
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.72.1
