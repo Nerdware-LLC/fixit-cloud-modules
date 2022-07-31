@@ -1,20 +1,9 @@
 ######################################################################
 ### EXAMPLE USAGE: AWS_VPC
 
-/* As in any Terragrunt configuration, the inputs below can be
-provided in a single standalone resource config, or may be broken up
-across multiple resource configs and utilized with a combination of
-include-blocks and/or the read_terragrunt_config() Terragrunt fn. */
-
-#---------------------------------------------------------------------
-### Dependencies
-
-dependency "peer_vpc" {
-  config_path = "../../Management-Svcs-Account/VPC"
+module "Peer_VPC" {
+  /* Peer VPC module values */
 }
-
-#---------------------------------------------------------------------
-### Inputs
 
 locals {
   vpc_cidr = "10.1.0.0/16"
@@ -31,10 +20,11 @@ locals {
     private_subnet_B = cidrsubnet(local.vpc_cidr, 8, 4)
   }
 
-  peer_vpc = dependency.peer_vpc.outputs.VPC
+  peer_vpc = module.Peer_VPC.foo_peer_vpc_resource_outputs
 }
 
-inputs = {
+module "AWS_VPC" {
+  source = "git@github.com:Nerdware-LLC/fixit-cloud-modules.git//AWS_VPC"
 
   # VPC --------------------------------------------
 
