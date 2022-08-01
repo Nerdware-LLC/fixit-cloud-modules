@@ -1,8 +1,8 @@
 ######################################################################
 ### S3 Bucket Replication Config
 
-resource "aws_s3_bucket_replication_configuration" "list" {
-  count = var.replication_config != null ? 1 : 0
+resource "aws_s3_bucket_replication_configuration" "map" {
+  for_each = var.replication_config != null ? [var.bucket_name] : []
 
   # The SOURCE bucket
   bucket = aws_s3_bucket.this.id

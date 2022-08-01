@@ -1,8 +1,8 @@
 ######################################################################
 ### S3 Web Host
 
-resource "aws_s3_bucket_website_configuration" "list" {
-  count = var.web_host_config != null ? 1 : 0
+resource "aws_s3_bucket_website_configuration" "map" {
+  for_each = var.web_host_config != null ? [var.bucket_name] : []
 
   bucket = aws_s3_bucket.this.bucket
 
@@ -76,8 +76,8 @@ resource "aws_s3_bucket_website_configuration" "list" {
 #---------------------------------------------------------------------
 ### S3 CORS Config
 
-resource "aws_s3_bucket_cors_configuration" "list" {
-  count = var.cors_rules != null ? 1 : 0
+resource "aws_s3_bucket_cors_configuration" "map" {
+  for_each = var.cors_rules != null ? [var.bucket_name] : []
 
   bucket = aws_s3_bucket.this.bucket
 
@@ -86,7 +86,7 @@ resource "aws_s3_bucket_cors_configuration" "list" {
 
     content {
       id              = cors_rule.key
-      allowed_methods = cors_rule.value.allowed_methods # required                        # required
+      allowed_methods = cors_rule.value.allowed_methods # required
       allowed_origins = cors_rule.value.allowed_origins # required
       allowed_headers = cors_rule.value.allowed_headers
       expose_headers  = cors_rule.value.expose_headers

@@ -63,12 +63,12 @@ variable "object_lock_default_retention" {
       var.object_lock_default_retention == null,
       # Else if provided, the following must be all true
       alltrue([
-        # "mode" must be valid
-        contains(["COMPLIANCE", "GOVERNANCE"], var.object_lock_default_retention),
+        # "mode" must be valid enum string
+        var.object_lock_default_retention == "GOVERNANCE" || var.object_lock_default_retention == "COMPLIANCE",
         # either "days" OR "years", but not both
         1 == length(distinct([
-          var.object_lock_default_retention.days,
-          var.object_lock_default_retention.years,
+          lookup(coalesce(var.object_lock_default_retention, {}), "days", ""),
+          lookup(coalesce(var.object_lock_default_retention, {}), "years", "")
         ]))
       ])
     ])
@@ -210,7 +210,11 @@ variable "transfer_acceleration" {
   default = null
 
   validation {
-    condition     = contains([null, "Enabled", "Suspended"], var.transfer_acceleration)
+    condition = anytrue([
+      var.transfer_acceleration == null,
+      var.transfer_acceleration == "Enabled",
+      var.transfer_acceleration == "Suspended"
+    ])
     error_message = "Invalid 'transfer_acceleration' value."
   }
 }
@@ -318,13 +322,13 @@ variable "web_host_config" {
     condition = ( # web_host_config --> OK if null, else alltrue conditions.
       var.web_host_config == null || alltrue([
         # Either "routing" OR "redirect_all_requests_to", but not both.
-        1 == length(keys(var.web_host_config)),
+        1 == length(try(keys(var.web_host_config), [])),
         # redirect_rules --> OK if null, else alltrue conditions.
-        var.web_host_config.routing.redirect_rules == null || alltrue(flatten([
+        try(var.web_host_config.routing.redirect_rules, null) == null || alltrue(flatten([
           # Note: a splat won't work here, bc the parent obj may not exist.
-          for rule_obj in values(var.web_host_config.routing.redirect_rules) : (
+          for rule_obj in try(values(var.web_host_config.routing.redirect_rules), {}) : (
             # replace --> OK if null, else either "key_with" OR "key_prefix_with" but not both.
-            rule_obj.replace == null || 1 == length(keys(rule_obj.replace))
+            try(rule_obj.replace, null) == null || 1 == length(keys(try(rule_obj.replace, {})))
           )
         ]))
       ])
