@@ -22,7 +22,7 @@ inputs = {
   should_enable_key_rotation = true
 
   key_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = {
       Sid       = "EnableOrgPrincipalsUsage"
       Effect    = "Allow"
