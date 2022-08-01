@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.12.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.3...v0.12.4) (2022-08-01)
+
+
+### Bug Fixes
+
+* **S3:** correct output refs to old list resource names ([11e5d5d](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/11e5d5d82847df5331aa3c188c3e123d1ce7f3cf))
+
 ## [0.12.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.2...v0.12.3) (2022-08-01)
 
 ## [0.12.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.1...v0.12.2) (2022-08-01)
