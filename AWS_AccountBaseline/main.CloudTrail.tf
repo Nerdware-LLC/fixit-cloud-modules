@@ -1,39 +1,4 @@
 ######################################################################
-### CloudTrail
-
-resource "aws_cloudtrail" "Org_CloudTrail" {
-  count = local.IS_ROOT_ACCOUNT ? 1 : 0
-
-  name = var.org_cloudtrail.name
-
-  is_organization_trail         = true
-  is_multi_region_trail         = true
-  include_global_service_events = true
-
-  # Logging Config
-  s3_bucket_name             = var.org_log_archive_s3_bucket.name
-  enable_log_file_validation = true
-  # tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
-  kms_key_id = one(aws_kms_key.Org_KMS_Key).arn
-  # As of 12/6/21, the ignored rule above always err's out. Rm the 'ignore' directive once they fix it.
-
-  # CloudTrail requires the Log Stream wildcard as shown below
-  cloud_watch_logs_group_arn = "${one(aws_cloudwatch_log_group.CloudTrail_Events).arn}:*"
-  cloud_watch_logs_role_arn  = var.org_cloudtrail_cloudwatch_logs_group.logs_delivery_service_role_arn
-
-  tags = var.org_cloudtrail.tags
-
-  lifecycle {
-    /* As of 1/2/22, a constant diff was being shown for an advanced_event_selector
-    that AWS auto-generates that seems to be intended to capture MANAGEMENT events,
-    even though TFR docs for aws_cloudtrail make it clear that the event selector
-    blocks are only for capturing DATA events. Since we don't collect data events
-    at this time, they've been ignored to kill the persistent erroneous diff msg. */
-    ignore_changes = [event_selector, advanced_event_selector]
-  }
-}
-
-#---------------------------------------------------------------------
 ### Org CloudTrail --> CloudWatchLogs Log Group
 
 # This CW log group accepts the Org's CloudTrail event stream

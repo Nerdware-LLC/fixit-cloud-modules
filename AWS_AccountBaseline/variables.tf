@@ -27,14 +27,6 @@ variable "s3_public_access_blocks" {
 #---------------------------------------------------------------------
 ### CloudTrail Variables:
 
-variable "org_cloudtrail" {
-  description = "Config object for the Organization CloudTrail in the root account."
-  type = object({
-    name = string
-    tags = optional(map(string))
-  })
-}
-
 variable "org_cloudtrail_cloudwatch_logs_group" {
   description = <<-EOF
   Config object for the CloudWatch Logs log group and its associated IAM

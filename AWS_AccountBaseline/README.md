@@ -47,7 +47,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_cloudtrail.Org_CloudTrail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail) | resource |
 | [aws_cloudwatch_log_group.CloudTrail_Events](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_metric_filter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_metric_filter) | resource |
 | [aws_cloudwatch_metric_alarm.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
@@ -70,7 +69,6 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudwatch_alarms"></a> [cloudwatch\_alarms](#input\_cloudwatch\_alarms) | Config object for CIS-Benchmark CloudWatch Alarms. | <pre>object({<br>    namespace = string<br>    sns_topic = object({<br>      name         = string<br>      display_name = optional(string)<br>      tags         = optional(map(string))<br>    })<br>  })</pre> | n/a | yes |
 | <a name="input_default_vpc_component_tags"></a> [default\_vpc\_component\_tags](#input\_default\_vpc\_component\_tags) | In accordance with best practices, this module locks down the default VPC and all<br>its components to ensure all ingress/egress traffic only uses infrastructure with<br>purposefully-designed rules and configs. Default subnets must be deleted manually<br>- they cannot be removed via Terraform. This variable allows you to customize the<br>tags on these "default" network components; defaults will be used if not provided. | <pre>object({<br>    default_vpc            = optional(map(string))<br>    default_route_table    = optional(map(string))<br>    default_network_acl    = optional(map(string))<br>    default_security_group = optional(map(string))<br>  })</pre> | <pre>{<br>  "default_network_acl": null,<br>  "default_route_table": null,<br>  "default_security_group": null,<br>  "default_vpc": null<br>}</pre> | no |
-| <a name="input_org_cloudtrail"></a> [org\_cloudtrail](#input\_org\_cloudtrail) | Config object for the Organization CloudTrail in the root account. | <pre>object({<br>    name = string<br>    tags = optional(map(string))<br>  })</pre> | n/a | yes |
 | <a name="input_org_cloudtrail_cloudwatch_logs_group"></a> [org\_cloudtrail\_cloudwatch\_logs\_group](#input\_org\_cloudtrail\_cloudwatch\_logs\_group) | Config object for the CloudWatch Logs log group and its associated IAM<br>service role used to receive logs from the Organization's CloudTrail. | <pre>object({<br>    name                           = string<br>    retention_in_days              = optional(number)<br>    tags                           = optional(map(string))<br>    logs_delivery_service_role_arn = string<br>  })</pre> | n/a | yes |
 | <a name="input_s3_public_access_blocks"></a> [s3\_public\_access\_blocks](#input\_s3\_public\_access\_blocks) | Config object for account-level rules regarding S3 public access.<br>By default, all S3 buckets/objects should be strictly PRIVATE. Only<br>provide this variable with an override set to "false" if you know<br>what you're doing and it's absolutely necessary. | <pre>object({<br>    block_public_acls       = optional(bool)<br>    block_public_policy     = optional(bool)<br>    ignore_public_acls      = optional(bool)<br>    restrict_public_buckets = optional(bool)<br>  })</pre> | <pre>{<br>  "block_public_acls": true,<br>  "block_public_policy": true,<br>  "ignore_public_acls": true,<br>  "restrict_public_buckets": true<br>}</pre> | no |
 
@@ -92,7 +90,6 @@ No modules.
 | <a name="output_Default_SecurityGroup"></a> [Default\_SecurityGroup](#output\_Default\_SecurityGroup) | The default VPC's default security group. |
 | <a name="output_Default_VPC"></a> [Default\_VPC](#output\_Default\_VPC) | The account's default VPC resource. |
 | <a name="output_Global_Default_EBS_Encryption"></a> [Global\_Default\_EBS\_Encryption](#output\_Global\_Default\_EBS\_Encryption) | Resource that ensures all EBS volumes are encrypted by default. |
-| <a name="output_Org_CloudTrail"></a> [Org\_CloudTrail](#output\_Org\_CloudTrail) | The Organization CloudTrail (will be "null" for non-root accounts). |
 
 ---
 

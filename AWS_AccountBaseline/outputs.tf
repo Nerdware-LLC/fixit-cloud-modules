@@ -21,11 +21,6 @@ output "Account-Level_S3_Public_Access_Block" {
 #---------------------------------------------------------------------
 ### CloudTrail Outputs
 
-output "Org_CloudTrail" {
-  description = "The Organization CloudTrail (will be \"null\" for non-root accounts)."
-  value       = one(aws_cloudtrail.Org_CloudTrail)
-}
-
 output "CloudWatch_LogGroup" {
   description = <<-EOF
   The CloudWatch Logs log group resource which receives an event stream from the
