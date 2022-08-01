@@ -19,7 +19,6 @@ module "AWS_CloudTrail" {
   trail_name = "My_CloudTrail"
 
   is_organization_trail         = true
-  is_multi_region_trail         = true
   include_global_service_events = true
 
   logging_config = {
