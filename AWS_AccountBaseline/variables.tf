@@ -1,28 +1,6 @@
 ######################################################################
 ### INPUT VARIABLES
 ######################################################################
-### Organization Variables:
-
-variable "accounts" {
-  description = "Map of Organization account configs."
-  type = map(object({
-    id                     = string
-    email                  = string
-    is_log_archive_account = optional(bool)
-  }))
-  validation {
-    # Ensure there's exactly 1 account designated as the Log-Archive account:
-    condition = 1 == length([
-      for account in values(var.accounts) : account
-      if lookup(account, "is_log_archive_account", false) == true
-    ])
-    error_message = "Exactly one account must be designated as the Log-Archive account."
-  }
-}
-
-# TODO rm "var.accounts[].is_log_archive_account".
-
-#---------------------------------------------------------------------
 ### Account Settings Variables:
 
 variable "s3_public_access_blocks" {
@@ -108,42 +86,6 @@ variable "default_vpc_component_tags" {
     default_network_acl    = null
     default_security_group = null
   }
-}
-
-#---------------------------------------------------------------------
-### Log Archive Variables:
-
-variable "org_log_archive_s3_bucket" {
-  description = <<-EOF
-  Config object for the Log-Archive account's titular S3 bucket used as
-  the Organization's log archive.
-  EOF
-  type = object({
-    name = string
-    tags = optional(map(string))
-    access_logs_s3 = object({
-      name = string
-      tags = optional(map(string))
-    })
-  })
-}
-
-#---------------------------------------------------------------------
-### Organization Services KMS Key Variables:
-
-variable "org_kms_key" {
-  description = <<-EOF
-  Config object for the KMS key used to encrypt Log-Archive files, as well as
-  data streams from CloudTrail, CloudWatch, SNS, etc. The "replica_key_tags"
-  property will be added to the "tags" field of all replica keys.
-  EOF
-  type = object({
-    alias_name       = string
-    description      = optional(string)
-    key_policy_id    = optional(string)
-    tags             = optional(map(string))
-    replica_key_tags = optional(map(string))
-  })
 }
 
 ######################################################################

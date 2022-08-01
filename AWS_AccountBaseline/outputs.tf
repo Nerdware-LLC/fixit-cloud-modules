@@ -96,42 +96,4 @@ output "Default_SecurityGroup" {
   value       = aws_default_security_group.this
 }
 
-#---------------------------------------------------------------------
-### Log Archive Outputs
-
-output "Org_Log_Archive_S3_Bucket" {
-  description = <<-EOF
-  The S3 bucket used to store logs from the Organization's Config and CloudTrail
-  services (will be "null" for all accounts except Log-Archive).
-  EOF
-  value = (
-    length(aws_s3_bucket.list) > 0
-    ? aws_s3_bucket.list[1]
-    : null
-  )
-}
-
-output "Org_Log_Archive_S3_Access_Logs_Bucket" {
-  description = <<-EOF
-  The S3 bucket resource used to store access logs for the Organization's
-  Log-Archive S3 bucket (will be "null" for all accounts except Log-Archive).
-  EOF
-  value = (
-    length(aws_s3_bucket.list) > 0
-    ? aws_s3_bucket.list[0]
-    : null
-  )
-}
-
-#---------------------------------------------------------------------
-### Organization Services KMS Key Outputs
-
-output "Org_Services_KMS_Key" {
-  description = <<-EOF
-  The KMS key resource used to encrypt Log-Archive files, as well as data streams
-  related to Organization-wide services like CloudTrail and CloudWatch.
-  EOF
-  value       = one(aws_kms_key.Org_KMS_Key)
-}
-
 ######################################################################
