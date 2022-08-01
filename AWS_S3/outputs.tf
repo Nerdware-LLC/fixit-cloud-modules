@@ -29,7 +29,7 @@ output "S3_Bucket_SSE_Config" {
 
 output "S3_Bucket_Object_Lock_Default_Retention_Config" {
   description = "The S3 bucket's object-lock default retention config resource."
-  value       = one(aws_s3_bucket_object_lock_configuration.list)
+  value       = lookup(aws_s3_bucket_object_lock_configuration.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -37,7 +37,7 @@ output "S3_Bucket_Object_Lock_Default_Retention_Config" {
 
 output "S3_Bucket_Logging_Config" {
   description = "The S3 bucket access logging config resource."
-  value       = one(aws_s3_bucket_logging.list)
+  value       = lookup(aws_s3_bucket_logging.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -45,7 +45,7 @@ output "S3_Bucket_Logging_Config" {
 
 output "S3_Bucket_Transfer_Acceleration_Config" {
   description = "The S3 bucket transfer acceleration config resource."
-  value       = one(aws_s3_bucket_accelerate_configuration.list)
+  value       = lookup(aws_s3_bucket_accelerate_configuration.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -77,7 +77,7 @@ output "S3_Bucket_Public_Access_Block" {
 
 output "S3_Bucket_Lifecycle_Config" {
   description = "Map of S3 bucket lifecycle rule config resources."
-  value       = one(aws_s3_bucket_lifecycle_configuration.list)
+  value       = lookup(aws_s3_bucket_lifecycle_configuration.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -85,7 +85,7 @@ output "S3_Bucket_Lifecycle_Config" {
 
 output "S3_Bucket_Replication_Config" {
   description = "The S3 bucket replication config resource."
-  value       = one(aws_s3_bucket_replication_configuration.list)
+  value       = lookup(aws_s3_bucket_replication_configuration.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -93,7 +93,7 @@ output "S3_Bucket_Replication_Config" {
 
 output "S3_Bucket_Web_Host_Config" {
   description = "The S3 bucket web host config resource."
-  value       = one(aws_s3_bucket_website_configuration.list)
+  value       = lookup(aws_s3_bucket_website_configuration.map, var.bucket_name, null)
 }
 
 #---------------------------------------------------------------------
@@ -101,7 +101,7 @@ output "S3_Bucket_Web_Host_Config" {
 
 output "S3_Bucket_CORS_Config" {
   description = "The S3 bucket CORS config resource."
-  value       = one(aws_s3_bucket_cors_configuration.list)
+  value       = lookup(aws_s3_bucket_cors_configuration.map, var.bucket_name, null)
 }
 
 ######################################################################

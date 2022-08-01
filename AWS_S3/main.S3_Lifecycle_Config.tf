@@ -1,8 +1,8 @@
 ######################################################################
 ### S3 Bucket Lifecycle Config
 
-resource "aws_s3_bucket_lifecycle_configuration" "list" {
-  count = var.lifecycle_rules != null ? 1 : 0
+resource "aws_s3_bucket_lifecycle_configuration" "map" {
+  for_each = var.lifecycle_rules != null ? [var.bucket_name] : []
 
   bucket = aws_s3_bucket.this.id
 

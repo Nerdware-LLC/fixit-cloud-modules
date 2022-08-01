@@ -49,8 +49,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 #---------------------------------------------------------------------
 ### S3 Object Lock - Bucket Default Retention
 
-resource "aws_s3_bucket_object_lock_configuration" "list" {
-  count = var.object_lock_default_retention != null ? 1 : 0
+resource "aws_s3_bucket_object_lock_configuration" "map" {
+  for_each = var.object_lock_default_retention != null ? [var.bucket_name] : []
 
   bucket = aws_s3_bucket.this.bucket
 
@@ -66,8 +66,8 @@ resource "aws_s3_bucket_object_lock_configuration" "list" {
 #---------------------------------------------------------------------
 ### S3 Bucket Access Logging
 
-resource "aws_s3_bucket_logging" "list" {
-  count = var.access_logs_config != null ? 1 : 0
+resource "aws_s3_bucket_logging" "map" {
+  for_each = var.access_logs_config != null ? [var.bucket_name] : []
   /* access_logs_config will be null only if "aws_s3_bucket.this" will
   itself be an access-logs bucket that will receive access logs from
   other buckets. */
@@ -84,8 +84,8 @@ resource "aws_s3_bucket_logging" "list" {
 #---------------------------------------------------------------------
 ### S3 Bucket - Transfer Acceleration
 
-resource "aws_s3_bucket_accelerate_configuration" "list" {
-  count = var.transfer_acceleration != null ? 1 : 0
+resource "aws_s3_bucket_accelerate_configuration" "map" {
+  for_each = var.transfer_acceleration != null ? [var.bucket_name] : []
 
   bucket = aws_s3_bucket.this.bucket
   status = var.transfer_acceleration # "Enabled" or "Suspended"
