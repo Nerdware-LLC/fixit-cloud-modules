@@ -12,8 +12,8 @@ resource "aws_kms_key" "this" {
 #---------------------------------------------------------------------
 ### KMS Key Alias
 
-resource "aws_kms_alias" "list" {
-  count = var.key_alias != null ? 1 : 0
+resource "aws_kms_alias" "map" {
+  for_each = var.key_alias != null ? [var.key_alias] : []
 
   name          = var.key_alias
   target_key_id = aws_kms_key.this.key_id
