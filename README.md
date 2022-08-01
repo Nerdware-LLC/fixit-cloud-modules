@@ -17,20 +17,21 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 ### ☁️ Available Modules
 
 - AWS
-  - [Account Baseline](AWS_AccountBaseline/README.md)
-  - [AWS Config](AWS_Config/README.md)
-  - [ECS Cluster](AWS_ECS_Cluster/README.md)
-  - [GuardDuty](AWS_GuardDuty/README.md)
-  - [IAM](AWS_IAM/README.md)
-  - [KMS](AWS_KMS/README.md)
-  - [Lambda](AWS_Lambda/README.md)
-  - [OpenID Connect Providers](AWS_OpenID_Connect_Providers/README.md)
-  - [Organization](AWS_Organization/README.md)
-  - [S3](AWS_S3/README.md)
-  - [SecurityHub](AWS_SecurityHub/README.md)
-  - [VPC](AWS_VPC/README.md)
+  - [Account Baseline](/AWS_AccountBaseline/README.md)
+  - [AWS CloudTrail](/AWS_CloudTrail/README.md)
+  - [AWS Config](/AWS_Config/README.md)
+  - [ECS Cluster](/AWS_ECS_Cluster/README.md)
+  - [GuardDuty](/AWS_GuardDuty/README.md)
+  - [IAM](/AWS_IAM/README.md)
+  - [KMS](/AWS_KMS/README.md)
+  - [Lambda](/AWS_Lambda/README.md)
+  - [OpenID Connect Providers](/AWS_OpenID_Connect_Providers/README.md)
+  - [Organization](/AWS_Organization/README.md)
+  - [S3](/AWS_S3/README.md)
+  - [SecurityHub](/AWS_SecurityHub/README.md)
+  - [VPC](/AWS_VPC/README.md)
 - Terraform Cloud
-  - [Workspaces](TFC_Workspaces/README.md)
+  - [Workspaces](/TFC_Workspaces/README.md)
 
 ### 🚧 Modules in the Pipeline
 
