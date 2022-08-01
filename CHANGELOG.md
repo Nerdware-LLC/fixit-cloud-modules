@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.13.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.6...v0.13.0) (2022-08-01)
+
+
+### Features
+
+* **CloudTrail:** init add CloudTrail module ([#6](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/6)) ([48948d8](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/48948d8f94c783574567ad68306af45f06a2e8ef))
+
 ## [0.12.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.5...v0.12.6) (2022-08-01)
 
 ## [0.12.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.12.4...v0.12.5) (2022-08-01)
