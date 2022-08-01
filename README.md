@@ -9,7 +9,6 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 [![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
 [![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
-[![license][license-shield]](/LICENSE)
 
 </div>
 
@@ -106,5 +105,4 @@ Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Ne
 
 [pre-commit-shield]: https://img.shields.io/badge/pre--commit-33A532.svg?logo=pre-commit&logoColor=F8B424&labelColor=gray
 [semantic-shield]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-E10079.svg
-[license-shield]: https://img.shields.io/badge/license-Proprietary-000080.svg?labelColor=gray
 [fixit-cloud-live]: https://github.com/Nerdware-LLC/fixit-cloud-live
