@@ -1,18 +1,7 @@
 ######################################################################
 ### OUTPUTS
 ######################################################################
-### Access Analyzer Outputs:
-
-output "Org_Access_Analyzer" {
-  description = <<-EOF
-  The Organization's Access Analyzer resource object (will be "null" for non-root
-  accounts).
-  EOF
-  value       = one(aws_accessanalyzer_analyzer.Org_AccessAnalyzer)
-}
-
-#---------------------------------------------------------------------
-### Account Config Outputs:
+### Account Config Outputs
 
 output "Account_Password_Policy" {
   description = "The account's password-policy resource object."
@@ -30,7 +19,7 @@ output "Account-Level_S3_Public_Access_Block" {
 }
 
 #---------------------------------------------------------------------
-### CloudTrail Outputs:
+### CloudTrail Outputs
 
 output "Org_CloudTrail" {
   description = "The Organization CloudTrail (will be \"null\" for non-root accounts)."
@@ -62,7 +51,7 @@ output "CloudWatch-Delivery_Role_Policy" {
 }
 
 #---------------------------------------------------------------------
-### CloudWatch Alarms Outputs:
+### CloudWatch Alarms Outputs
 
 output "CloudWatch_Metric_Alarms" {
   description = "A map of CloudWatch Metric Alarm resources."
@@ -85,7 +74,7 @@ output "CloudWatch_CIS_Alarms_SNS_Topic_Policy" {
 }
 
 #---------------------------------------------------------------------
-### Default VPC Component Outputs:
+### Default VPC Component Outputs
 
 output "Default_VPC" {
   description = "The account's default VPC resource."
@@ -108,7 +97,7 @@ output "Default_SecurityGroup" {
 }
 
 #---------------------------------------------------------------------
-### Log Archive Outputs:
+### Log Archive Outputs
 
 output "Org_Log_Archive_S3_Bucket" {
   description = <<-EOF
@@ -135,7 +124,7 @@ output "Org_Log_Archive_S3_Access_Logs_Bucket" {
 }
 
 #---------------------------------------------------------------------
-### Organization Services KMS Key Outputs:
+### Organization Services KMS Key Outputs
 
 output "Org_Services_KMS_Key" {
   description = <<-EOF

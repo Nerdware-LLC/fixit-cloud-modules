@@ -21,6 +21,11 @@ Terraform module for providing a hardened baseline security posture for AWS acco
 
 ## ⚙️ Module Usage
 
+### Usage Examples
+
+- Terragrunt: [view Terragrunt usage exmaple](examples/terragrunt.hcl)
+- Terraform: &nbsp;[view vanilla Terraform usage exmaple](examples/terraform.tf)
+
 ### Requirements
 
 | Name | Version |
@@ -58,7 +63,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_accessanalyzer_analyzer.Org_AccessAnalyzer](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/accessanalyzer_analyzer) | resource |
 | [aws_cloudtrail.Org_CloudTrail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail) | resource |
 | [aws_cloudwatch_log_group.CloudTrail_Events](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_metric_filter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_metric_filter) | resource |
@@ -104,7 +108,6 @@ No modules.
 | <a name="input_accounts"></a> [accounts](#input\_accounts) | Map of Organization account configs. | <pre>map(object({<br>    id                     = string<br>    email                  = string<br>    is_log_archive_account = optional(bool)<br>  }))</pre> | n/a | yes |
 | <a name="input_cloudwatch_alarms"></a> [cloudwatch\_alarms](#input\_cloudwatch\_alarms) | Config object for CIS-Benchmark CloudWatch Alarms. | <pre>object({<br>    namespace = string<br>    sns_topic = object({<br>      name         = string<br>      display_name = optional(string)<br>      tags         = optional(map(string))<br>    })<br>  })</pre> | n/a | yes |
 | <a name="input_default_vpc_component_tags"></a> [default\_vpc\_component\_tags](#input\_default\_vpc\_component\_tags) | In accordance with best practices, this module locks down the default VPC and all<br>its components to ensure all ingress/egress traffic only uses infrastructure with<br>purposefully-designed rules and configs. Default subnets must be deleted manually<br>- they cannot be removed via Terraform. This variable allows you to customize the<br>tags on these "default" network components; defaults will be used if not provided. | <pre>object({<br>    default_vpc            = optional(map(string))<br>    default_route_table    = optional(map(string))<br>    default_network_acl    = optional(map(string))<br>    default_security_group = optional(map(string))<br>  })</pre> | <pre>{<br>  "default_network_acl": null,<br>  "default_route_table": null,<br>  "default_security_group": null,<br>  "default_vpc": null<br>}</pre> | no |
-| <a name="input_org_access_analyzer"></a> [org\_access\_analyzer](#input\_org\_access\_analyzer) | Config object for the Organization's Access Analyzer. | <pre>object({<br>    name = string<br>    tags = optional(map(string))<br>  })</pre> | n/a | yes |
 | <a name="input_org_cloudtrail"></a> [org\_cloudtrail](#input\_org\_cloudtrail) | Config object for the Organization CloudTrail in the root account. | <pre>object({<br>    name = string<br>    tags = optional(map(string))<br>  })</pre> | n/a | yes |
 | <a name="input_org_cloudtrail_cloudwatch_logs_group"></a> [org\_cloudtrail\_cloudwatch\_logs\_group](#input\_org\_cloudtrail\_cloudwatch\_logs\_group) | Config object for the CloudWatch Logs log group and its associated IAM<br>service role used to receive logs from the Organization's CloudTrail. | <pre>object({<br>    name                           = string<br>    retention_in_days              = optional(number)<br>    tags                           = optional(map(string))<br>    logs_delivery_service_role_arn = string<br>  })</pre> | n/a | yes |
 | <a name="input_org_kms_key"></a> [org\_kms\_key](#input\_org\_kms\_key) | Config object for the KMS key used to encrypt Log-Archive files, as well as<br>data streams from CloudTrail, CloudWatch, SNS, etc. The "replica\_key\_tags"<br>property will be added to the "tags" field of all replica keys. | <pre>object({<br>    alias_name       = string<br>    description      = optional(string)<br>    key_policy_id    = optional(string)<br>    tags             = optional(map(string))<br>    replica_key_tags = optional(map(string))<br>  })</pre> | n/a | yes |
@@ -129,7 +132,6 @@ No modules.
 | <a name="output_Default_SecurityGroup"></a> [Default\_SecurityGroup](#output\_Default\_SecurityGroup) | The default VPC's default security group. |
 | <a name="output_Default_VPC"></a> [Default\_VPC](#output\_Default\_VPC) | The account's default VPC resource. |
 | <a name="output_Global_Default_EBS_Encryption"></a> [Global\_Default\_EBS\_Encryption](#output\_Global\_Default\_EBS\_Encryption) | Resource that ensures all EBS volumes are encrypted by default. |
-| <a name="output_Org_Access_Analyzer"></a> [Org\_Access\_Analyzer](#output\_Org\_Access\_Analyzer) | The Organization's Access Analyzer resource object (will be "null" for non-root<br>accounts). |
 | <a name="output_Org_CloudTrail"></a> [Org\_CloudTrail](#output\_Org\_CloudTrail) | The Organization CloudTrail (will be "null" for non-root accounts). |
 | <a name="output_Org_Log_Archive_S3_Access_Logs_Bucket"></a> [Org\_Log\_Archive\_S3\_Access\_Logs\_Bucket](#output\_Org\_Log\_Archive\_S3\_Access\_Logs\_Bucket) | The S3 bucket resource used to store access logs for the Organization's<br>Log-Archive S3 bucket (will be "null" for all accounts except Log-Archive). |
 | <a name="output_Org_Log_Archive_S3_Bucket"></a> [Org\_Log\_Archive\_S3\_Bucket](#output\_Org\_Log\_Archive\_S3\_Bucket) | The S3 bucket used to store logs from the Organization's Config and CloudTrail<br>services (will be "null" for all accounts except Log-Archive). |

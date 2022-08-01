@@ -47,17 +47,6 @@ variable "s3_public_access_blocks" {
 }
 
 #---------------------------------------------------------------------
-### Access Analyzer Variables:
-
-variable "org_access_analyzer" {
-  description = "Config object for the Organization's Access Analyzer."
-  type = object({
-    name = string
-    tags = optional(map(string))
-  })
-}
-
-#---------------------------------------------------------------------
 ### CloudTrail Variables:
 
 variable "org_cloudtrail" {
