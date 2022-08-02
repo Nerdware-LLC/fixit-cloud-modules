@@ -1,6 +1,6 @@
 <h1>Fixit Cloud ☁️ MODULE: AWS CloudWatch</h2>
 
-Terraform module for defining AWS CloudWatch Logs resources, including metrics and alarms.
+Terraform module for defining AWS CloudWatch resources, including log groups, metrics, alarms, and dashboards.
 
 <h2>Table of Contents</h2>
 
@@ -54,6 +54,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_dashboard.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_dashboard) | resource |
 | [aws_cloudwatch_log_group.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_metric_filter.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_metric_filter) | resource |
 | [aws_cloudwatch_metric_alarm.map](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
@@ -62,8 +63,10 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cloudwatch_logs_log_groups"></a> [cloudwatch\_logs\_log\_groups](#input\_cloudwatch\_logs\_log\_groups) | Map of CloudWatch Logs log group names to config objects. If not<br>provided, "retention\_in\_days" defaults to 400. | <pre>map(<br>    # map keys: log group names<br>    object({<br>      retention_in_days = optional(number)<br>      kms_key_arn       = optional(string)<br>      tags              = optional(map(string))<br>    })<br>  )</pre> | n/a | yes |
-| <a name="input_cloudwatch_metrics"></a> [cloudwatch\_metrics](#input\_cloudwatch\_metrics) | Map of CloudWatch metric names to config objects. For both "alarm" and<br>"log\_metric\_filter", if "name" is not specified, the metric name will<br>be used instead.<br><br>Within "metric\_transformations", if neither "default\_value" nor<br>"dimensions" are provided, "default\_value" will be set to "0". | <pre>map(<br>    # map keys: metric names<br>    object({<br>      namespace = string<br>      log_metric_filter = object({<br>        name           = optional(string)<br>        pattern        = string<br>        log_group_name = string<br>        metric_transformation = object({<br>          name          = string<br>          value         = string<br>          default_value = optional(string)<br>          dimensions    = optional(string)<br>          unit          = optional(string)<br>        })<br>      })<br>      alarm = object({<br>        name        = optional(string)<br>        description = optional(string)<br>        tags        = optional(map(string))<br>      })<br>    })<br>  )</pre> | n/a | yes |
+| <a name="input_cloudwatch_dashboards"></a> [cloudwatch\_dashboards](#input\_cloudwatch\_dashboards) | Map of CloudWatch Dashboard names to JSON-encoded dashboard definitions. | `map(string)` | `{}` | no |
+| <a name="input_cloudwatch_log_metric_filters"></a> [cloudwatch\_log\_metric\_filters](#input\_cloudwatch\_log\_metric\_filters) | Map of CloudWatch log metric filter names to config objects.<br><br>Within "metric\_transformations", if neither "default\_value" nor<br>"dimensions" are provided, "default\_value" will be set to "0". | <pre>map(<br>    # map keys: CloudWatch log metric filter names<br>    object({<br>      namespace      = string<br>      pattern        = string<br>      log_group_name = string<br>      metric_transformation = object({<br>        name          = string<br>        value         = string<br>        default_value = optional(string)<br>        dimensions    = optional(string)<br>        unit          = optional(string)<br>      })<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_cloudwatch_logs_log_groups"></a> [cloudwatch\_logs\_log\_groups](#input\_cloudwatch\_logs\_log\_groups) | Map of CloudWatch Logs log group names to config objects. If not<br>provided, "retention\_in\_days" defaults to 400. To configure a log<br>group's logs to never expire, provide 0. | <pre>map(<br>    # map keys: log group names<br>    object({<br>      retention_in_days = optional(number)<br>      kms_key_arn       = optional(string)<br>      tags              = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
+| <a name="input_cloudwatch_metric_alarms"></a> [cloudwatch\_metric\_alarms](#input\_cloudwatch\_metric\_alarms) | Map of CloudWatch metric alarm names to config objects. | <pre>map(<br>    # map keys: CloudWatch metric alarm names<br>    object({<br>      description = optional(string)<br>      tags        = optional(map(string))<br>    })<br>  )</pre> | `{}` | no |
 
 ### Outputs
 

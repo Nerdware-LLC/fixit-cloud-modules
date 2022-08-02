@@ -1,10 +1,13 @@
 ######################################################################
 ### INPUT VARIABLES
+######################################################################
+### CloudWatch Logs - Log Groups
 
 variable "cloudwatch_logs_log_groups" {
   description = <<-EOF
   Map of CloudWatch Logs log group names to config objects. If not
-  provided, "retention_in_days" defaults to 400.
+  provided, "retention_in_days" defaults to 400. To configure a log
+  group's logs to never expire, provide 0.
   EOF
 
   type = map(
@@ -15,42 +18,63 @@ variable "cloudwatch_logs_log_groups" {
       tags              = optional(map(string))
     })
   )
+  default = {}
 }
 
-variable "cloudwatch_metrics" {
+#---------------------------------------------------------------------
+### CloudWatch Logs - Log Metric Filters
+
+variable "cloudwatch_log_metric_filters" {
   description = <<-EOF
-  Map of CloudWatch metric names to config objects. For both "alarm" and
-  "log_metric_filter", if "name" is not specified, the metric name will
-  be used instead.
+  Map of CloudWatch log metric filter names to config objects.
 
   Within "metric_transformations", if neither "default_value" nor
   "dimensions" are provided, "default_value" will be set to "0".
-
   EOF
 
   type = map(
-    # map keys: metric names
+    # map keys: CloudWatch log metric filter names
     object({
-      namespace = string
-      log_metric_filter = object({
-        name           = optional(string)
-        pattern        = string
-        log_group_name = string
-        metric_transformation = object({
-          name          = string
-          value         = string
-          default_value = optional(string)
-          dimensions    = optional(string)
-          unit          = optional(string)
-        })
-      })
-      alarm = object({
-        name        = optional(string)
-        description = optional(string)
-        tags        = optional(map(string))
+      namespace      = string
+      pattern        = string
+      log_group_name = string
+      metric_transformation = object({
+        name          = string
+        value         = string
+        default_value = optional(string)
+        dimensions    = optional(string)
+        unit          = optional(string)
       })
     })
   )
+  default = {}
+}
+
+#---------------------------------------------------------------------
+### CloudWatch Alarms
+
+variable "cloudwatch_metric_alarms" {
+  description = <<-EOF
+  Map of CloudWatch metric alarm names to config objects.
+  EOF
+
+  type = map(
+    # map keys: CloudWatch metric alarm names
+    object({
+      description = optional(string)
+      tags        = optional(map(string))
+    })
+  )
+  default = {}
+}
+
+#---------------------------------------------------------------------
+### CloudWatch Dashboards
+
+variable "cloudwatch_dashboards" {
+  description = "Map of CloudWatch Dashboard names to JSON-encoded dashboard definitions."
+  type        = map(string)
+  default     = {}
 }
 
 ######################################################################

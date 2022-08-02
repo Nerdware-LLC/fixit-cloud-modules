@@ -1,5 +1,7 @@
 ######################################################################
 ### AWS CloudWatch
+######################################################################
+### CloudWatch Logs - Log Groups
 
 resource "aws_cloudwatch_log_group" "map" {
   for_each = var.cloudwatch_logs_log_groups
@@ -10,26 +12,32 @@ resource "aws_cloudwatch_log_group" "map" {
   tags              = each.value.tags
 }
 
+#---------------------------------------------------------------------
+### CloudWatch Metrics
+
 resource "aws_cloudwatch_log_metric_filter" "map" {
-  for_each = var.cloudwatch_metrics
+  for_each = var.cloudwatch_log_metric_filters
 
   name           = coalesce(each.value.log_metric_filter.name, each.key)
   pattern        = each.value.log_metric_filter.pattern
   log_group_name = each.value.log_metric_filter.log_group_name
 
   metric_transformation {
-    namespace = each.value.namespace                   # required
-    name      = each.value.metric_transformation.name  # required
-    value     = each.value.metric_transformation.value # required ("1" = count each occurrence of the keywords in the filter)
+    namespace  = each.value.namespace                   # required
+    name       = each.value.metric_transformation.name  # required
+    value      = each.value.metric_transformation.value # required ("1" = count each occurrence of the keywords in the filter)
+    dimensions = each.value.metric_transformation.dimensions
+    unit       = each.value.metric_transformation.unit
     default_value = (
       each.value.metric_transformation.default_value != null || each.value.metric_transformation.dimensions != null
       ? each.value.metric_transformation.default_value
       : 0
     )
-    dimensions = each.value.metric_transformation.dimensions
-    unit       = each.value.metric_transformation.unit
   }
 }
+
+#---------------------------------------------------------------------
+### CloudWatch Alarms
 
 resource "aws_cloudwatch_metric_alarm" "map" {
   for_each = var.cloudwatch_metrics
@@ -52,6 +60,16 @@ resource "aws_cloudwatch_metric_alarm" "map" {
   treat_missing_data  = "notBreaching"
 
   tags = each.value.alarm.tags
+}
+
+#---------------------------------------------------------------------
+### CloudWatch Dashboards
+
+resource "aws_cloudwatch_dashboard" "map" {
+  for_each = var.cloudwatch_dashboards
+
+  dashboard_name = each.key
+  dashboard_body = each.value
 }
 
 ######################################################################
