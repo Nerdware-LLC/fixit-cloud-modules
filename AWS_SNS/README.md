@@ -50,6 +50,11 @@ Please note that subscriptions which use the "email", "email-json", "http", or "
 
 ## ⚙️ Module Usage
 
+### Usage Examples
+
+- Terragrunt: [view Terragrunt usage exmaple](examples/terragrunt.hcl)
+- Terraform: &nbsp;[view vanilla Terraform usage exmaple](examples/terraform.tf)
+
 ### Requirements
 
 | Name | Version |
