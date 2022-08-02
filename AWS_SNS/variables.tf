@@ -112,6 +112,7 @@ variable "sns_topic_subscriptions" {
       enable_raw_message_delivery     = optional(bool) # Default: false
     })
   )
+  default = []
 }
 
 ######################################################################
