@@ -11,4 +11,9 @@ output "SNS_Topic_Policies" {
   value       = aws_sns_topic_policy.map
 }
 
+output "SNS_Topic_Subscriptions" {
+  description = "Map of SNS Topic Subscription resource objects."
+  value       = aws_sns_topic_subscription.map
+}
+
 ######################################################################
