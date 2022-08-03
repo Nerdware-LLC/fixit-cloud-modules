@@ -18,8 +18,9 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 - AWS
   - [Account Baseline](/AWS_AccountBaseline/README.md)
-  - [AWS CloudTrail](/AWS_CloudTrail/README.md)
-  - [AWS Config](/AWS_Config/README.md)
+  - [CloudTrail](/AWS_CloudTrail/README.md)
+  - [CloudWatch](/AWS_CloudWatch/README.md)
+  - [Config](/AWS_Config/README.md)
   - [ECS Cluster](/AWS_ECS_Cluster/README.md)
   - [GuardDuty](/AWS_GuardDuty/README.md)
   - [IAM](/AWS_IAM/README.md)
@@ -29,6 +30,7 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
   - [Organization](/AWS_Organization/README.md)
   - [S3](/AWS_S3/README.md)
   - [SecurityHub](/AWS_SecurityHub/README.md)
+  - [SNS](/AWS_SNS/README.md)
   - [VPC](/AWS_VPC/README.md)
 - Terraform Cloud
   - [Workspaces](/TFC_Workspaces/README.md)
@@ -37,10 +39,10 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 The following modules have WIP feature branches which will be merged into the **main** branch upon PR review and acceptance. Resources contained in these modules reflect either a refactoring of existing modules, whereby resources commonly used by several modules are extracted and isolated into their own separate module, or resources which are entirely new to the FCM collection.
 
-| **Module**     | **Branch**          | **Description**                                                        |
-| :------------- | :------------------ | :--------------------------------------------------------------------- |
-| AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources; currently CloudFront resources are embedded. |
-| AWS SNS        | feat/AWS_SNS        | AWS SNS resources isolated in their own separate module.               |
+| **Module**     | **Branch**          | **Description**           |
+| :------------- | :------------------ | :------------------------ |
+| AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources. |
+| AWS DynamoDB   | feat/AWS_DynamoDB   | AWS DynamoDB resources.   |
 
 ## ⚙️ Developer Setup
 
