@@ -25,37 +25,6 @@ variable "s3_public_access_blocks" {
 }
 
 #---------------------------------------------------------------------
-### CloudTrail Variables:
-
-variable "org_cloudtrail_cloudwatch_logs_group" {
-  description = <<-EOF
-  Config object for the CloudWatch Logs log group and its associated IAM
-  service role used to receive logs from the Organization's CloudTrail.
-  EOF
-  type = object({
-    name                           = string
-    retention_in_days              = optional(number)
-    tags                           = optional(map(string))
-    logs_delivery_service_role_arn = string
-  })
-}
-
-#---------------------------------------------------------------------
-### CloudWatch Alarm Variables:
-
-variable "cloudwatch_alarms" {
-  description = "Config object for CIS-Benchmark CloudWatch Alarms."
-  type = object({
-    namespace = string
-    sns_topic = object({
-      name         = string
-      display_name = optional(string)
-      tags         = optional(map(string))
-    })
-  })
-}
-
-#---------------------------------------------------------------------
 ### Default VPC Component Variables:
 
 variable "default_vpc_component_tags" {

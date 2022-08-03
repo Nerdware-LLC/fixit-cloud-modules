@@ -28,11 +28,13 @@ resource "aws_ebs_encryption_by_default" "this" {
 # Docs => https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_account_public_access_block
 
 resource "aws_s3_account_public_access_block" "this" {
-  account_id              = local.caller_account_id
+  account_id              = data.aws_caller_identity.current.account_id
   block_public_acls       = coalesce(var.s3_public_access_blocks.block_public_acls, true) # PUT calls fail if req includes a public ACL
   block_public_policy     = coalesce(var.s3_public_access_blocks.block_public_acls, true) # PUT calls fail if bucket policy allows public access
   ignore_public_acls      = coalesce(var.s3_public_access_blocks.block_public_acls, true) # Ignore all public ACLs on buckets/objects in this account
   restrict_public_buckets = coalesce(var.s3_public_access_blocks.block_public_acls, true) # Only the bucket owner and AWS Services can access buckets with public policies
 }
+
+data "aws_caller_identity" "current" {}
 
 ######################################################################
