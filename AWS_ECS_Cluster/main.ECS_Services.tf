@@ -34,18 +34,13 @@ resource "aws_ecs_service" "map" {
   }
 
   # NETWORK
-  dynamic "network_configuration" {
+  network_configuration {
     /* "network_configuration" is only valid for the "awsvpc"
     networking mode, which can only be used in private subnets. */
-    for_each = (
-      each.value.network_configs.assign_public_ip != true
-      ? [each.value.network_configs]
-      : []
-    )
     content {
-      subnets          = network_configuration.value.subnet_ids
-      security_groups  = network_configuration.value.security_group_ids
-      assign_public_ip = network_configuration.value.assign_public_ip
+      subnets          = each.value.network_configs.subnet_ids
+      security_groups  = each.value.network_configs.security_group_ids
+      assign_public_ip = each.value.network_configs.assign_public_ip
     }
   }
 

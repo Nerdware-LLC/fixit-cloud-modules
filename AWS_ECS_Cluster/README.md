@@ -29,6 +29,11 @@ Terraform module for defining an ECS Cluster, complete with AppMesh and other re
 
 ## ⚙️ Module Usage
 
+### Usage Examples
+
+- Terragrunt: [view Terragrunt usage exmaple](examples/terragrunt.hcl)
+- Terraform: &nbsp;[view vanilla Terraform usage exmaple](examples/terraform.tf)
+
 ### Requirements
 
 | Name | Version |
