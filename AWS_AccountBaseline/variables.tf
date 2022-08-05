@@ -1,31 +1,43 @@
 ######################################################################
 ### INPUT VARIABLES
 ######################################################################
-### Account Settings Variables:
+### Account Settings Inputs
 
-variable "s3_public_access_blocks" {
+variable "iam_account_password_policy" {
   description = <<-EOF
-  Config object for account-level rules regarding S3 public access.
-  By default, all S3 buckets/objects should be strictly PRIVATE. Only
-  provide this variable with an override set to "false" if you know
-  what you're doing and it's absolutely necessary.
+  Config object for customizing an account's IAM password policy. If not
+  provided, by default this module will set each value to the minimum
+  required by CIS AWS Foundations Benchmark (v1.4.0). For "max_password_age",
+  this value is 90 days, "min_password_length" is 14, and the number of times
+  a password can be reused - "password_reuse_prevention" - is 24. Values which
+  are below those required by the CIS Benchmark Controls will result in a
+  validation error.
   EOF
+
   type = object({
-    block_public_acls       = optional(bool)
-    block_public_policy     = optional(bool)
-    ignore_public_acls      = optional(bool)
-    restrict_public_buckets = optional(bool)
+    max_password_age          = optional(number)
+    min_password_length       = optional(number)
+    password_reuse_prevention = optional(number)
   })
+
   default = {
-    block_public_acls       = true
-    block_public_policy     = true
-    ignore_public_acls      = true
-    restrict_public_buckets = true
+    max_password_age          = 90
+    min_password_length       = 14
+    password_reuse_prevention = 24
+  }
+
+  validation {
+    condition = alltrue([
+      coalesce(var.iam_account_password_policy.max_password_age, 90) >= 90,
+      coalesce(var.iam_account_password_policy.min_password_length, 14) >= 14,
+      coalesce(var.iam_account_password_policy.password_reuse_prevention, 24) >= 24
+    ])
+    error_message = "All values must be equal to or greater than the minimum required by CIS AWS Foundations Benchmark (v1.4)."
   }
 }
 
 #---------------------------------------------------------------------
-### Default VPC Component Variables:
+### Default VPC Component Inputs
 
 variable "default_vpc_component_tags" {
   description = <<-EOF

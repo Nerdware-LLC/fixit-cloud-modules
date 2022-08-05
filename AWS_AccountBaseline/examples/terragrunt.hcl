@@ -10,7 +10,6 @@ include-blocks and/or the read_terragrunt_config() Terragrunt fn. */
 ### Inputs
 
 inputs = {
-  # It's not recommended to override the default s3_account_public_access_block values.
   # Totally fine to not provide any inputs. If you like, tag the default VPC resources:
 
   default_vpc_component_tags = {

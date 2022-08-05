@@ -4,7 +4,6 @@
 module "AWS_AccountBaseline" {
   source = "git@github.com:Nerdware-LLC/fixit-cloud-modules.git//AWS_AccountBaseline"
 
-  # It's not recommended to override the default s3_account_public_access_block values.
   # Totally fine to not provide any inputs. If you like, tag the default VPC resources:
 
   default_vpc_component_tags = {
