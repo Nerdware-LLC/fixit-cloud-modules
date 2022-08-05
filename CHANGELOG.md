@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.14.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.0...v0.14.1) (2022-08-05)
+
+
+### Bug Fixes
+
+* **ECS-Svcs:** correct network_config arg refs ([088ae99](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/088ae99699af9d45612908355e6286edab0cfc91))
+
 # [0.14.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.13.6...v0.14.0) (2022-08-05)
 
 
