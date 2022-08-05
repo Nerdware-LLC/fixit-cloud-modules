@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.14.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.13.6...v0.14.0) (2022-08-05)
+
+
+### Features
+
+* **AccBase:** add vars to enable stricter pw controls than CIS requires ([4d0eef7](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/4d0eef769b9aec73910ba4b11fdaeb3f125d6837))
+
 ## [0.13.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.13.5...v0.13.6) (2022-08-03)
 
 ## [0.13.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.13.4...v0.13.5) (2022-08-03)
