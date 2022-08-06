@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.14.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.2...v0.14.3) (2022-08-06)
+
+
+### Bug Fixes
+
+* **S3:** rm num_days arg from noncurrent exp lifecycle config ([e6eb702](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/e6eb70250523aff9cf213818c1b33e202ee844b3))
+
 ## [0.14.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.1...v0.14.2) (2022-08-06)
 
 
