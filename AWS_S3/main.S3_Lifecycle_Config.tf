@@ -103,6 +103,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "list" {
         iterator = old_v_expiration # <-- merely to shorten the refs below
         content {
           newer_noncurrent_versions = old_v_expiration.value.newer_noncurrent_versions
+          noncurrent_days           = old_v_expiration.value.noncurrent_days # <-- Is req'd, despite what TFR docs say.
         }
       }
     }

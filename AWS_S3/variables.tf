@@ -168,7 +168,8 @@ variable "lifecycle_rules" {
         storage_class             = string
       }))
       noncurrent_version_expiration = optional(object({
-        newer_noncurrent_versions = optional(number)
+        newer_noncurrent_versions = number
+        noncurrent_days           = number
       }))
       status = optional(string) # Defaults to "Enabled", can optionally pass "Disabled".
     })
