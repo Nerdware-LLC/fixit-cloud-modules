@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.14.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.1...v0.14.2) (2022-08-06)
+
+
+### Bug Fixes
+
+* **S3:** correct dynamic iterator syntax; add examples ([90ef874](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/90ef874d46663c4d4307797e89cb21ac55aa97b6))
+
 ## [0.14.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.0...v0.14.1) (2022-08-05)
 
 
