@@ -1,8 +1,8 @@
 ######################################################################
 ### S3 Bucket Replication Config
 
-resource "aws_s3_bucket_replication_configuration" "map" {
-  for_each = var.replication_config != null ? [var.bucket_name] : []
+resource "aws_s3_bucket_replication_configuration" "list" {
+  count = var.replication_config != null ? 1 : 0
 
   # The SOURCE bucket
   bucket = aws_s3_bucket.this.id
@@ -96,7 +96,7 @@ resource "aws_s3_bucket_replication_configuration" "map" {
         }
 
         # RULE.destination.encryption_config
-        dynamic "encryption_config" {
+        dynamic "encryption_configuration" {
           for_each = (
             rule.value.destination.replica_kms_key_arn != null
             ? [rule.value.destination.replica_kms_key_arn]
@@ -118,7 +118,7 @@ resource "aws_s3_bucket_replication_configuration" "map" {
           # RULE.destination.metrics.event_threshold
           dynamic "event_threshold" {
             for_each = ( # default: no event_threshold (no S3 Event Notifications onFail)
-              coalesce(metrics.value.should_replication_complete_within_15_minutes, false)
+              coalesce(rule.value.should_replication_complete_within_15_minutes, false)
               ? [{ minutes = 15 }] # 15 is the only valid value
               : []
             )

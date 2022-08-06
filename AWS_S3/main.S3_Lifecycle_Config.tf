@@ -1,8 +1,8 @@
 ######################################################################
 ### S3 Bucket Lifecycle Config
 
-resource "aws_s3_bucket_lifecycle_configuration" "map" {
-  for_each = var.lifecycle_rules != null ? [var.bucket_name] : []
+resource "aws_s3_bucket_lifecycle_configuration" "list" {
+  count = var.lifecycle_rules != null ? 1 : 0
 
   bucket = aws_s3_bucket.this.id
 
@@ -52,7 +52,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "map" {
           ? [rule.value.abort_incomplete_multipart_upload]
           : []
         )
-        iterator = "abort_mpu" # <-- merely to shorten the ref below
+        iterator = abort_mpu # <-- merely to shorten the ref below
         content {
           days_after_initiation = abort_mpu.value.days_after_initiation
         }
@@ -85,7 +85,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "map" {
           ? [rule.value.noncurrent_version_transition]
           : []
         )
-        iterator = "old_v_transition" # <-- merely to shorten the refs below
+        iterator = old_v_transition # <-- merely to shorten the refs below
         content {
           newer_noncurrent_versions = old_v_transition.value.newer_noncurrent_versions
           noncurrent_days           = old_v_transition.value.noncurrent_days
@@ -100,7 +100,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "map" {
           ? [rule.value.noncurrent_version_expiration]
           : []
         )
-        iterator = "old_v_expiration" # <-- merely to shorten the refs below
+        iterator = old_v_expiration # <-- merely to shorten the refs below
         content {
           newer_noncurrent_versions = old_v_expiration.value.newer_noncurrent_versions
           noncurrent_days           = old_v_expiration.value.noncurrent_days

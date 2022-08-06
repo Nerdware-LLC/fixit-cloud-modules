@@ -17,7 +17,7 @@ resource "aws_s3_bucket_ownership_controls" "this" {
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
 
-  policy = jsondecode(var.bucket_policy)
+  policy = var.bucket_policy
 }
 
 #---------------------------------------------------------------------
