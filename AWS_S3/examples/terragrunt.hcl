@@ -77,6 +77,7 @@ inputs = {
       }
       noncurrent_version_expiration = {
         newer_noncurrent_versions = 3 # don't keep more than 3 versions
+        noncurrent_days           = 100 # AWS will permanently delete expired versions after 100 days
       }
     }
     /* Multipart Uploads:
