@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.14.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.3...v0.14.4) (2022-08-06)
+
+
+### Bug Fixes
+
+* **S3:** rm optional wrapper from noncurrent_days in noncurrent_exp lifecycle config ([69e8a09](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/69e8a098d1a7370b912ca44a1c302f66a4d9585b))
+* **S3:** update examples to show correct usage of noncurrent_days in noncurrent_exp lifecycle config ([a4fb00b](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/a4fb00b80b1bdefe6ec336db141b3bd1d00a4868))
+
 ## [0.14.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.2...v0.14.3) (2022-08-06)
 
 
