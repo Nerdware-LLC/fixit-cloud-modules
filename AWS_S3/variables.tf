@@ -134,44 +134,45 @@ variable "lifecycle_rules" {
   https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration#argument-reference.
   EOF
 
-  type = map(object({
-    # Use rule names for map keys
-    filter = optional(object({
-      prefix                   = optional(string)
-      object_size_greater_than = optional(number) # Min size in bytes to which the rule applies.
-      object_size_less_than    = optional(number) # Max size in bytes to which the rule applies.
-      tag                      = optional(object({ key = string, value = string }))
-      and = optional(object({
+  type = map(
+    # map keys: rule names
+    object({
+      filter = optional(object({
         prefix                   = optional(string)
-        object_size_greater_than = optional(number)
-        object_size_less_than    = optional(number)
-        tags                     = optional(map(string))
+        object_size_greater_than = optional(number) # Min size in bytes to which the rule applies.
+        object_size_less_than    = optional(number) # Max size in bytes to which the rule applies.
+        tag                      = optional(object({ key = string, value = string }))
+        and = optional(object({
+          prefix                   = optional(string)
+          object_size_greater_than = optional(number)
+          object_size_less_than    = optional(number)
+          tags                     = optional(map(string))
+        }))
       }))
-    }))
-    abort_incomplete_multipart_upload = optional(object({
-      days_after_initiation = number
-    }))
-    transition = optional(object({
-      date          = optional(string) # If provided, must be in RFC 3339 format.
-      days          = optional(number) # If provided, must a non-zero positive integer.
-      storage_class = string
-    }))
-    expiration = optional(object({
-      date                         = optional(string)
-      days                         = optional(number)
-      expired_object_delete_marker = optional(bool)
-    }))
-    noncurrent_version_transition = optional(object({
-      newer_noncurrent_versions = optional(number)
-      noncurrent_days           = optional(number)
-      storage_class             = string
-    }))
-    noncurrent_version_expiration = optional(object({
-      newer_noncurrent_versions = optional(number)
-      noncurrent_days           = optional(number)
-    }))
-    status = optional(string) # Defaults to "Enabled", can optionally pass "Disabled".
-  }))
+      abort_incomplete_multipart_upload = optional(object({
+        days_after_initiation = number
+      }))
+      transition = optional(object({
+        date          = optional(string) # If provided, must be in RFC 3339 format.
+        days          = optional(number) # If provided, must a non-zero positive integer.
+        storage_class = string
+      }))
+      expiration = optional(object({
+        date                         = optional(string)
+        days                         = optional(number)
+        expired_object_delete_marker = optional(bool)
+      }))
+      noncurrent_version_transition = optional(object({
+        newer_noncurrent_versions = optional(number)
+        noncurrent_days           = optional(number)
+        storage_class             = string
+      }))
+      noncurrent_version_expiration = optional(object({
+        newer_noncurrent_versions = optional(number)
+      }))
+      status = optional(string) # Defaults to "Enabled", can optionally pass "Disabled".
+    })
+  )
   default = null
 }
 
