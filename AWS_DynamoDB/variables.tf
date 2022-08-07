@@ -6,6 +6,17 @@ variable "table_name" {
   type        = string
 }
 
+variable "hash_key" {
+  description = "The DynamoDB table's hash key (also called a \"partition\" or \"primary\" key)."
+  type        = string
+}
+
+variable "range_key" {
+  description = "(Optional) The DynamoDB table's range key (also called a \"sort\" key)."
+  type        = string
+  default     = null
+}
+
 variable "attributes" {
   description = <<-EOF
   List of DynamoDB table attribute config objects. Attribute "type" values
@@ -20,28 +31,17 @@ variable "attributes" {
   }))
 }
 
-variable "partition_key" {
-  description = "The DynamoDB table's partition key (also called a \"primary\" or \"hash\" key)."
-  type        = string
-}
-
-variable "sort_key" {
-  description = "(Optional) The DynamoDB table's sort key (also called a \"secondary\" or \"range\" key)."
-  type        = string
-  default     = null
-}
-
 variable "global_secondary_indexes" {
   description = <<-EOF
   (Optional) Map of GSI names to config objects for each respective GSI. Note
   that the maximum number of GSIs a DynamoDB table can have is 20. Each GSI must
-  have a "partition_key", and can optionally define a "sort_key", both of which
-  must be included in var.attributes. "projection_type" defines which table
-  attributes to include (or "project") in the index - it must be either "KEYS_ONLY",
-  "ALL", or "INCLUDE". "KEYS_ONLY" will result in just the table's partition_key and
-  sort_key being included in the index, "ALL" will result in every table attribute
-  being included in the index, and "INCLUDE" will result in the table's partition_key,
-  sort_key, and attributes defined in the "non_key_attributes" list being included
+  have a "hash_key", and can optionally define a "range_key", both of which must
+  be included in var.attributes. "projection_type" defines which table attributes
+  to include (or "project") in the index - it must be either "KEYS_ONLY", "ALL",
+  or "INCLUDE". "KEYS_ONLY" will result in just the table's hash_key and range_key
+  being included in the index, "ALL" will result in every table attribute being
+  included in the index, and "INCLUDE" will result in the table's hash_key,
+  range_key, and attributes defined in the "non_key_attributes" list being included
   in the index. Note that any attributes listed in "non_key_attributes" must be
   defined in var.attributes. If the base table uses "PROVISIONED" throughput, all
   GSI configs must specify autoscaling configs via the "capacity" property with
@@ -51,8 +51,8 @@ variable "global_secondary_indexes" {
   type = map(
     # map keys: GSI names
     object({
-      partition_key      = string
-      sort_key           = optional(string)
+      hash_key           = string
+      range_key          = optional(string)
       projection_type    = string
       non_key_attributes = optional(list(string))
       capacity = optional(object({
@@ -76,13 +76,13 @@ variable "local_secondary_indexes" {
   description = <<-EOF
   (Optional) Map of LSI names to config objects for each respective LSI. Note
   that the maximum number of LSIs a DynamoDB table can have is 5. All LSIs use
-  the table's "partition_key" as their own, and must define a "sort_key".
+  the table's "hash_key" as their own, and must define a "range_key".
   EOF
 
   type = map(
     # map keys: LSI names
     object({
-      sort_key           = string
+      range_key          = string
       projection_type    = string
       non_key_attributes = optional(list(string))
     })

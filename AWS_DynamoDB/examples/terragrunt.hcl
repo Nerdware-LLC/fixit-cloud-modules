@@ -22,6 +22,9 @@ dependency "Foo_Kinesis_Stream" {
 
 inputs = {
   table_name = "My_DynamoDB_Table"
+  hash_key   = "ID"
+  range_key  = "Name"
+
   attributes = [
     {
       name = "ID"
@@ -37,15 +40,12 @@ inputs = {
     }
   ]
 
-  partition_key = "ID"
-  sort_key      = "Name"
-
   global_secondary_indexes = {
     HighScoreGlobalIndex = {
-      partition_key        = "Name"
-      sort_key             = "HighScore"
-      projection_type      = "INCLUDE"
-      non_key_attributes   = ["ID"]
+      hash_key           = "Name"
+      range_key          = "HighScore"
+      projection_type    = "INCLUDE"
+      non_key_attributes = ["ID"]
       capacity = {
         read = {
           max    = 10

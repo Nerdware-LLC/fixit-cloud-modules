@@ -5,8 +5,8 @@
 # tfsec:ignore:aws-dynamodb-enable-at-rest-encryption
 resource "aws_dynamodb_table" "this" {
   name      = var.table_name
-  hash_key  = var.partition_key
-  range_key = var.sort_key
+  hash_key  = var.hash_key
+  range_key = var.range_key
 
   billing_mode   = var.billing_mode
   read_capacity  = try(var.capacity.read.max, null)
@@ -30,8 +30,8 @@ resource "aws_dynamodb_table" "this" {
 
     content {
       name               = gsi.key
-      hash_key           = gsi.value.partition_key
-      range_key          = gsi.value.sort_key
+      hash_key           = gsi.value.hash_key
+      range_key          = gsi.value.range_key
       projection_type    = gsi.value.projection_type
       non_key_attributes = gsi.value.non_key_attributes
       read_capacity      = try(gsi.value.capacity.read.max, null)
@@ -46,7 +46,7 @@ resource "aws_dynamodb_table" "this" {
 
     content {
       name               = lsi.key
-      range_key          = lsi.value.sort_key
+      range_key          = lsi.value.range_key
       projection_type    = lsi.value.projection_type
       non_key_attributes = lsi.value.non_key_attributes
     }
