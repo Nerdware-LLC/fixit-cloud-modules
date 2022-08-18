@@ -36,7 +36,21 @@ resource "aws_iam_role" "map" {
         Action = "sts:AssumeRole"
       }
     })
-    : each.value.assume_role_policy_json
+    : (
+      each.value.oidc_assume_role != null
+      ? jsonencode({
+        Version = "2012-10-17"
+        Statement = {
+          Effect = "Allow"
+          Principal = {
+            Federated = aws_iam_openid_connect_provider.map[each.value.oidc_assume_role].arn
+          }
+          Action    = "sts:AssumeRoleWithWebIdentity"
+          Condition = var.openID_connect_providers[each.value.oidc_assume_role].assume_role_conditions
+        }
+      })
+      : each.value.assume_role_policy_json
+    )
   )
 }
 
@@ -69,6 +83,21 @@ resource "aws_iam_instance_profile" "map" {
   /* The purpose of this depends_on is so users can pass "role_name" in
   their instance profiles to create both resources in a single apply. */
   depends_on = [aws_iam_role.map]
+}
+
+#---------------------------------------------------------------------
+### IAM OpenID Connect Providers
+
+resource "aws_iam_openid_connect_provider" "map" {
+  for_each = var.openID_connect_providers
+
+  url            = each.value.url
+  client_id_list = each.value.client_id_list
+  thumbprint_list = [
+    # AWS lowercases all letters in the tp, so we lower() them here to avoid constant-diffs problem.
+    for thumbprint in each.value.thumbprint_list : lower(thumbprint)
+  ]
+  tags = each.value.tags
 }
 
 #---------------------------------------------------------------------

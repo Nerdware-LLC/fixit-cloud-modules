@@ -21,6 +21,11 @@ output "IAM_Instance_Profile" {
   value       = aws_iam_instance_profile.map
 }
 
+output "OpenID_Connect_Providers" {
+  description = "Map of IAM OpenID Connect (OIDC) Identity Provider resource objects."
+  value       = aws_iam_openid_connect_provider.map
+}
+
 output "IAM_Role_Policy_Attachments" {
   description = <<-EOF
   Map of IAM Role Policy Attachment resource objects, the keys of which

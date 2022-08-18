@@ -46,6 +46,7 @@ variable "iam_roles" {
       path                    = optional(string)
       assume_role_policy_json = optional(string)
       service_assume_role     = optional(string)
+      oidc_assume_role        = optional(string)
       policies                = optional(list(string))
       tags                    = optional(map(string))
     })
@@ -58,10 +59,11 @@ variable "iam_roles" {
       # Each role must have either "assume_role_policy_json" or "service_assume_role"
       for role_config in values(var.iam_roles) : anytrue([
         role_config.assume_role_policy_json != null && can(jsondecode(role_config.assume_role_policy_json)),
-        role_config.service_assume_role != null
+        role_config.service_assume_role != null,
+        role_config.oidc_assume_role != null
       ])
     ])
-    error_message = "Each role must have either service_assume_role, or assume_role_policy_json as valid JSON."
+    error_message = "Each role must have either service_assume_role, oidc_assume_role, or assume_role_policy_json as valid JSON."
   }
 }
 
@@ -115,6 +117,32 @@ variable "instance_profiles" {
     ])
     error_message = "Each instance profile must either have role_arn or role_name."
   }
+}
+
+#---------------------------------------------------------------------
+
+variable "openID_connect_providers" {
+  description = <<-EOF
+  (Optional) Map of OpenID Connect (OIDC) Identity Provider names to config objects.
+  "Built-in" identity providers which don't require an IdP to be created within IAM
+  (Amazon Cognito, Google, and Facebook), don't require explicit creation within AWS.
+  To associate an OIDC IdP with an existing role (one not created in the same module
+  call), use "role_arn". To associate a role included in var.iam_roles, provide the
+  name of the desired role to "role_name".
+  EOF
+
+  type = map(
+    # map keys: OIDC IdP names
+    object({
+      url                    = string
+      client_id_list         = list(string)
+      thumbprint_list        = list(string)
+      assume_role_conditions = map(any)
+      tags                   = optional(map(string))
+    })
+  )
+
+  default = {}
 }
 
 ######################################################################
