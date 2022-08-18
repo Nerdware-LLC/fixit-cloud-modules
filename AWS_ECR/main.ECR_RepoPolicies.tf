@@ -25,8 +25,8 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
   dynamic "statement" {
     for_each = (
       each.value.policy_config.allow_push_and_pull_images != null
-      ? each.value.policy_config.allow_push_and_pull_images
-      : {}
+      ? [each.value.policy_config.allow_push_and_pull_images]
+      : []
     )
 
     content {
@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
         "ecr:PutImage",
         "ecr:UploadLayerPart",
       ]
-      resources = [aws_ecr_repository.map[each.key].arn]
+      resources = [aws_ecr_repository.map[each.key].arn] # <-- outer data block 'each'
 
       dynamic "condition" {
         for_each = statement.value.conditions != null ? statement.value.conditions : {}
@@ -70,8 +70,8 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
   dynamic "statement" {
     for_each = (
       each.value.policy_config.allow_push_and_pull_images != null
-      ? each.value.policy_config.allow_push_and_pull_images
-      : {}
+      ? [each.value.policy_config.allow_push_and_pull_images]
+      : []
     )
 
     content {
@@ -102,8 +102,8 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
   dynamic "statement" {
     for_each = (
       each.value.policy_config.allow_codebuild_access != null
-      ? each.value.policy_config.allow_codebuild_access
-      : {}
+      ? [each.value.policy_config.allow_codebuild_access]
+      : []
     )
 
     content {
