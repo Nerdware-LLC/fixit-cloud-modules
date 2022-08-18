@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.15.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.2...v0.15.3) (2022-08-18)
+
+
+### Bug Fixes
+
+* **ECR:** fix ternary-result-diff problem in repo policy data blk ([3200037](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/3200037fe7286efec9a94412c23a9397e01b5066))
+
 ## [0.15.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.1...v0.15.2) (2022-08-18)
 
 
