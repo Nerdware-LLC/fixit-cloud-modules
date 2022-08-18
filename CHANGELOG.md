@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.16.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.3...v0.16.0) (2022-08-18)
+
+
+### Features
+
+* **IAM:** mv OIDC IdPs into IAM ([2a84bee](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/2a84beeabb379640e216c92c08300280e0baa37e))
+
 ## [0.15.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.2...v0.15.3) (2022-08-18)
 
 
