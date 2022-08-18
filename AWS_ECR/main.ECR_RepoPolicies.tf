@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
         "ecr:CompleteLayerUpload",
         "ecr:DescribeImages",
         "ecr:DescribeRepositories",
+        "ecr:GetAuthorizationToken", # <-- required for CLI authentication
         "ecr:GetDownloadUrlForLayer",
         "ecr:GetRepositoryPolicy",
         "ecr:InitiateLayerUpload",
@@ -51,40 +52,6 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
         "ecr:PutImage",
         "ecr:UploadLayerPart",
       ]
-      resources = [aws_ecr_repository.map[each.key].arn] # <-- outer data block 'each'
-
-      dynamic "condition" {
-        for_each = statement.value.conditions != null ? statement.value.conditions : {}
-
-        content {
-          test     = condition.key          # IAM condition operator (e.g., "StringEquals", "ArnLike")
-          variable = condition.value.key    # IAM condition key (e.g., "aws:username", "aws:SourceArn")
-          values   = condition.value.values # IAM condition values (e.g., ["arn:aws:iam::111111111111:role/Foo"])
-        }
-      }
-    }
-  }
-
-  # ALLOW PUSH AND PULL ACCESS TO AWS PRINCIPALS (ecr:GetAuthorizationToken)
-  # see https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-push.html
-  dynamic "statement" {
-    for_each = (
-      each.value.policy_config.allow_push_and_pull_images != null
-      ? [each.value.policy_config.allow_push_and_pull_images]
-      : []
-    )
-
-    content {
-      sid    = "EcrRepoAllowGetAuthToken"
-      effect = "Allow"
-
-      principals {
-        type        = statement.value.principals.type
-        identifiers = statement.value.principals.identifiers
-      }
-
-      actions   = ["ecr:GetAuthorizationToken"]
-      resources = ["*"]
 
       dynamic "condition" {
         for_each = statement.value.conditions != null ? statement.value.conditions : {}
@@ -119,7 +86,6 @@ data "aws_iam_policy_document" "Repo_Policies_Map" {
         "ecr:BatchGetImage",
         "ecr:GetDownloadUrlForLayer"
       ]
-      resources = [aws_ecr_repository.map[each.key].arn]
 
       condition {
         test     = "ArnLike"
