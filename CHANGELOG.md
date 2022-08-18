@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.16.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.0...v0.16.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* **IAM:** wrap possible null lookup in try ([845d616](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/845d6168ba19df705a52110e0d743add34b2beb4))
+
 # [0.16.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.3...v0.16.0) (2022-08-18)
 
 
