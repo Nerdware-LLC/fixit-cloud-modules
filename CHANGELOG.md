@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.15.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.5...v0.15.0) (2022-08-18)
+
+
+### Features
+
+* **ECR:** add AWS ECR module ([#12](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/12)) ([d952f79](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d952f79e214c7a4d7821234820ce8850e21ec907))
+
 ## [0.14.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.4...v0.14.5) (2022-08-07)
 
 ## [0.14.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.3...v0.14.4) (2022-08-06)
