@@ -14,8 +14,8 @@ resource "aws_ecr_repository" "map" {
   # tfsec rule ignored bc it's left to user to implement a KMS key
   # tfsec:ignore:aws-ecr-repository-customer-key
   encryption_configuration {
-    type    = try(each.value.sse_config.type, "AES256")
-    kms_key = try(each.value.sse_config.kms_key_arn, null)
+    encryption_type = try(each.value.sse_config.type, "AES256")
+    kms_key         = try(each.value.sse_config.kms_key_arn, null)
   }
 
   image_scanning_configuration {
