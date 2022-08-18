@@ -21,11 +21,16 @@ Terraform module for managing Terraform Cloud Workspace resources.
 
 ## ⚙️ Module Usage
 
+### Usage Examples
+
+- Terragrunt: [view Terragrunt usage exmaple](examples/terragrunt.hcl)
+- Terraform: &nbsp;[view vanilla Terraform usage exmaple](examples/terraform.tf)
+
 ### Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.6 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.7 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.28.1 |
 
 ### Providers
