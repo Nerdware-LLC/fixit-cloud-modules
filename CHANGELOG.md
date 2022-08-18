@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.15.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.1...v0.15.2) (2022-08-18)
+
+
+### Bug Fixes
+
+* **ECR:** correct SSE arg name to 'encryption_type' ([dfa2872](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/dfa28722f8beade1b84b85914e599d8b72ef8022))
+
 ## [0.15.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.15.0...v0.15.1) (2022-08-18)
 
 # [0.15.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.14.5...v0.15.0) (2022-08-18)
