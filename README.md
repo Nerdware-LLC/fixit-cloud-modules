@@ -21,6 +21,8 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
   - [CloudTrail](/AWS_CloudTrail/README.md)
   - [CloudWatch](/AWS_CloudWatch/README.md)
   - [Config](/AWS_Config/README.md)
+  - [DynamoDB](/AWS_DynamoDB/README.md)
+  - [ECR](/AWS_ECR/README.md)
   - [ECS Cluster](/AWS_ECS_Cluster/README.md)
   - [GuardDuty](/AWS_GuardDuty/README.md)
   - [IAM](/AWS_IAM/README.md)
@@ -42,7 +44,6 @@ The following modules have WIP feature branches which will be merged into the **
 | **Module**     | **Branch**          | **Description**           |
 | :------------- | :------------------ | :------------------------ |
 | AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources. |
-| AWS DynamoDB   | feat/AWS_DynamoDB   | AWS DynamoDB resources.   |
 
 ## ⚙️ Developer Setup
 
