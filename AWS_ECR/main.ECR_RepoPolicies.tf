@@ -11,7 +11,7 @@ resource "aws_ecr_repository_policy" "map" {
     ? data.aws_iam_policy_document.Repo_Policies_Map[each.key].json
     : jsonencode({
       Version = "2012-10-17"
-      Statements = flatten(
+      Statement = flatten(
         jsondecode(data.aws_iam_policy_document.Repo_Policies_Map[each.key].json).Statement,
         jsondecode(each.value.policy_config.custom_statements_json)
       )
