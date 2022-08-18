@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.16.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.1...v0.16.2) (2022-08-18)
+
+
+### Bug Fixes
+
+* **ECR:** correct repo policy field to 'Statement' singular ([f021184](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/f021184ac03ac292126832f3cb05f49fa75c3702))
+
 ## [0.16.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.0...v0.16.1) (2022-08-18)
 
 
