@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.16.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.2...v0.16.3) (2022-08-19)
+
+
+### Bug Fixes
+
+* **ECR:** rm 'resource' from ECR repo policy syntax ([54bda5c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/54bda5cfa63ed62a0f3984046df036994ada520c))
+
 ## [0.16.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.1...v0.16.2) (2022-08-18)
 
 
