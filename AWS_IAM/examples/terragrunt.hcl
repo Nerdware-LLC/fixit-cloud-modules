@@ -44,11 +44,11 @@ inputs = {
     FooAdminRole = {
       description = "A role used by FooAdmin."
       assume_role_policy_statements = [{
-        effect     = "Allow"
+        effect = "Allow"
         principals = {
           AWS = ["arn:aws:iam::${module.AWS_Org.Organization.master_account_id}:user/FooAdmin"]
         }
-        actions    = ["sts:AssumeRole"]
+        actions = ["sts:AssumeRole"]
       }]
     }
 
