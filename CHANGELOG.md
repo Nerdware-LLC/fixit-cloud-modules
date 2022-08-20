@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.17.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.5...v0.17.0) (2022-08-20)
+
+
+### Features
+
+* **Lambda:** add concurrency_config, perms, event_src_map, examples ([431d160](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/431d160727769bc0e15417dbbaca6d4782aa4a71))
+
 ## [0.16.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.4...v0.16.5) (2022-08-19)
 
 ## [0.16.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.16.3...v0.16.4) (2022-08-19)
