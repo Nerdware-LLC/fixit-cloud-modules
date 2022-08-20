@@ -24,6 +24,7 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
   - [DynamoDB](/AWS_DynamoDB/README.md)
   - [ECR](/AWS_ECR/README.md)
   - [ECS Cluster](/AWS_ECS_Cluster/README.md)
+  - [EventBridge](/AWS_EventBridge/README.md)
   - [GuardDuty](/AWS_GuardDuty/README.md)
   - [IAM](/AWS_IAM/README.md)
   - [KMS](/AWS_KMS/README.md)
