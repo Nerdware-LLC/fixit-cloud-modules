@@ -3,9 +3,9 @@
 
 resource "aws_lambda_function" "this" {
   function_name = var.name
+  description   = var.description
   role          = var.execution_role_arn
   handler       = var.handler
-  description   = var.description
   runtime       = var.runtime
 
   # Deployment Package Source
@@ -59,6 +59,12 @@ locals {
   )
 }
 
-# TODO Add event source mapping, invocation, provisioned concurrency config.
+#---------------------------------------------------------------------
+
+resource "aws_lambda_provisioned_concurrency_config" "this" {
+  function_name                     = aws_lambda_function.this.function_name
+  qualifier                         = aws_lambda_function.this.version
+  provisioned_concurrent_executions = var.provisioned_concurrent_executions # Default: 1
+}
 
 ######################################################################
