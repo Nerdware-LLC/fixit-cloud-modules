@@ -71,16 +71,16 @@ In accordance with best practices, this module locks down default VPC components
 
 ### Requirements
 
-| Name                                                                     | Version   |
-| ------------------------------------------------------------------------ | --------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | 1.2.7     |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.11.0 |
 
 ### Providers
 
-| Name                                             | Version   |
-| ------------------------------------------------ | --------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 4.11.0 |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.11.0 |
 
 ### Modules
 
@@ -88,34 +88,34 @@ No modules.
 
 ### Resources
 
-| Name                                                                                                                                                  | Type     |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| [aws_default_network_acl.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_network_acl)                       | resource |
-| [aws_default_route_table.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table)                       | resource |
-| [aws_default_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group)                 | resource |
-| [aws_default_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_vpc)                                       | resource |
-| [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_encryption_by_default)           | resource |
-| [aws_iam_account_password_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy)       | resource |
+| Name | Type |
+|------|------|
+| [aws_default_network_acl.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_network_acl) | resource |
+| [aws_default_route_table.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) | resource |
+| [aws_default_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) | resource |
+| [aws_default_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_vpc) | resource |
+| [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_encryption_by_default) | resource |
+| [aws_iam_account_password_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy) | resource |
 | [aws_s3_account_public_access_block.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_account_public_access_block) | resource |
 
 ### Inputs
 
-| Name                                                                                                               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Type                                                                                                                                                                                                                  | Default                                                                                                                                         | Required |
-| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | :------: |
-| <a name="input_default_vpc_component_tags"></a> [default_vpc_component_tags](#input_default_vpc_component_tags)    | In accordance with best practices, this module locks down the default VPC and all<br>its components to ensure all ingress/egress traffic only uses infrastructure with<br>purposefully-designed rules and configs. Default subnets must be deleted manually<br>- they cannot be removed via Terraform. This variable allows you to customize the<br>tags on these "default" network components; defaults will be used if not provided.                                                      | <pre>object({<br> default_vpc = optional(map(string))<br> default_route_table = optional(map(string))<br> default_network_acl = optional(map(string))<br> default_security_group = optional(map(string))<br> })</pre> | <pre>{<br> "default_network_acl": null,<br> "default_route_table": null,<br> "default_security_group": null,<br> "default_vpc": null<br>}</pre> |    no    |
-| <a name="input_iam_account_password_policy"></a> [iam_account_password_policy](#input_iam_account_password_policy) | Config object for customizing an account's IAM password policy. If not<br>provided, by default this module will set each value to the minimum<br>required by CIS AWS Foundations Benchmark (v1.4.0). For "max_password_age",<br>this value is 90 days, "min_password_length" is 14, and the number of times<br>a password can be reused - "password_reuse_prevention" - is 24. Values which<br>are below those required by the CIS Benchmark Controls will result in a<br>validation error. | <pre>object({<br> max_password_age = optional(number)<br> min_password_length = optional(number)<br> password_reuse_prevention = optional(number)<br> })</pre>                                                        | <pre>{<br> "max_password_age": 90,<br> "min_password_length": 14,<br> "password_reuse_prevention": 24<br>}</pre>                                |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_default_vpc_component_tags"></a> [default\_vpc\_component\_tags](#input\_default\_vpc\_component\_tags) | In accordance with best practices, this module locks down the default VPC and all<br>its components to ensure all ingress/egress traffic only uses infrastructure with<br>purposefully-designed rules and configs. Default subnets must be deleted manually<br>- they cannot be removed via Terraform. This variable allows you to customize the<br>tags on these "default" network components; defaults will be used if not provided. | <pre>object({<br>    default_vpc            = optional(map(string))<br>    default_route_table    = optional(map(string))<br>    default_network_acl    = optional(map(string))<br>    default_security_group = optional(map(string))<br>  })</pre> | <pre>{<br>  "default_network_acl": null,<br>  "default_route_table": null,<br>  "default_security_group": null,<br>  "default_vpc": null<br>}</pre> | no |
+| <a name="input_iam_account_password_policy"></a> [iam\_account\_password\_policy](#input\_iam\_account\_password\_policy) | Config object for customizing an account's IAM password policy. If not<br>provided, by default this module will set each value to the minimum<br>required by CIS AWS Foundations Benchmark (v1.4.0). For "max\_password\_age",<br>this value is 90 days, "min\_password\_length" is 14, and the number of times<br>a password can be reused - "password\_reuse\_prevention" - is 24. Values which<br>are below those required by the CIS Benchmark Controls will result in a<br>validation error. | <pre>object({<br>    max_password_age          = optional(number)<br>    min_password_length       = optional(number)<br>    password_reuse_prevention = optional(number)<br>  })</pre> | <pre>{<br>  "max_password_age": 90,<br>  "min_password_length": 14,<br>  "password_reuse_prevention": 24<br>}</pre> | no |
 
 ### Outputs
 
-| Name                                                                                                                                            | Description                                                     |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| <a name="output_Account-Level_S3_Public_Access_Block"></a> [Account-Level_S3_Public_Access_Block](#output_Account-Level_S3_Public_Access_Block) | Account-level S3 public access block resource.                  |
-| <a name="output_Account_Password_Policy"></a> [Account_Password_Policy](#output_Account_Password_Policy)                                        | The account's password-policy resource object.                  |
-| <a name="output_Default_Network_ACL"></a> [Default_Network_ACL](#output_Default_Network_ACL)                                                    | The default VPC's default network ACL.                          |
-| <a name="output_Default_RouteTable"></a> [Default_RouteTable](#output_Default_RouteTable)                                                       | The default VPC's default route table.                          |
-| <a name="output_Default_SecurityGroup"></a> [Default_SecurityGroup](#output_Default_SecurityGroup)                                              | The default VPC's default security group.                       |
-| <a name="output_Default_VPC"></a> [Default_VPC](#output_Default_VPC)                                                                            | The account's default VPC resource.                             |
-| <a name="output_Global_Default_EBS_Encryption"></a> [Global_Default_EBS_Encryption](#output_Global_Default_EBS_Encryption)                      | Resource that ensures all EBS volumes are encrypted by default. |
+| Name | Description |
+|------|-------------|
+| <a name="output_Account-Level_S3_Public_Access_Block"></a> [Account-Level\_S3\_Public\_Access\_Block](#output\_Account-Level\_S3\_Public\_Access\_Block) | Account-level S3 public access block resource. |
+| <a name="output_Account_Password_Policy"></a> [Account\_Password\_Policy](#output\_Account\_Password\_Policy) | The account's password-policy resource object. |
+| <a name="output_Default_Network_ACL"></a> [Default\_Network\_ACL](#output\_Default\_Network\_ACL) | The default VPC's default network ACL. |
+| <a name="output_Default_RouteTable"></a> [Default\_RouteTable](#output\_Default\_RouteTable) | The default VPC's default route table. |
+| <a name="output_Default_SecurityGroup"></a> [Default\_SecurityGroup](#output\_Default\_SecurityGroup) | The default VPC's default security group. |
+| <a name="output_Default_VPC"></a> [Default\_VPC](#output\_Default\_VPC) | The account's default VPC resource. |
+| <a name="output_Global_Default_EBS_Encryption"></a> [Global\_Default\_EBS\_Encryption](#output\_Global\_Default\_EBS\_Encryption) | Resource that ensures all EBS volumes are encrypted by default. |
 
 ---
 
@@ -131,28 +131,29 @@ See [LICENSE](/LICENSE) for more information.
 
 Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Nerdware.cloud](mailto:trevor@nerdware.cloud)
 
-  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="../.github/assets/YouTube_icon_circle.svg" height="40" />
-  </a>
-  &nbsp;
-  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
-    <img src="../.github/assets/LinkedIn_icon_circle.svg" height="40" />
-  </a>
-  &nbsp;
-  <a href="https://twitter.com/TeeRevTweets">
-    <img src="../.github/assets/Twitter_icon_circle.svg" height="40" />
-  </a>
-  &nbsp;
-  <a href="mailto:trevor@nerdware.cloud">
-    <img src="../.github/assets/email_icon_circle.svg" height="40" />
-  </a>
-  <br><br>
+<a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
+<img src="../.github/assets/YouTube_icon_circle.svg" height="40" />
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/meet-trevor-anderson/">
+<img src="../.github/assets/LinkedIn_icon_circle.svg" height="40" />
+</a>
+&nbsp;
+<a href="https://twitter.com/TeeRevTweets">
+<img src="../.github/assets/Twitter_icon_circle.svg" height="40" />
+</a>
+&nbsp;
+<a href="mailto:trevor@nerdware.cloud">
+<img src="../.github/assets/email_icon_circle.svg" height="40" />
+</a>
+<br><br>
 
-  <a href="https://daremightythings.co/">
-    <strong><i>Dare Mighty Things.</i></strong>
-  </a>
+<a href="https://daremightythings.co/">
+<strong><i>Dare Mighty Things.</i></strong>
+</a>
 
 </div>
+
 <!-- prettier-ignore-end -->
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
