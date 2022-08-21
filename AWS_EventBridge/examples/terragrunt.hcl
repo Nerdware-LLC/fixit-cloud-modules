@@ -13,10 +13,6 @@ dependency "AWS_Org" {
   config_path = "${get_terragrunt_dir()}/../AWS_Org"
 }
 
-dependency "IAM" {
-  config_path = "${get_terragrunt_dir()}/../AWS_IAM"
-}
-
 #---------------------------------------------------------------------
 ### Inputs
 
@@ -61,7 +57,6 @@ inputs = {
     "run-every-30-minutes" = {
       enabled             = true
       description         = "Invoke foo-lambda-function every 30 minutes"
-      role_arn            = dependency.IAM.outputs.Roles["event-invoke-lambdaFn-role"].arn
       schedule_expression = "rate(30 minutes)" # <-- Equivalent to "cron(0/30 * * * * *)"
       event_bus_name      = "foo-custom-event-bus"
     }

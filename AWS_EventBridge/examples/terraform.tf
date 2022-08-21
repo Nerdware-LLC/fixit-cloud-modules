@@ -5,12 +5,6 @@ module "AWS_Org" {
   /* dependency inputs */
 }
 
-module "AWS_IAM" {
-  /* dependency inputs */
-}
-
-#---------------------------------------------------------------------
-
 module "AWS_EventBridge" {
   source = "git@github.com:Nerdware-LLC/fixit-cloud-modules.git//AWS_EventBridge"
 
@@ -53,7 +47,6 @@ module "AWS_EventBridge" {
     "run-every-30-minutes" = {
       enabled             = true
       description         = "Invoke foo-lambda-function every 30 minutes"
-      role_arn            = module.IAM.Roles["event-invoke-lambdaFn-role"].arn
       schedule_expression = "rate(30 minutes)" # <-- Equivalent to "cron(0/30 * * * * *)"
       event_bus_name      = "foo-custom-event-bus"
     }

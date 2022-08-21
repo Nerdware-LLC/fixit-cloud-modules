@@ -1,40 +1,6 @@
 ######################################################################
 ### AWS EventBridge
 ######################################################################
-### Event Rules
-
-resource "aws_cloudwatch_event_rule" "map" {
-  for_each = var.event_rules
-
-  name                = each.key
-  description         = each.value.description
-  role_arn            = each.value.role_arn
-  schedule_expression = each.value.schedule_expression
-  event_pattern       = each.value.event_pattern
-  event_bus_name      = each.value.event_bus_name
-  is_enabled          = coalesce(each.value.enabled, true)
-  tags                = each.value.tags
-}
-
-#---------------------------------------------------------------------
-### Event Targets
-
-resource "aws_cloudwatch_event_target" "map" {
-  for_each = var.event_targets
-
-  target_id      = each.key
-  arn            = each.value.target_arn
-  rule           = each.value.rule_name
-  event_bus_name = each.value.event_bus_name
-  role_arn       = each.value.role_arn
-  retry_policy   = each.value.retry_policy
-
-  input             = each.value.input
-  input_path        = each.value.input_path
-  input_transformer = each.value.input_transformer
-}
-
-#---------------------------------------------------------------------
 ### Event Buses
 
 resource "aws_cloudwatch_event_bus" "map" {
@@ -44,6 +10,9 @@ resource "aws_cloudwatch_event_bus" "map" {
   event_source_name = each.value.event_source_name
   tags              = each.value.tags
 }
+
+#---------------------------------------------------------------------
+### Event Bus Policies
 
 resource "aws_cloudwatch_event_bus_policy" "map" {
   for_each = aws_cloudwatch_event_bus.map
@@ -85,10 +54,10 @@ data "aws_iam_policy_document" "Event_Bus_Policies_Map" {
         ? null
         : [
           for resource in statement.value.resources : try(
-            aws_cloudwatch_event_bus.map[principal].arn,    # <-- check if "resource" is an Event Bus name
-            aws_cloudwatch_event_target.map[principal].arn, # <-- check if "resource" is an Event Target name
-            aws_cloudwatch_event_rule.map[principal].arn,   # <-- check if "resource" is an Event Rule name
-            principal                                       # <-- if none of the above, pass "resource" as-is
+            aws_cloudwatch_event_bus.map[resource].arn,    # <-- check if "resource" is an Event Bus name
+            aws_cloudwatch_event_target.map[resource].arn, # <-- check if "resource" is an Event Target name
+            aws_cloudwatch_event_rule.map[resource].arn,   # <-- check if "resource" is an Event Rule name
+            resource                                       # <-- if none of the above, pass "resource" as-is
           )
         ]
       )
@@ -104,6 +73,41 @@ data "aws_iam_policy_document" "Event_Bus_Policies_Map" {
       }
     }
   }
+}
+
+#---------------------------------------------------------------------
+### Event Rules
+
+resource "aws_cloudwatch_event_rule" "map" {
+  for_each = var.event_rules
+
+  name                = each.key
+  description         = each.value.description
+  role_arn            = each.value.role_arn
+  schedule_expression = each.value.schedule_expression
+  event_pattern       = each.value.event_pattern
+  event_bus_name      = each.value.event_bus_name
+  is_enabled          = coalesce(each.value.enabled, true)
+  tags                = each.value.tags
+}
+
+#---------------------------------------------------------------------
+### Event Targets
+
+resource "aws_cloudwatch_event_target" "map" {
+  for_each = var.event_targets
+
+  target_id = each.key
+  rule      = each.value.rule_name
+  arn       = each.value.target_arn
+
+  event_bus_name = each.value.event_bus_name
+  role_arn       = each.value.role_arn
+  retry_policy   = each.value.retry_policy
+
+  input             = each.value.input
+  input_path        = each.value.input_path
+  input_transformer = each.value.input_transformer
 }
 
 ######################################################################
