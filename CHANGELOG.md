@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.18.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.17.2...v0.18.0) (2022-08-21)
+
+
+### Features
+
+* **Lambda:** add execution role+policy resources,var,outputs ([ec2965d](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/ec2965d530c6fa8220fbab9eed7faec8d9274b8d))
+
 ## [0.17.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.17.1...v0.17.2) (2022-08-21)
 
 ## [0.17.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.17.0...v0.17.1) (2022-08-20)
