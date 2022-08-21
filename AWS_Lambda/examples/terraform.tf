@@ -6,11 +6,7 @@ module "ECR" {
   /* dependency inputs */
 }
 
-module "IAM" {
-  /* dependency inputs */
-}
-
-module "VPC" {
+module "DynamoDB" {
   /* dependency inputs */
 }
 
@@ -31,21 +27,36 @@ module "AWS_Lambda" {
     # URI Format: [ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com/[REPO_NAME]:[TAG]
   }
 
-  execution_role_arn = module.IAM.Roles["MyLambdaFnExecRole"].arn
-
-  vpc_config = {
-    security_group_ids = [
-      for sec_grp_name, sec_grp in module.VPC.Security_Groups : sec_grp.id
-      if sec_grp_name == "my-lambda-fn-security-group"
+  execution_role = {
+    name = "my-lambda-exec-role"
+    attach_policy_arns = [
+      /* This managed policy allows the Lambda function to create a CloudWatch
+      Log Group named "/aws/lambda/[FUNCTION_NAME]" and upload logs to it.  */
+      "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
     ]
-    subnet_ids = [
-      for cidr, subnet in module.VPC.Subnets : subnet.id
-      if subnet.type == "PRIVATE"
-    ]
+    attach_policies = {
+      AllowDynamoDBaccess = {
+        description = "Allow Lambda fn to have R/W access to Foo_DynamoDB_Table."
+        statements = [{
+          effect = "Allow"
+          actions = [
+            "dynamodb:GetItem",
+            "dynamodb:BatchGetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:Query",
+            "dynamodb:Scan"
+          ]
+          resources = [module.DynamoDB.Table.arn]
+        }]
+      }
+    }
   }
 
   environment_variables = {
-    AWS_REGION = "us-west-1"
+    AWS_REGION          = "us-west-1"
+    DYNAMODB_TABLE_NAME = module.DynamoDB.Table.name
   }
 
   lambda_permissions = {

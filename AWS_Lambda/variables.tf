@@ -12,11 +12,6 @@ variable "description" {
   default     = null
 }
 
-variable "execution_role_arn" {
-  description = "The IAM Role ARN for the function's execution role."
-  type        = string
-}
-
 variable "handler" {
   description = "The Lambda function handler."
   type        = string
@@ -55,6 +50,39 @@ variable "deployment_package_src" {
     condition     = 1 == length(keys(var.deployment_package_src))
     error_message = "Only 1 key-value pair can be provided to configure the deployment package source."
   }
+}
+
+variable "execution_role" {
+  description = "Config object for the Lambda function's execution role."
+  type = object({
+    name               = string
+    description        = optional(string)
+    path               = optional(string)
+    tags               = optional(map(string))
+    attach_policy_arns = optional(list(string))
+    attach_policies = optional(map(
+      # map keys: IAM policy names/IDs
+      object({
+        policy_json = optional(string)
+        statements = optional(list(object({
+          sid       = optional(string)
+          effect    = string
+          actions   = list(string)
+          resources = optional(list(string))
+          conditions = optional(map(
+            # map keys: IAM condition operators (e.g., "StringEquals", "ArnLike")
+            object({
+              key    = string
+              values = list(string)
+            })
+          ))
+        })))
+        description = optional(string)
+        path        = optional(string)
+        tags        = optional(map(string))
+      })
+    ))
+  })
 }
 
 variable "vpc_config" {

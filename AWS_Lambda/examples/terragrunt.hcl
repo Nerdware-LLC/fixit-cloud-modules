@@ -13,12 +13,8 @@ dependency "ECR" {
   config_path = "${get_terragrunt_dir()}/../Foo_ECR_Repo"
 }
 
-dependency "IAM" {
-  config_path = "${get_terragrunt_dir()}/../AWS_IAM"
-}
-
-dependency "VPC" {
-  config_path = "${get_terragrunt_dir()}/../Foo_VPC"
+dependency "DynamoDB" {
+  config_path = "${get_terragrunt_dir()}/../Foo_DynamoDB_Table"
 }
 
 dependency "EventBridge" {
@@ -38,21 +34,36 @@ inputs = {
     # URI Format: [ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com/[REPO_NAME]:[TAG]
   }
 
-  execution_role_arn = dependency.IAM.outputs.Roles["MyLambdaFnExecRole"].arn
-
-  vpc_config = {
-    security_group_ids = [
-      for sec_grp_name, sec_grp in dependency.VPC.outputs.Security_Groups : sec_grp.id
-      if sec_grp_name == "my-lambda-fn-security-group"
+  execution_role = {
+    name = "my-lambda-exec-role"
+    attach_policy_arns = [
+      /* This managed policy allows the Lambda function to create a CloudWatch
+      Log Group named "/aws/lambda/[FUNCTION_NAME]" and upload logs to it.  */
+      "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
     ]
-    subnet_ids = [
-      for cidr, subnet in dependency.VPC.outputs.Subnets : subnet.id
-      if subnet.type == "PRIVATE"
-    ]
+    attach_policies = {
+      AllowDynamoDBaccess = {
+        description = "Allow Lambda fn to have R/W access to Foo_DynamoDB_Table."
+        statements = [{
+          effect = "Allow"
+          actions = [
+            "dynamodb:GetItem",
+            "dynamodb:BatchGetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:Query",
+            "dynamodb:Scan"
+          ]
+          resources = [dependency.DynamoDB.outputs.Table.arn]
+        }]
+      }
+    }
   }
 
   environment_variables = {
-    AWS_REGION = "us-west-1"
+    AWS_REGION          = "us-west-1"
+    DYNAMODB_TABLE_NAME = dependency.DynamoDB.outputs.Table.name
   }
 
   lambda_permissions = {
