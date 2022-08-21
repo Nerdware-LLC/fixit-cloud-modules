@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.18.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.0...v0.18.1) (2022-08-21)
+
+
+### Bug Fixes
+
+* **tflint-hook:** correct tflint hook ignore regex ([d0c3d8c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d0c3d8ce97c316cf0cc2255a006774ace02384b7))
+
 # [0.18.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.17.2...v0.18.0) (2022-08-21)
 
 
