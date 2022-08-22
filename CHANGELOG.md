@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.18.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.1...v0.18.2) (2022-08-22)
+
+
+### Bug Fixes
+
+* **DynamoDB:** add ignore_changes r/w capacity ([c23506d](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/c23506d686202e3cc69da272759b2878ce8f51ac))
+
 ## [0.18.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.0...v0.18.1) (2022-08-21)
 
 
