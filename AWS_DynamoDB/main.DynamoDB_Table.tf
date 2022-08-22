@@ -99,6 +99,12 @@ resource "aws_dynamodb_table" "this" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    /* TFR recommends this setting when an autoscaling policy is
+    in use, which for this module is the default setting.     */
+    ignore_changes = [read_capacity, write_capacity]
+  }
 }
 
 #---------------------------------------------------------------------
