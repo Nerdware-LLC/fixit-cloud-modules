@@ -61,10 +61,11 @@ inputs = {
     }
   }
 
-  server_side_encryption_kms_key_arn = (
+  server_side_encryption = {
+    key_type = "CMK"
     # In this example, "us-west-1" is the region with the base table
-    dependency.Foo_DynamoDB_SSE_KMS_Keys.outputs.keys_by_table_region["us-west-1"].arn
-  )
+    kms_key_arn = dependency.Foo_DynamoDB_SSE_KMS_Keys.outputs.keys_by_table_region["us-west-1"].arn
+  }
 
   billing_mode = "PROVISIONED" # <-- default
   capacity = {

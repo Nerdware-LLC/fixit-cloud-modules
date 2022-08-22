@@ -52,10 +52,11 @@ module "AWS_DynamoDB" {
     }
   }
 
-  server_side_encryption_kms_key_arn = (
+  server_side_encryption = {
+    key_type = "CMK"
     # In this example, "us-west-1" is the region with the base table
-    module.Foo_DynamoDB_SSE_KMS_Keys.keys_by_table_region["us-west-1"].arn
-  )
+    kms_key_arn = module.Foo_DynamoDB_SSE_KMS_Keys.keys_by_table_region["us-west-1"].arn
+  }
 
   billing_mode = "PROVISIONED" # <-- default
   capacity = {

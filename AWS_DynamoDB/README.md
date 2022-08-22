@@ -7,6 +7,7 @@ Terraform module for defining a performant DynamoDB table with **point-in-time r
 
 <h2>Table of Contents</h2>
 
+- [DynamoDB Server-Side Encryption](#dynamodb-server-side-encryption)
 - [Restoring a DynamoDB Table Using Point-In-Time Recovery](#restoring-a-dynamodb-table-using-point-in-time-recovery)
   - [Recovery Time](#recovery-time)
 - [DynamoDB Security Standards & Controls](#dynamodb-security-standards--controls)
@@ -32,9 +33,24 @@ In the interest of preventing this README from becoming a bloated, unwieldy comp
 1. **Aim to build your NoSQL database using as few tables as possible - for many applications, a single table is all you need.**
    This is typically one of the most challenging conceptual changes for folks like myself who come from an RDBMS background. From AWS docs:
    > You should maintain as few tables as possible in a DynamoDB application. Having fewer tables keeps things more scalable, requires less permissions management, and reduces overhead for your DynamoDB application. It can also help keep backup costs lower overall.
-2. **Foo**
+2.
 
 -->
+
+## DynamoDB Server-Side Encryption
+
+All DynamoDB tables are encrypted using either an AWS-owned key, AWS-managed key, or CMK (customer-managed key). By default, all tables are encrypted using an AWS-owned key in the DynamoDB service account. The AWS-owned key is free of charge and its use does not count against AWS KMS resource or request quotas. CMKs and AWS-managed keys incur a charge for each API call and AWS KMS quotas apply to these KMS keys.
+
+**Use the AWS managed key if you need any of the following features:**
+
+- You can view the KMS key and view its key policy. (You cannot change the key policy.)
+- You can audit the encryption and decryption of your DynamoDB table by examining the DynamoDB API calls to AWS KMS in AWS CloudTrail logs.
+
+**Use a CMK to get the following features:**
+
+- You create and manage the KMS key, including setting the key policies, IAM policies, and grants to control access to the KMS key. You can enable and disable the KMS key, enable and disable automatic key rotation, and delete the KMS key when it is no longer in use.
+- You can use a customer-managed key with imported key material or a customer-managed key in a custom key store that you own and manage.
+- You can audit the encryption and decryption of your DynamoDB table by examining the DynamoDB API calls to AWS KMS in AWS CloudTrail logs.
 
 ## Restoring a DynamoDB Table Using Point-In-Time Recovery
 
@@ -75,7 +91,9 @@ Service metrics show that 95 percent of table restores complete in less than one
 
 ## Useful Links
 
-- [AWS Docs: NoSQL Database Design Best Practices](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
+- **AWS Documentation:**
+  - [NoSQL Database Design Best Practices](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
+  - [How Amazon DynamoDB uses AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-dynamodb.html)
 
 ## Usage Examples
 
@@ -136,7 +154,7 @@ No modules.
 | <a name="input_range_key"></a> [range\_key](#input\_range\_key) | (Optional) The DynamoDB table's range key (also called a "sort" key). | `string` | `null` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | (Optional) Map for configuring table replicas. For map keys, use AWS region<br>names for regions in which a replica table is desired; map region names to<br>regional replica config objects. A "kms\_key\_arn" must be provided for each<br>replica; this can be an alias given the proper key/alias/permissions configs.<br>If not provided, "enable\_point\_in\_time\_recovery" defaults to true. | <pre>map(<br>    # map keys: AWS regions in which to create table replicas<br>    object({<br>      propagate_tags                = bool<br>      kms_key_arn                   = string<br>      enable_point_in_time_recovery = optional(bool) # default: false, make TRUE DEFAULT<br>    })<br>  )</pre> | `null` | no |
 | <a name="input_restore_table_from"></a> [restore\_table\_from](#input\_restore\_table\_from) | (Optional) Use this variable to create a restore-table from a source table<br>with point-in-time recovery enabled. To create a restore-table, you must<br>provide a "source\_table\_name", and a time indicator. The time indicator<br>can be specified using either "use\_latest\_recovery\_point" (default: false),<br>of an explicit date-time string can be supplied to "restore\_date\_time".<br>Please see the README and AWS docs for more info on the necessary inputs. | <pre>object({<br>    source_table_name         = string<br>    use_latest_recovery_point = optional(bool)<br>    restore_date_time         = optional(string)<br>  })</pre> | `null` | no |
-| <a name="input_server_side_encryption_kms_key_arn"></a> [server\_side\_encryption\_kms\_key\_arn](#input\_server\_side\_encryption\_kms\_key\_arn) | A KMS Key ARN (or alias) for the table's server side encryption. | `string` | n/a | yes |
+| <a name="input_server_side_encryption"></a> [server\_side\_encryption](#input\_server\_side\_encryption) | Config object for the DynamoDB table's server side encryption. "key\_type" must<br>be either "AWS-OWNED", "AWS-MANAGED", or "CMK" (customer-managed key). For "CMK",<br>a "kms\_key\_arn" must be provided (this can also be an alias). For more information,<br>see [DynamoDB Server-Side Encryption](#dynamodb-server-side-encryption). | <pre>object({<br>    key_type    = string<br>    kms_key_arn = optional(string)<br>  })</pre> | n/a | yes |
 | <a name="input_streams"></a> [streams](#input\_streams) | (Optional) Object for enabling a DynamoDB table stream and/or a Kinesis<br>data stream.<br><br>For a DynamoDB table stream, "dynamodb\_stream\_view\_type" must be one of<br>"KEYS\_ONLY", "NEW\_IMAGE", "OLD\_IMAGE", or "NEW\_AND\_OLD\_IMAGES", which<br>defines what table-modification info is added to each stream window. With<br>"KEYS\_ONLY", only the key attributes of the modified item are added; with<br>"NEW\_IMAGE", the entire item is added as it appears AFTER it was modified;<br>with "OLD\_IMAGE", the entire item is added as it appeared BEFORE it was<br>modified; with "NEW\_AND\_OLD\_IMAGES", both the new and old images are added<br>to each stream window.<br><br>For a Kinesis data stream, this module will associate a DynamoDB table with<br>an existing Kinesis stream using the value provided to "kinesis\_stream\_arn",<br>but does not create any Kinesis resources. | <pre>object({<br>    dynamodb_stream_view_type = optional(string)<br>    kinesis_stream_arn        = optional(string)<br>  })</pre> | `null` | no |
 | <a name="input_table_name"></a> [table\_name](#input\_table\_name) | The name of the DynamoDB table. | `string` | n/a | yes |
 | <a name="input_table_storage_class"></a> [table\_storage\_class](#input\_table\_storage\_class) | (Optional) The storage class for the DynamoDB table. Can be either "STANDARD"<br>or "STANDARD\_INFREQUENT\_ACCESS"; default: "STANDARD". | `string` | `"STANDARD"` | no |

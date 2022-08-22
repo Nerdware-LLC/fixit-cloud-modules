@@ -1,8 +1,6 @@
 ######################################################################
 ### AWS DynamoDB
 
-# The ignored tfsec rule below pertains to DAX clusters, which this module does not yet support.
-# tfsec:ignore:aws-dynamodb-enable-at-rest-encryption
 resource "aws_dynamodb_table" "this" {
   name      = var.table_name
   hash_key  = var.hash_key
@@ -54,7 +52,15 @@ resource "aws_dynamodb_table" "this" {
 
   # SSE (required)
   server_side_encryption {
-    enabled     = true
+    /* Per TFR docs:
+    If enabled is false then SSE is set to AWS-owned key (AWS default setting).
+    If enabled is true and no kms_key_arn is specified then SSE is set to AWS-managed key.
+    If a kms_key_arn is specified then SSE is set to that CMK.
+
+    Note: DynamoDB SSE can NOT be disabled, no matter what the fallback
+    setting is the AWS-owned key, so "enabled" is a bit of a misleading
+    property name here.    */
+    enabled     = var.server_side_encryption.key_type == "AWS-OWNED" ? false : true
     kms_key_arn = var.server_side_encryption_kms_key_arn
   }
 

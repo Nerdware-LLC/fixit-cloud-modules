@@ -90,9 +90,30 @@ variable "local_secondary_indexes" {
   default = {}
 }
 
-variable "server_side_encryption_kms_key_arn" {
-  description = "A KMS Key ARN (or alias) for the table's server side encryption."
-  type        = string
+variable "server_side_encryption" {
+  description = <<-EOF
+  Config object for the DynamoDB table's server side encryption. "key_type" must
+  be either "AWS-OWNED", "AWS-MANAGED", or "CMK" (customer-managed key). For "CMK",
+  a "kms_key_arn" must be provided (this can also be an alias). For more information,
+  see [DynamoDB Server-Side Encryption](#dynamodb-server-side-encryption).
+  EOF
+
+  type = object({
+    key_type    = string
+    kms_key_arn = optional(string)
+  })
+
+  validation {
+    condition = anytrue([
+      # If kms_key_arn is null, key_type must be AWS-OWNED or AWS-MANAGED.
+      contains(["AWS-OWNED", "AWS-MANAGED"], var.server_side_encryption.key_type)
+      && lookup(var.server_side_encryption, "kms_key_arn", null) == null,
+      # If kms_key_arn is not null, key_type must be CMK.
+      var.server_side_encryption.key_type == "CMK"
+      && lookup(var.server_side_encryption, "kms_key_arn", null) != null
+    ])
+    error_message = "A KMS key ARN is required to use a CMK for table SSE."
+  }
 }
 
 variable "billing_mode" {
