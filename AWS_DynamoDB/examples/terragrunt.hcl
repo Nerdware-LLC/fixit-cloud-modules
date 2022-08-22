@@ -48,14 +48,14 @@ inputs = {
       non_key_attributes = ["ID"]
       capacity = {
         read = {
-          max    = 10
-          target = 7
-          min    = 5
+          max               = 10
+          target_percentage = 25
+          min               = 1
         }
         write = {
-          max    = 10
-          target = 8
-          min    = 5
+          max               = 10
+          target_percentage = 8
+          min               = 1
         }
       }
     }
@@ -70,14 +70,14 @@ inputs = {
   billing_mode = "PROVISIONED" # <-- default
   capacity = {
     read = {
-      max    = 20
-      target = 13
-      min    = 10
+      max               = 20
+      target_percentage = 45
+      min               = 1
     }
     write = {
-      max    = 20
-      target = 15
-      min    = 10
+      max               = 20
+      target_percentage = 25
+      min               = 1
     }
   }
 

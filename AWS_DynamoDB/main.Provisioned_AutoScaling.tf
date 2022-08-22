@@ -27,7 +27,7 @@ locals {
           resource_id               = "table/${var.table_name}"
           scalable_dimension        = "dynamodb:table:ReadCapacityUnits"
           max_capacity              = var.capacity.read.max
-          target_capacity           = var.capacity.read.target
+          target_percentage         = var.capacity.read.target_percentage
           min_capacity              = var.capacity.read.min
           autoscaling_policy_metric = "DynamoDBReadCapacityUtilization"
         }
@@ -35,7 +35,7 @@ locals {
           resource_id               = "table/${var.table_name}"
           scalable_dimension        = "dynamodb:table:WriteCapacityUnits"
           max_capacity              = var.capacity.write.max
-          target_capacity           = var.capacity.write.target
+          target_percentage         = var.capacity.write.target_percentage
           min_capacity              = var.capacity.write.min
           autoscaling_policy_metric = "DynamoDBWriteCapacityUtilization"
         }
@@ -45,7 +45,7 @@ locals {
           resource_id               = "table/${var.table_name}/index/${gsi_name}"
           scalable_dimension        = "dynamodb:index:ReadCapacityUnits"
           max_capacity              = gsi_config.capacity.read.max
-          target_capacity           = gsi_config.capacity.read.target
+          target_percentage         = gsi_config.capacity.read.target_percentage
           min_capacity              = gsi_config.capacity.read.min
           autoscaling_policy_metric = "DynamoDBReadCapacityUtilization"
         }
@@ -55,7 +55,7 @@ locals {
           resource_id               = "table/${var.table_name}/index/${gsi_name}"
           scalable_dimension        = "dynamodb:index:WriteCapacityUnits"
           max_capacity              = gsi_config.capacity.write.max
-          target_capacity           = gsi_config.capacity.write.target
+          target_percentage         = gsi_config.capacity.write.target_percentage
           min_capacity              = gsi_config.capacity.write.min
           autoscaling_policy_metric = "DynamoDBWriteCapacityUtilization"
         }
@@ -85,7 +85,7 @@ resource "aws_appautoscaling_policy" "map" {
   scalable_dimension = each.value.scalable_dimension
 
   target_tracking_scaling_policy_configuration {
-    target_value = each.value.target_capacity
+    target_value = each.value.target_percentage
 
     predefined_metric_specification {
       predefined_metric_type = each.value.autoscaling_policy_metric

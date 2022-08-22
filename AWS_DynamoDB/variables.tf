@@ -45,7 +45,8 @@ variable "global_secondary_indexes" {
   in the index. Note that any attributes listed in "non_key_attributes" must be
   defined in var.attributes. If the base table uses "PROVISIONED" throughput, all
   GSI configs must specify autoscaling configs via the "capacity" property with
-  "min", "max", and "target" values for both "read" and "write".
+  "min", "max", and "target_percentage" values for both "read" and "write".
+  "target_percentage" reflects the desired utilization of provisioned capacity.
   EOF
 
   type = map(
@@ -57,14 +58,14 @@ variable "global_secondary_indexes" {
       non_key_attributes = optional(list(string))
       capacity = optional(object({
         read = object({
-          max    = number
-          target = number
-          min    = number
+          max               = number
+          target_percentage = number
+          min               = number
         })
         write = object({
-          max    = number
-          target = number
-          min    = number
+          max               = number
+          target_percentage = number
+          min               = number
         })
       }))
     })
@@ -132,19 +133,20 @@ variable "capacity" {
   description = <<-EOF
   (Optional if var.billing_mode is PAY_PER_REQUEST) Autoscaling configs for a
   DynamoDB table with "PROVISIONED" throughput. "var.capacity" must specify "min",
-  "max", and "target" values for both "read" and "write".
+  "max", and "target_percentage" values for both "read" and "write".
+  "target_percentage" reflects the desired utilization of provisioned capacity.
   EOF
 
   type = object({
     read = object({
-      max    = number
-      target = number
-      min    = number
+      max               = number
+      target_percentage = number
+      min               = number
     })
     write = object({
-      max    = number
-      target = number
-      min    = number
+      max               = number
+      target_percentage = number
+      min               = number
     })
   })
   default = null
