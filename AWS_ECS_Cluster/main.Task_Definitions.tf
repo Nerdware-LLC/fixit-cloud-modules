@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "map" {
 
   # NETWORK
   network_mode = (
-    var.ecs_services[each.value.ecs_service].network_configs.assign_public_ip == false
+    var.ecs_services[each.value.ecs_service].network_configs.assign_public_ip != true
     ? "awsvpc" # can't use awsvpc in public subnets
     : "bridge"
   )
@@ -30,29 +30,29 @@ resource "aws_ecs_task_definition" "map" {
   # CONTAINERS
   container_definitions = jsonencode(flatten([
     # Service container
-    each.value.container_definitions.service_container_def,
+    each.value.container_definitions.SERVICE,
     # Envoy container with APPMESH_RESOURCE_ARN env var added in
-    merge(each.value.container_definitions.envoy_container_def, {
+    merge(each.value.container_definitions.ENVOY, {
       environment = concat(
         # Include any "environment" values provided by user
-        lookup(each.value.container_definitions.envoy_container_def, "environment", []),
+        lookup(each.value.container_definitions.ENVOY, "environment", []),
         [{
           name  = "APPMESH_RESOURCE_ARN"
-          value = aws_appmesh_virtual_node.map[each.value.envoy_proxy_config.appmesh_node_name].arn
+          value = aws_appmesh_virtual_node.map[each.value.proxy_config.appmesh_node_name].arn
         }]
       )
     }),
-    # Add other container defs if "other_container_defs" was provided
+    # X-Ray container is optional
     (
-      each.value.container_definitions.other_container_defs != null
-      ? each.value.container_definitions.other_container_defs
+      can(each.value.container_definitions.XRAY)
+      ? each.value.container_definitions.XRAY
       : []
     )
   ]))
 
   proxy_configuration {
     type           = "APPMESH"
-    container_name = each.value.container_definitions.envoy_container_def.name
+    container_name = each.value.container_definitions.ENVOY.name
     properties = {
       /* NOTES re: proxy_configuration.properties
 
@@ -65,9 +65,9 @@ resource "aws_ecs_task_definition" "map" {
       - ProxyIngressPort (Required) Specifies the port to which incoming traffic to the AppPorts is directed.
       - ProxyEgressPort (Required) Specifies the port to which outgoing traffic from the AppPorts is directed.
       */
-      AppPorts         = join(",", each.value.container_definitions.service_container_def.portMappings[*].containerPort)
+      AppPorts         = join(",", each.value.container_definitions.SERVICE.portMappings[*].containerPort)
       EgressIgnoredIPs = coalesce(each.value.proxy_config.egress_ignored_ips, "169.254.170.2,169.254.169.254")
-      IgnoredUID       = each.value.container_definitions.envoy_container_def.user
+      IgnoredUID       = each.value.container_definitions.ENVOY.user
       ProxyIngressPort = coalesce(each.value.proxy_config.proxy_ingress_port, 15000)
       ProxyEgressPort  = coalesce(each.value.proxy_config.proxy_ingress_port, 15001)
     }

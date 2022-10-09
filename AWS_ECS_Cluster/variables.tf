@@ -34,8 +34,9 @@ variable "task_definitions" {
   description = <<-EOF
   Map of ECS Task Definition names to config objects. All "ecs_service" values must
   be unique, and must point to an ECS Service defined in var.ecs_services. All Task
-  Definitions must include "container_definitions" config objects for the service and
-  Envoy containers - any other containers may be provided via "other_container_defs".
+  Definitions must include "container_definitions", a map of container-enums to container
+  def config objects. Supported container-enum keys are "SERVICE", "ENVOY" - both of
+  which are required - and optionally "XRAY".
   Please refer to AWS docs regarding the keys/values of ECS container definitions
   ([link here](#🔗-helpful-links)). Regarding "proxy_config", all "appmesh_node_name"
   values must be unique, and must point to an AppMesh Node defined in var.appmesh_nodes.
@@ -48,11 +49,54 @@ variable "task_definitions" {
     # map keys: task definition names
     object({
       ecs_service = string
-      container_definitions = object({
-        service_container_def = map(any)
-        envoy_container_def   = map(any)
-        other_container_defs  = optional(list(map(any)))
-      })
+      container_definitions = map(
+        # map keys: "SERVICE", "ENVOY", and optionally "XRAY"
+        object({
+          name  = string
+          image = string
+          portMappings = list(object({
+            containerPort = number
+            hostPort      = number
+            protocol      = string
+          }))
+          logConfiguration = object({
+            logDriver = string
+            options = object({
+              awslogs-region        = string
+              awslogs-group         = string
+              awslogs-stream-prefix = string
+            })
+          })
+          linuxParameters = optional(object({
+            capabilities = object({
+              add  = list(string)
+              drop = list(string)
+            })
+          }))
+          dependsOn = optional(list(object({
+            containerName = string
+            condition     = string
+          })))
+          environment = optional(list(object({
+            name  = string
+            value = string
+          })))
+          environmentFiles = optional(list(object({
+            type  = string
+            value = string
+          })))
+          cpu               = optional(number)
+          memoryReservation = optional(number)
+          user              = optional(string)
+          healthCheck = optional(object({
+            command     = list(string)
+            startPeriod = number
+            interval    = number
+            timeout     = number
+            retries     = number
+          }))
+        })
+      )
       task_execution_role_arn = string # Used to start containers
       task_role_arn           = string # Used to access AWS resources during runtime
       instance_type           = optional(string)
@@ -74,6 +118,16 @@ variable "task_definitions" {
       values(var.task_definitions)[*].ecs_service
     ))
     error_message = "All \"ecs_service\" values must be unique."
+  }
+
+  # Ensure container_definitions keys only include "SERVICE", "ENVOY", and optionally "XRAY".
+  validation {
+    condition = alltrue([
+      for container_defs_obj in values(var.task_definitions)[*].container_definitions : alltrue([
+        for key in keys(container_defs_obj)[*] : contains(["SERVICE", "ENVOY", "XRAY"], key)
+      ])
+    ])
+    error_message = "All \"container_definitions\" must include keys \"SERVICE\" and \"ENVOY\", and may also contain \"XRAY\"; all other keys are invalid."
   }
 }
 
@@ -352,6 +406,7 @@ variable "appmesh_routers" {
     object({
       port     = number
       protocol = string
+      tags     = optional(map(string))
     })
   )
 

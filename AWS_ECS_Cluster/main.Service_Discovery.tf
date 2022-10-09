@@ -1,9 +1,8 @@
 ######################################################################
 ### Service Discovery
 
-/* NOTE: The "private_dns_namespace" type allows both private DNS lookups
-AND HTTP CloudMap API calls. Service discovery SERVICES are created/implemented
-in the "AWS_ECS_Service" module (see "main.Service_Discovery.tf").  */
+/* NOTE: The "private_dns_namespace" type allows both
+private DNS lookups AND HTTP CloudMap API calls.   */
 
 resource "aws_service_discovery_private_dns_namespace" "this" {
   name        = var.service_discovery_namespace.name

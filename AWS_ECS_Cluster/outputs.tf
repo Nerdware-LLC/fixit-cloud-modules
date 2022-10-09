@@ -84,7 +84,10 @@ output "AppMesh_Routers" {
 
 output "AppMesh_Routes" {
   description = "Map of App Mesh Route resource objects."
-  value       = aws_appmesh_route.map
+  value = merge(
+    aws_appmesh_route.http_routes_map,
+    aws_appmesh_route.http2_routes_map,
+  )
 }
 
 ######################################################################

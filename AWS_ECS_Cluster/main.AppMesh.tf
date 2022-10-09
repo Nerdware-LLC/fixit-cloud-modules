@@ -139,175 +139,198 @@ resource "aws_appmesh_virtual_router" "map" {
 #---------------------------------------------------------------------
 ### AppMesh Routes
 
-resource "aws_appmesh_route" "map" {
-  for_each = var.appmesh_routes
+/* Due to an underlying resource implementation issue with aws_appmesh_route,
+blocks "http_route" and "http2_route" within "spec" will BREAK the module-call
+if they reference "each" in a dynamic block for_each statement. Therefore, at
+this time the only way to allow for multiple route types with variable configs
+as intended it to have entirely separate resource blocks for these different
+route types. These resource blocks are then merged in OUTPUTS to achieve the
+desired utility.  */
+
+# HTTP ROUTES
+resource "aws_appmesh_route" "http_routes_map" {
+  for_each = {
+    for route_name, route_config in var.appmesh_routes : route_name => route_config
+    if route_config.type == "http"
+  }
 
   name                = each.key
   mesh_name           = aws_appmesh_mesh.this.id
   virtual_router_name = each.value.virtual_router_name
 
   spec {
+    http_route {
+      /* If "http_route" is dynamic, the for_each that would go here would reference the
+      outer "each" object, which at this time causes the entire module-call to fail.  */
 
-    # HTTP ROUTE
-    dynamic "http_route" {
-      for_each = each.value.type == "http_route" ? [each.value.spec] : []
+      match {
+        prefix = each.value.spec.match.prefix
+        method = each.value.spec.match.method
+        scheme = each.value.spec.match.scheme
 
-      content {
-        match {
-          prefix = http_route.value.match.prefix
-          method = http_route.value.match.method
-          scheme = http_route.value.match.scheme
+        # http_route.header
+        dynamic "header" {
+          for_each = each.value.spec.match.header != null ? [each.value.spec.match.header] : []
 
-          # http_route.header
-          dynamic "header" {
-            for_each = http_route.value.header != null ? [http_route.value.header] : []
+          content {
+            name   = header.value.name
+            invert = header.value.invert
 
-            content {
-              name   = header.value.name
-              invert = header.value.invert
+            # http_route.header.match
+            dynamic "match" {
+              for_each = header.value.match != null ? [header.value.match] : []
 
-              # http_route.header.match
-              dynamic "match" {
-                for_each = header.value.match != null ? [header.value.match] : []
+              content {
+                exact  = match.value.exact
+                prefix = match.value.prefix
+                suffix = match.value.suffix
+                regex  = match.value.regex
 
-                content {
-                  exact  = match.value.exact
-                  prefix = match.value.prefix
-                  suffix = match.value.suffix
-                  regex  = match.value.regex
+                # http_route.header.match.range
+                dynamic "range" {
+                  for_each = match.value.range != null ? [match.value.range] : []
 
-                  # http_route.header.match.range
-                  dynamic "range" {
-                    for_each = match.value.range != null ? [match.value.range] : []
-
-                    content {
-                      start = range.value.start
-                      end   = range.value.end
-                    }
+                  content {
+                    start = range.value.start
+                    end   = range.value.end
                   }
                 }
               }
             }
           }
         }
+      }
 
-        action {
-          dynamic "weighted_target" {
-            for_each = http_route.value.action_targets
-
-            content {
-              virtual_node = weighted_target.key
-              weight       = weighted_target.value.weight
-            }
-          }
-        }
-
-        retry_policy {
-          max_retries       = http_route.value.retry_policy.max_retries
-          http_retry_events = http_route.value.retry_policy.http_retry_events
-          tcp_retry_events  = http_route.value.retry_policy.tcp_retry_events
-
-          per_retry_timeout {
-            unit  = http_route.value.retry_policy.per_retry_timeout.unit
-            value = http_route.value.retry_policy.per_retry_timeout.value
-          }
-        }
-
-        dynamic "timeout" {
-          for_each = http_route.value.idle_timeout != null ? [http_route.value.idle_timeout] : []
+      action {
+        dynamic "weighted_target" {
+          for_each = each.value.spec.action_targets
 
           content {
-            idle {
-              unit  = timeout.value.unit
-              value = timeout.value.value
-            }
+            virtual_node = weighted_target.key
+            weight       = weighted_target.value.weight
+          }
+        }
+      }
+
+      retry_policy {
+        max_retries       = each.value.spec.retry_policy.max_retries
+        http_retry_events = each.value.spec.retry_policy.http_retry_events
+        tcp_retry_events  = each.value.spec.retry_policy.tcp_retry_events
+
+        per_retry_timeout {
+          unit  = each.value.spec.retry_policy.per_retry_timeout.unit
+          value = each.value.spec.retry_policy.per_retry_timeout.value
+        }
+      }
+
+      dynamic "timeout" {
+        for_each = each.value.spec.idle_timeout != null ? [each.value.spec.idle_timeout] : []
+
+        content {
+          idle {
+            unit  = timeout.value.unit
+            value = timeout.value.value
           }
         }
       }
     }
-
-    # HTTP2 ROUTE
-    dynamic "http2_route" {
-      for_each = each.value.type == "http2_route" ? [each.value.spec] : []
-
-      content {
-        match {
-          prefix = http2_route.value.match.prefix
-          method = http2_route.value.match.method
-          scheme = http2_route.value.match.scheme
-
-          # http2_route.header
-          dynamic "header" {
-            for_each = http2_route.value.header != null ? [http2_route.value.header] : []
-
-            content {
-              name   = header.value.name
-              invert = header.value.invert
-
-              # http2_route.header.match
-              dynamic "match" {
-                for_each = header.value.match != null ? [header.value.match] : []
-
-                content {
-                  exact  = match.value.exact
-                  prefix = match.value.prefix
-                  suffix = match.value.suffix
-                  regex  = match.value.regex
-
-                  # http2_route.header.match.range
-                  dynamic "range" {
-                    for_each = match.value.range != null ? [match.value.range] : []
-
-                    content {
-                      start = range.value.start
-                      end   = range.value.end
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        action {
-          dynamic "weighted_target" {
-            for_each = http2_route.value.action_targets
-
-            content {
-              virtual_node = weighted_target.key
-              weight       = weighted_target.value.weight
-            }
-          }
-        }
-
-        retry_policy {
-          max_retries       = http2_route.value.retry_policy.max_retries
-          http_retry_events = http2_route.value.retry_policy.http_retry_events
-          tcp_retry_events  = http2_route.value.retry_policy.tcp_retry_events
-
-          per_retry_timeout {
-            unit  = http2_route.value.retry_policy.per_retry_timeout.unit
-            value = http2_route.value.retry_policy.per_retry_timeout.value
-          }
-        }
-
-        dynamic "timeout" {
-          for_each = http2_route.value.idle_timeout != null ? [http_route2.value.idle_timeout] : []
-
-          content {
-            idle {
-              unit  = timeout.value.unit
-              value = timeout.value.value
-            }
-          }
-        }
-      }
-    }
-
-    # TODO Add support for TCP and gRPC route types
   }
 
   tags = each.value.tags
 }
+
+# HTTP2 ROUTES
+resource "aws_appmesh_route" "http2_routes_map" {
+  for_each = {
+    for route_name, route_config in var.appmesh_routes : route_name => route_config
+    if route_config.type == "http2"
+  }
+
+  name                = each.key
+  mesh_name           = aws_appmesh_mesh.this.id
+  virtual_router_name = each.value.virtual_router_name
+
+  spec {
+    http2_route {
+      /* If "http2_route" is dynamic, the for_each that would go here would reference the
+      outer "each" object, which at this time causes the entire module-call to fail.   */
+
+      match {
+        prefix = each.value.spec.match.prefix
+        method = each.value.spec.match.method
+        scheme = each.value.spec.match.scheme
+
+        # http2_route.header
+        dynamic "header" {
+          for_each = each.value.spec.match.header != null ? [each.value.spec.match.header] : []
+
+          content {
+            name   = header.value.name
+            invert = header.value.invert
+
+            # http2_route.header.match
+            dynamic "match" {
+              for_each = header.value.match != null ? [header.value.match] : []
+
+              content {
+                exact  = match.value.exact
+                prefix = match.value.prefix
+                suffix = match.value.suffix
+                regex  = match.value.regex
+
+                # http2_route.header.match.range
+                dynamic "range" {
+                  for_each = match.value.range != null ? [match.value.range] : []
+
+                  content {
+                    start = range.value.start
+                    end   = range.value.end
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      action {
+        dynamic "weighted_target" {
+          for_each = each.value.spec.action_targets
+
+          content {
+            virtual_node = weighted_target.key
+            weight       = weighted_target.value.weight
+          }
+        }
+      }
+
+      retry_policy {
+        max_retries       = each.value.spec.retry_policy.max_retries
+        http_retry_events = each.value.spec.retry_policy.http_retry_events
+        tcp_retry_events  = each.value.spec.retry_policy.tcp_retry_events
+
+        per_retry_timeout {
+          unit  = each.value.spec.retry_policy.per_retry_timeout.unit
+          value = each.value.spec.retry_policy.per_retry_timeout.value
+        }
+      }
+
+      dynamic "timeout" {
+        for_each = each.value.spec.idle_timeout != null ? [each.value.spec.idle_timeout] : []
+
+        content {
+          idle {
+            unit  = timeout.value.unit
+            value = timeout.value.value
+          }
+        }
+      }
+    }
+  }
+
+  tags = each.value.tags
+}
+
+# TODO Add support for TCP and gRPC route types
 
 ######################################################################
