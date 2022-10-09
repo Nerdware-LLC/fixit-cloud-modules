@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.19.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.0...v0.19.1) (2022-10-09)
+
+
+### Bug Fixes
+
+* **AWS_ECS:** correct for_each iterator in task_defs resource ([bf77bc5](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/bf77bc59863a37f061ff0677878d230e10e994d6))
+
 # [0.19.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.5...v0.19.0) (2022-10-09)
 
 
