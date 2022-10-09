@@ -2,7 +2,7 @@
 ### ECS Task Definitions
 
 resource "aws_ecs_task_definition" "map" {
-  for_each = local.task_definitions_with_identified_envoy_configs
+  for_each = var.task_definitions
 
   family                   = each.key
   requires_compatibilities = ["EC2"]
