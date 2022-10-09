@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.19.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.5...v0.19.0) (2022-10-09)
+
+
+### Features
+
+* **AWS_ECS:** add appmesh route resource,var,output ([34d964d](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/34d964d2dd01982bd21918c5fc6fc8d3d35b4254))
+
 ## [0.18.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.4...v0.18.5) (2022-10-09)
 
 ## [0.18.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.18.3...v0.18.4) (2022-08-22)
