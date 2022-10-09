@@ -139,76 +139,175 @@ resource "aws_appmesh_virtual_router" "map" {
 #---------------------------------------------------------------------
 ### AppMesh Routes
 
-# TODO Finish aws_appmesh_route resouce.
-# resource "aws_appmesh_route" "map" {
-#   for_each = var.appmesh_routes
+resource "aws_appmesh_route" "map" {
+  for_each = var.appmesh_routes
 
-#   name                = each.key
-#   mesh_name           = aws_appmesh_mesh.this.id
-#   virtual_router_name = each.value.virtual_router_name
+  name                = each.key
+  mesh_name           = aws_appmesh_mesh.this.id
+  virtual_router_name = each.value.virtual_router_name
 
-#   spec {
+  spec {
 
-#     # TODO ensure all routes are configured with a retry policy!
+    # HTTP ROUTE
+    dynamic "http_route" {
+      for_each = each.value.type == "http_route" ? [each.value.spec] : []
 
-#     # HTTP ROUTE
-#     dynamic "http_route" {
-#       for_each = each.value.type == "http_route" ? [each.value.spec] : []
+      content {
+        match {
+          prefix = http_route.value.match.prefix
+          method = http_route.value.match.method
+          scheme = http_route.value.match.scheme
 
-#       content {
-#         match {
+          # http_route.header
+          dynamic "header" {
+            for_each = http_route.value.header != null ? [http_route.value.header] : []
 
-#         }
+            content {
+              name   = header.value.name
+              invert = header.value.invert
 
-#         action {
+              # http_route.header.match
+              dynamic "match" {
+                for_each = header.value.match != null ? [header.value.match] : []
 
-#         }
-#       }
-#     }
+                content {
+                  exact  = match.value.exact
+                  prefix = match.value.prefix
+                  suffix = match.value.suffix
+                  regex  = match.value.regex
 
-#     # HTTP2 ROUTE
-#     dynamic "http2_route" {
-#       for_each = each.value.type == "http2_route" ? [each.value.spec] : []
+                  # http_route.header.match.range
+                  dynamic "range" {
+                    for_each = match.value.range != null ? [match.value.range] : []
 
-#       content {
-#         match {
+                    content {
+                      start = range.value.start
+                      end   = range.value.end
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
 
-#         }
+        action {
+          dynamic "weighted_target" {
+            for_each = http_route.value.action_targets
 
-#         action {
+            content {
+              virtual_node = weighted_target.key
+              weight       = weighted_target.value.weight
+            }
+          }
+        }
 
-#         }
-#       }
-#     }
+        retry_policy {
+          max_retries       = http_route.value.retry_policy.max_retries
+          http_retry_events = http_route.value.retry_policy.http_retry_events
+          tcp_retry_events  = http_route.value.retry_policy.tcp_retry_events
 
-#     # gRPC ROUTE
-#     dynamic "grpc_route" {
-#       for_each = each.value.type == "grpc_route" ? [each.value.spec] : []
+          per_retry_timeout {
+            unit  = http_route.value.retry_policy.per_retry_timeout.unit
+            value = http_route.value.retry_policy.per_retry_timeout.value
+          }
+        }
 
-#       content {
-#         match {
+        dynamic "timeout" {
+          for_each = http_route.value.idle_timeout != null ? [http_route.value.idle_timeout] : []
 
-#         }
+          content {
+            idle {
+              unit  = timeout.value.unit
+              value = timeout.value.value
+            }
+          }
+        }
+      }
+    }
 
-#         action {
+    # HTTP2 ROUTE
+    dynamic "http2_route" {
+      for_each = each.value.type == "http2_route" ? [each.value.spec] : []
 
-#         }
-#       }
-#     }
+      content {
+        match {
+          prefix = http2_route.value.match.prefix
+          method = http2_route.value.match.method
+          scheme = http2_route.value.match.scheme
 
-#     # TCP ROUTE
-#     dynamic "tcp_route" {
-#       for_each = each.value.type == "tcp_route" ? [each.value.spec] : []
+          # http2_route.header
+          dynamic "header" {
+            for_each = http2_route.value.header != null ? [http2_route.value.header] : []
 
-#       content {
-#         action {
+            content {
+              name   = header.value.name
+              invert = header.value.invert
 
-#         }
-#       }
-#     }
-#   }
+              # http2_route.header.match
+              dynamic "match" {
+                for_each = header.value.match != null ? [header.value.match] : []
 
-#   tags = each.value.tags
-# }
+                content {
+                  exact  = match.value.exact
+                  prefix = match.value.prefix
+                  suffix = match.value.suffix
+                  regex  = match.value.regex
+
+                  # http2_route.header.match.range
+                  dynamic "range" {
+                    for_each = match.value.range != null ? [match.value.range] : []
+
+                    content {
+                      start = range.value.start
+                      end   = range.value.end
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        action {
+          dynamic "weighted_target" {
+            for_each = http2_route.value.action_targets
+
+            content {
+              virtual_node = weighted_target.key
+              weight       = weighted_target.value.weight
+            }
+          }
+        }
+
+        retry_policy {
+          max_retries       = http2_route.value.retry_policy.max_retries
+          http_retry_events = http2_route.value.retry_policy.http_retry_events
+          tcp_retry_events  = http2_route.value.retry_policy.tcp_retry_events
+
+          per_retry_timeout {
+            unit  = http2_route.value.retry_policy.per_retry_timeout.unit
+            value = http2_route.value.retry_policy.per_retry_timeout.value
+          }
+        }
+
+        dynamic "timeout" {
+          for_each = http2_route.value.idle_timeout != null ? [http_route2.value.idle_timeout] : []
+
+          content {
+            idle {
+              unit  = timeout.value.unit
+              value = timeout.value.value
+            }
+          }
+        }
+      }
+    }
+
+    # TODO Add support for TCP and gRPC route types
+  }
+
+  tags = each.value.tags
+}
 
 ######################################################################

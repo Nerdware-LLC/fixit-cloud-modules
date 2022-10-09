@@ -82,9 +82,9 @@ output "AppMesh_Routers" {
   value       = aws_appmesh_virtual_router.map
 }
 
-# output "AppMesh_Routes" {
-#   description = "Map of App Mesh Route resource objects."
-#   value       = aws_appmesh_route.map
-# }
+output "AppMesh_Routes" {
+  description = "Map of App Mesh Route resource objects."
+  value       = aws_appmesh_route.map
+}
 
 ######################################################################

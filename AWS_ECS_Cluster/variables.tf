@@ -358,34 +358,63 @@ variable "appmesh_routers" {
   default = {}
 }
 
-# TODO Finish appmesh_routes var.
-# variable "appmesh_routes" {
-#   description = <<-EOF
-#   Map of AppMesh Route names to route config objects. "spec" must have a
-#   "priority" between 0-1000 and a "type", which can be "http_route", "http2_route",
-#   "tcp_route", or "grpc_route".
-#   EOF
+variable "appmesh_routes" {
+  description = <<-EOF
+  Map of AppMesh Route names to route config objects. "spec" must have a
+  "priority" between 0-1000 and a "type", which can be "http_route" or "http2_route"
+  (support for "tcp_route" and "grpc_route" will be added in the future).
+  EOF
 
-#   type = map(
-#     # map keys: AppMesh route names e.g. "serviceB-route"
-#     object({
-#       virtual_router_name = string
-#       type                = string # "http_route", "http2_route", "tcp_route", or "grpc_route"
-#       spec = object({
-#         action = string
-#         match = optional(object({
-#           method = string
-#           prefix = string
-#         }))
-#         retry_policy = string
-#         timeout      = number
-#       })
-#       tags = optional(map(string))
-#     })
-#   )
+  type = map(
+    # map keys: AppMesh route names e.g. "serviceB-route"
+    object({
+      virtual_router_name = string
+      type                = string # "http_route" or "http2_route" (future support: "tcp_route"/"grpc_route")
+      spec = object({
+        action_targets = map(
+          # map keys: appmesh node names
+          object({
+            weight = number
+        }))
+        match = object({
+          prefix = string
+          method = optional(string)
+          scheme = optional(string) # can be "http" or "https"
+          header = optional(object({
+            name   = string
+            invert = optional(bool)
+            match = optional(object({
+              exact  = optional(string)
+              prefix = optional(string)
+              suffix = optional(string)
+              regex  = optional(string)
+              range = optional(object({
+                start = string
+                end   = string
+              }))
+            }))
+          }))
+        })
+        retry_policy = object({
+          max_retries       = number
+          http_retry_events = optional(list(string))
+          tcp_retry_events  = optional(list(string))
+          per_retry_timeout = object({
+            unit : string # "ms" or "s"
+            value = number
+          })
+        })
+        idle_timeout = optional(object({
+          unit : string # "ms" or "s"
+          value = number
+        }))
+      })
+      tags = optional(map(string))
+    })
+  )
 
-#   default = {}
-# }
+  default = {}
+}
 
 # TODO add variable for AppMesh Gateways
 
