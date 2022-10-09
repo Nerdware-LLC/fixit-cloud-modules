@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.19.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.1...v0.19.2) (2022-10-09)
+
+
+### Bug Fixes
+
+* **AWS_ECS:** correct network_config block in ecs service resource ([33e1d49](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/33e1d49d3e57a3917be9e38bdc6b0b0a51bb7746))
+
 ## [0.19.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.0...v0.19.1) (2022-10-09)
 
 
