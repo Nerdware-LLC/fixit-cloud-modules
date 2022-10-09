@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.19.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.2...v0.19.3) (2022-10-09)
+
+
+### Bug Fixes
+
+* **AWS-ECS:** convert Task_Def.container_defs var+resource structure to obj from jsonStr ([83defed](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/83defed9d4e90bbddedbb2c2096365a95dfc1717))
+
 ## [0.19.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.1...v0.19.2) (2022-10-09)
 
 
