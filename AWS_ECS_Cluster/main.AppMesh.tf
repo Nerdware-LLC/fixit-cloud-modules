@@ -50,6 +50,8 @@ resource "aws_appmesh_virtual_service" "map" {
       }
     }
   }
+
+  depends_on = [aws_appmesh_virtual_node.map]
 }
 
 #---------------------------------------------------------------------
@@ -237,6 +239,8 @@ resource "aws_appmesh_route" "http_routes_map" {
   }
 
   tags = each.value.tags
+
+  depends_on = [aws_appmesh_virtual_node.map]
 }
 
 # HTTP2 ROUTES
@@ -329,6 +333,8 @@ resource "aws_appmesh_route" "http2_routes_map" {
   }
 
   tags = each.value.tags
+
+  depends_on = [aws_appmesh_virtual_node.map]
 }
 
 # TODO Add support for TCP and gRPC route types
