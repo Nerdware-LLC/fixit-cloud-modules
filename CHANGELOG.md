@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.19.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.3...v0.19.4) (2022-10-10)
+
+
+### Bug Fixes
+
+* **AWS-ECS:** add depends_on AppMesh Nodes resource to AppMesh route+service ([fe688d4](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/fe688d40d626275f08c501ebb512b97126bab99a))
+* **AWS-ECS:** ensure Task Host LTs base64 encode user_data if provided ([fd275c3](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/fd275c358d127b4542ace01991c100bfdfe3f25e))
+
 ## [0.19.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.2...v0.19.3) (2022-10-09)
 
 
