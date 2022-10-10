@@ -22,11 +22,11 @@ inputs = {
       type = "application"
 
       subnets = {
-        FooPrivateSubnet_in_useast2a = {
-          subnet_id = dependency.Foo_VPC.outputs.Subnets.FooPrivateSubnet_A.id
+        FooPublicSubnet_in_useast2a = {
+          subnet_id = dependency.Foo_VPC.outputs.Subnets.FooPublicSubnet_A.id
         }
-        FooPrivateSubnet_in_useast2b = {
-          subnet_id = dependency.Foo_VPC.outputs.Subnets.FooPrivateSubnet_B.id
+        FooPublicSubnet_in_useast2b = {
+          subnet_id = dependency.Foo_VPC.outputs.Subnets.FooPublicSubnet_B.id
         }
       }
 
