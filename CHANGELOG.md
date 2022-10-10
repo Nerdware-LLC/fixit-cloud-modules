@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.20.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.4...v0.20.0) (2022-10-10)
+
+
+### Features
+
+* **VERSIONS:** update all module TF versions to 1.3.2; update AWS plugin to 4.34.0; update TFLint v ([041da99](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/041da9909f2f2ab5b1b0db2709675742cd3bebff))
+
 ## [0.19.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.19.3...v0.19.4) (2022-10-10)
 
 
