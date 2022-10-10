@@ -11,7 +11,11 @@ resource "aws_launch_template" "map" {
   # EC2 SETTINGS
   image_id      = coalesce(each.value.ami_id, data.aws_ami.ECS_Optimized_AMI.id)
   instance_type = each.value.instance_type
-  user_data     = each.value.user_data
+  user_data = (
+    each.value.user_data != null
+    ? (can(base64decode(each.value.user_data)) ? each.value.user_data : base64encode(each.value.user_data))
+    : each.value.user_data
+  )
 
   # TAGS
   tags = each.value.tags
