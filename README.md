@@ -42,10 +42,9 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 The following modules have WIP feature branches which will be merged into the **main** branch upon PR review and acceptance. Resources contained in these modules reflect either a refactoring of existing modules, whereby resources commonly used by several modules are extracted and isolated into their own separate module, or resources which are entirely new to the FCM collection.
 
-| **Module**                 | **Branch**                    | **Description**             |
-| :------------------------- | :---------------------------- | :-------------------------- |
-| AWS CloudFront             | feat/AWS_CloudFront           | AWS CloudFront resources.   |
-| AWS Elastic Load Balancing | feat/AWS_ElasticLoadBalancing | AWS ALB/NLB/GWLB resources. |
+| **Module**     | **Branch**          | **Description**           |
+| :------------- | :------------------ | :------------------------ |
+| AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources. |
 
 ## ⚙️ Developer Setup
 
