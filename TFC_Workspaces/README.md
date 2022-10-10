@@ -34,7 +34,7 @@ Terraform module for managing Terraform Cloud Workspace resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.2.7 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.3.2 |
 | <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.28.1 |
 
 ### Providers
