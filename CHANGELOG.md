@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.3...v0.21.4) (2022-10-11)
+
+
+### Bug Fixes
+
+* **DynamoDB:** correct misc syntax errors in dynamic blocks ([15418ad](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/15418ad238d5f82a6b33b70238720d8b4622a6f4))
+
 ## [0.21.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.2...v0.21.3) (2022-10-11)
 
 
