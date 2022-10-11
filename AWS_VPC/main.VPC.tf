@@ -37,6 +37,7 @@ locals {
   # Group subnets by type - obj won't include keys of unused subnet types
   subnets_by_type = {
     for subnet_type, list_of_subnets_of_type in {
+      # tflint-ignore: terraform_deprecated_interpolation
       for cidr, subnet in local.subnet_resources : subnet.type => { "${cidr}" = subnet }... # <-- group subnets by type
     } : subnet_type => merge(list_of_subnets_of_type...)                                    # <-- spread and merge grouped subnets
   }
