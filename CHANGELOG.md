@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.21.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.4...v0.21.0) (2022-10-11)
+
+
+### Bug Fixes
+
+* **ELB:** pluralize name of Target_Group output ([d279f23](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d279f23f200e7bade73140b52f22b05bc6aaada9))
+
+
+### Features
+
+* **ECS:** add load_balancer_config to ECS services resource+var ([2069eb5](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/2069eb55f6d5d1435bcb0cc7ccc48105a75fc191))
+
 ## [0.20.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.3...v0.20.4) (2022-10-11)
 
 
