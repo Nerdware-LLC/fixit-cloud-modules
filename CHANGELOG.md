@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.2...v0.21.3) (2022-10-11)
+
+
+### Bug Fixes
+
+* **IAM:** add conditional-merge of 'conditions' in iam_role assumeRole policy ([01aaa0b](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/01aaa0bc225b2052059a74746ddb7300c0ab76ce))
+
 ## [0.21.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.1...v0.21.2) (2022-10-11)
 
 
