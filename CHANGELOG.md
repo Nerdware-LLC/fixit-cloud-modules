@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.20.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.3...v0.20.4) (2022-10-11)
+
+
+### Bug Fixes
+
+* **ECR:** add depends_on=repos-resource to repo-policy resource ([#15](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/15)) ([891439f](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/891439fb3302becb2a08eae4150e62f1be8a009b))
+
 ## [0.20.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.2...v0.20.3) (2022-10-10)
 
 ## [0.20.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.1...v0.20.2) (2022-10-10)
