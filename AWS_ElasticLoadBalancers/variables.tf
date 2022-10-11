@@ -129,8 +129,6 @@ variable "target_groups" {
   manually register such containers).
   EOF
 
-  # TODO Add ability to specify "health_check"
-
   type = map(
     # map keys: target group names
     object({
