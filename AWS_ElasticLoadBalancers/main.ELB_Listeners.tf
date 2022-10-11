@@ -92,11 +92,11 @@ resource "aws_lb_listener_rule" "map" {
     for_each = toset([for action in each.value.actions : action if action.is_default_action != true])
 
     content {
-      type = default_action.value.type
+      type = action.value.type
 
       # TYPE == "forward"
       dynamic "forward" {
-        for_each = default_action.value.forward != null ? [default_action.value.forward] : []
+        for_each = action.value.forward != null ? [action.value.forward] : []
 
         content {
           # (type == "forward").target_groups
@@ -123,7 +123,7 @@ resource "aws_lb_listener_rule" "map" {
 
       # TYPE == "redirect"
       dynamic "redirect" {
-        for_each = default_action.value.redirect != null ? [default_action.value.redirect] : []
+        for_each = action.value.redirect != null ? [action.value.redirect] : []
 
         content {
           status_code = redirect.value.status_code
@@ -137,7 +137,7 @@ resource "aws_lb_listener_rule" "map" {
 
       # TYPE == "fixed_response"
       dynamic "fixed_response" {
-        for_each = default_action.value.fixed_response != null ? [default_action.value.fixed_response] : []
+        for_each = action.value.fixed_response != null ? [action.value.fixed_response] : []
 
         content {
           content_type = fixed_response.value.content_type
