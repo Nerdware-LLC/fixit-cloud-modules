@@ -14,7 +14,7 @@ resource "aws_lb" "map" {
   security_groups = each.value.alb_security_group_ids
 
   dynamic "subnet_mapping" {
-    for_each = each.value.subnets != null ? [each.value.subnets] : []
+    for_each = each.value.subnets != null ? values(each.value.subnets) : []
 
     content {
       subnet_id            = subnet_mapping.value.subnet_id
