@@ -82,7 +82,7 @@ locals {
       for cidr, normalized_subnet in local.subnets_with_normalized_route_table
       : normalized_subnet.route_table => normalized_subnet...
     }
-    : rt_name => { subnet_type = one(rt_subnets).type } if length(rt_subnets) > 0
+    : rt_name => { subnet_type = try(one(rt_subnets).type, null) } if length(rt_subnets) > 0
     # Loop inline obj, ensure we never create an RT with zero subnet associations
   }
 }
