@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.5...v0.21.6) (2022-10-11)
+
+
+### Bug Fixes
+
+* **ELB:** add 'tags' arg to target_groups var, misc docs fix ([1fea56e](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/1fea56e1b29bd8f6a5ac8a83c1bd703e1b153c4c))
+* **VPC:** replace tflint-ignore w obj key-expr parens ([53638f1](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/53638f1a2ee47145ef6f9381ba3e33b1ec89cc70))
+
 ## [0.21.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.4...v0.21.5) (2022-10-11)
 
 
