@@ -158,6 +158,11 @@ variable "ecs_services" {
         subnet_ids         = list(string)
         security_group_ids = list(string)
       })
+      load_balancer_config = optional(object({
+        target_group_arn = string
+        container_name   = string
+        container_port   = number
+      }))
       rolling_update_controls = optional(object({
         force_new_deployment               = bool
         deployment_minimum_healthy_percent = optional(number)

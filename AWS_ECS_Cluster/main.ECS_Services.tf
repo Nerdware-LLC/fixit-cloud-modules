@@ -45,6 +45,17 @@ resource "aws_ecs_service" "map" {
     }
   }
 
+  # LOAD BALANCING
+  dynamic "load_balancer" {
+    for_each = each.value.load_balancer_config != null ? [each.value.load_balancer_config] : []
+
+    content {
+      target_group_arn = load_balancer.value.target_group_arn
+      container_name   = load_balancer.value.container_name
+      container_port   = load_balancer.value.container_port
+    }
+  }
+
   # SERVICE DISCOVERY
   service_registries {
     registry_arn = aws_service_discovery_service.map[each.value.service_discovery_service].arn
