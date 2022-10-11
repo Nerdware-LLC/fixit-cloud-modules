@@ -24,7 +24,7 @@ resource "aws_dynamodb_table" "this" {
   # GLOBAL SECONDARY INDEXES
   dynamic "global_secondary_index" {
     for_each = var.global_secondary_indexes != null ? var.global_secondary_indexes : {}
-    iterator = "gsi"
+    iterator = gsi
 
     content {
       name               = gsi.key
@@ -40,7 +40,7 @@ resource "aws_dynamodb_table" "this" {
   # LOCAL SECONDARY INDEXES
   dynamic "local_secondary_index" {
     for_each = var.local_secondary_indexes != null ? var.local_secondary_indexes : {}
-    iterator = "lsi"
+    iterator = lsi
 
     content {
       name               = lsi.key
@@ -61,7 +61,7 @@ resource "aws_dynamodb_table" "this" {
     setting is the AWS-owned key, so "enabled" is a bit of a misleading
     property name here.    */
     enabled     = var.server_side_encryption.key_type == "AWS-OWNED" ? false : true
-    kms_key_arn = var.server_side_encryption_kms_key_arn
+    kms_key_arn = var.server_side_encryption.kms_key_arn
   }
 
   # TTL
@@ -84,9 +84,9 @@ resource "aws_dynamodb_table" "this" {
   }
 
   # RESTORE-TABLE
-  restore_source_name    = lookup(var.restore_table_from, "source_table_name", null)
-  restore_to_latest_time = lookup(var.restore_table_from, "use_latest_recovery_point", null)
-  restore_date_time      = lookup(var.restore_table_from, "restore_date_time", null)
+  restore_source_name    = try(var.restore_table_from.source_table_name, null)
+  restore_to_latest_time = try(var.restore_table_from.use_latest_recovery_point, null)
+  restore_date_time      = try(var.restore_table_from.restore_date_time, null)
 
   # STREAM: DynamoDB Table Stream
   stream_enabled   = try(var.streams.dynamodb_stream_view_type, null) != null
