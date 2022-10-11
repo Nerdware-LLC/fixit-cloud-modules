@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.6...v0.21.7) (2022-10-11)
+
+
+### Bug Fixes
+
+* **ELB:** change listener_rule refs from default_action to action ([d10bd77](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d10bd77d61f862d5ae5f10de4d8c6566fc4fc265))
+
 ## [0.21.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.5...v0.21.6) (2022-10-11)
 
 
