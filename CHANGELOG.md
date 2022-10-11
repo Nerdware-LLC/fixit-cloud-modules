@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.1...v0.21.2) (2022-10-11)
+
+
+### Bug Fixes
+
+* **VPC:** add tflint-ignore directive above obj w interpolated key ([28d6af0](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/28d6af045be0e3557292bb49751718e859042d80))
+
 ## [0.21.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.0...v0.21.1) (2022-10-11)
 
 
