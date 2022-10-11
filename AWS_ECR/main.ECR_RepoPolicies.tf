@@ -16,6 +16,8 @@ resource "aws_ecr_repository_policy" "map" {
         jsondecode(each.value.policy_config.custom_statements_json)
       )
   }))
+
+  depends_on = [aws_ecr_repository.map]
 }
 
 data "aws_iam_policy_document" "Repo_Policies_Map" {
