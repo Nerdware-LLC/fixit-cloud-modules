@@ -19,27 +19,29 @@ resource "aws_iam_role" "map" {
     : jsonencode({
       Version = "2012-10-17"
       Statement = [
-        for statement in each.value.assume_role_policy_statements : {
-          Effect = statement.effect
-          Principal = ( # see if we need to look up an OIDC Provider ARN
-            statement.should_lookup_oidc_principals != true
-            ? statement.principals
-            : merge(
-              statement.principals,
-              {
-                Federated = [
-                  for principal in statement.principals.Federated : (
-                    can(aws_iam_openid_connect_provider.map[principal].arn)
-                    ? aws_iam_openid_connect_provider.map[principal].arn
-                    : principal
-                  )
-                ]
-              }
+        for statement in each.value.assume_role_policy_statements : merge(
+          {
+            Effect = statement.effect
+            Action = statement.actions
+            Principal = ( # see if we need to look up an OIDC Provider ARN
+              statement.should_lookup_oidc_principals != true
+              ? statement.principals
+              : merge(
+                statement.principals,
+                {
+                  Federated = [
+                    for principal in statement.principals.Federated : (
+                      can(aws_iam_openid_connect_provider.map[principal].arn)
+                      ? aws_iam_openid_connect_provider.map[principal].arn
+                      : principal
+                    )
+                  ]
+                }
+              )
             )
-          )
-          Action    = statement.actions
-          Condition = statement.conditions
-        }
+          },
+          can(statement.conditions) && statement.conditions != null ? { Condition = statement.conditions } : {}
+        )
       ]
     })
   )
