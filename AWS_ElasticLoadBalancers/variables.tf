@@ -94,22 +94,22 @@ variable "listeners" {
           message_body = optional(string)
           status_code  = optional(string) # "2XX", "4XX", or "5XX"
         }))
-        # Conditions only apply to non-default actions
-        conditions = optional(list(object({
-          source_ips           = optional(list(string))
-          host_header_values   = optional(list(string))
-          http_request_methods = optional(list(string))
-          path_patterns        = optional(list(string))
-          http_headers = optional(list(object({
-            http_header_name = string
-            values           = list(string)
-          })))
-          query_strings = optional(list(object({
-            key   = optional(string)
-            value = string
-          })))
-        })))
       }))
+      # Conditions only apply to non-default actions
+      conditions = optional(list(object({
+        source_ips           = optional(list(string))
+        host_header_values   = optional(list(string))
+        http_request_methods = optional(list(string))
+        path_patterns        = optional(list(string))
+        http_headers = optional(list(object({
+          http_header_name = string
+          values           = list(string)
+        })))
+        query_strings = optional(list(object({
+          key   = optional(string)
+          value = string
+        })))
+      })))
     })
   )
 }
@@ -143,6 +143,17 @@ variable "target_groups" {
       slow_start_warmup_seconds          = optional(number, 0)
       load_balancing_algorithm_type      = optional(string, "round_robin") # can also be "least_outstanding_requests"
       lambda_multi_value_headers_enabled = optional(bool, false)           # applies to lambda only
+      health_check = optional(object({
+        is_enabled          = optional(bool, true)
+        healthy_threshold   = optional(number, 3)
+        unhealthy_threshold = optional(number)
+        interval            = optional(number, 30)
+        matcher             = optional(string)
+        path                = optional(string)
+        port                = optional(string, "traffic-port")
+        protocol            = optional(string, "HTTP")
+        timeout             = optional(number)
+      }))
       targets = optional(list(object({
         id                = string
         port              = optional(number)

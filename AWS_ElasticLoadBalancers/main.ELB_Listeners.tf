@@ -33,8 +33,8 @@ resource "aws_lb_listener" "map" {
             for_each = forward.value.target_groups
 
             content {
-              arn    = aws_lb_target_group.map[target_group.name].arn
-              weight = target_group.weight
+              arn    = aws_lb_target_group.map[target_group.value.name].arn
+              weight = target_group.value.weight
             }
           }
 
@@ -82,7 +82,11 @@ resource "aws_lb_listener" "map" {
 ### Listener Rules
 
 resource "aws_lb_listener_rule" "map" {
-  for_each = var.listeners
+  for_each = {
+    # Filter out listeners which aren't configured with non-default actions
+    for listener_name, listener in var.listeners : listener_name => listener
+    if length([for action in listener.actions : action if action.is_default_action == false]) > 0
+  }
 
   listener_arn = aws_lb_listener.map[each.key].arn
 
@@ -104,8 +108,8 @@ resource "aws_lb_listener_rule" "map" {
             for_each = forward.value.target_groups
 
             content {
-              arn    = aws_lb_target_group.map[target_group.name].arn
-              weight = target_group.weight
+              arn    = aws_lb_target_group.map[target_group.value.name].arn
+              weight = target_group.value.weight
             }
           }
 
@@ -151,7 +155,7 @@ resource "aws_lb_listener_rule" "map" {
   # CONDITIONS
 
   dynamic "condition" {
-    for_each = toset(each.value.conditions != null ? each.value.conditions : [])
+    for_each = each.value.conditions != null ? each.value.conditions : []
 
     content {
       # CONDITION: source_ip
