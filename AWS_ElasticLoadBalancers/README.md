@@ -71,8 +71,8 @@ No modules.
 |------|-------------|
 | <a name="output_ELB_Listener_Rules"></a> [ELB\_Listener\_Rules](#output\_ELB\_Listener\_Rules) | Map of ELB Listener Rule resource objects (does not include default listener actions). |
 | <a name="output_ELB_Listeners"></a> [ELB\_Listeners](#output\_ELB\_Listeners) | Map of ELB Listener resource objects. |
-| <a name="output_ELB_Target_Group"></a> [ELB\_Target\_Group](#output\_ELB\_Target\_Group) | Map of ELB Target Group resource objects. |
 | <a name="output_ELB_Target_Group_Attachments"></a> [ELB\_Target\_Group\_Attachments](#output\_ELB\_Target\_Group\_Attachments) | Map of ELB Target Group Attachment resource objects. |
+| <a name="output_ELB_Target_Groups"></a> [ELB\_Target\_Groups](#output\_ELB\_Target\_Groups) | Map of ELB Target Group resource objects. |
 | <a name="output_ELBs"></a> [ELBs](#output\_ELBs) | Map of ELB resource objects. |
 
 ---

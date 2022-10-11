@@ -16,7 +16,7 @@ output "ELB_Listener_Rules" {
   value       = aws_lb_listener_rule.map
 }
 
-output "ELB_Target_Group" {
+output "ELB_Target_Groups" {
   description = "Map of ELB Target Group resource objects."
   value       = aws_lb_target_group.map
 }
