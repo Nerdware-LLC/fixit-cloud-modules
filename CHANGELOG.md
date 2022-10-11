@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.0...v0.21.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* **VPC:** wrap err-causing one-fn call in RT locals with try-fn ([b2e9fd1](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/b2e9fd1d5366f29d5895610b3d6d24c798711503))
+
 # [0.21.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.20.4...v0.21.0) (2022-10-11)
 
 
