@@ -83,7 +83,7 @@ inputs = {
       port                      = 80
       protocol                  = "HTTP"
       protocol_version          = "HTTP2"
-      slow_start_warmup_seconds = 10
+      slow_start_warmup_seconds = 30 # min 30, max 900
       # ECS services register containers on your behalf - don't register such targets here!
     }
   }

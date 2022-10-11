@@ -148,6 +148,7 @@ variable "target_groups" {
         port              = optional(number)
         availability_zone = optional(number)
       })))
+      tags = optional(map(string))
     })
   )
 }
