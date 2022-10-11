@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.7...v0.21.8) (2022-10-11)
+
+
+### Bug Fixes
+
+* **ELB:** change dynamic subnet_mapping for_each expr to use 'values(subnets)' ([e9cb27f](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/e9cb27fb91adf29659421e9b9ab1cde3ddb7181a))
+
 ## [0.21.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.6...v0.21.7) (2022-10-11)
 
 
