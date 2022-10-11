@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.21.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.4...v0.21.5) (2022-10-11)
+
+
+### Bug Fixes
+
+* **DynamoDB:** add 'depends_on' target resources to autoscaling policies ([6871fb6](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/6871fb60ec43cc9bba82d63a14bd35a4c455b14e))
+
 ## [0.21.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.3...v0.21.4) (2022-10-11)
 
 
