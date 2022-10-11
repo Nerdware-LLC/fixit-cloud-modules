@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.22.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.8...v0.22.0) (2022-10-11)
+
+
+### Features
+
+* **ELB:** add 'health_check' to target_groups var+resource+docs ([9cbd081](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/9cbd0812b00bb8b2c1d5a4ec35c523a6649fd043))
+
 ## [0.21.8](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.7...v0.21.8) (2022-10-11)
 
 
