@@ -91,6 +91,8 @@ resource "aws_appautoscaling_policy" "map" {
       predefined_metric_type = each.value.autoscaling_policy_metric
     }
   }
+
+  depends_on = [aws_appautoscaling_target.map]
 }
 
 ######################################################################
