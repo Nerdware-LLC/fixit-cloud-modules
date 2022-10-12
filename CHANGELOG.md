@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.24.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.23.0...v0.24.0) (2022-10-12)
+
+
+### Features
+
+* **Route53:** add default value to 'records' and 'delegation_sets' vars ([babc2b2](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/babc2b2eb8f2d07484d60650a61c08c2fb9ef532))
+
 # [0.23.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.22.0...v0.23.0) (2022-10-12)
 
 
