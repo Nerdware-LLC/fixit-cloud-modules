@@ -44,10 +44,10 @@ resource "aws_route53_record" "map" {
   type    = split(" ", each.key)[1]
   zone_id = aws_route53_zone.map[each.value.hosted_zone_domain].zone_id
 
-  allow_overwrite                  = each.value.allow_overwrite
-  set_identifier                   = each.value.set_identifier
-  health_check_id                  = each.value.health_check_id # TODO Add in-module resource to provide config for this
-  multivalue_answer_routing_policy = each.value.multivalue_answer_routing_policy
+  allow_overwrite                  = try(each.value.allow_overwrite, true)
+  set_identifier                   = try(each.value.set_identifier, null)
+  health_check_id                  = try(each.value.health_check_id, null) # TODO Add in-module resource to provide config for this
+  multivalue_answer_routing_policy = try(each.value.multivalue_answer_routing_policy, null)
 
   # Non-Alias Record Properties
   ttl     = try(each.value.non_alias_records.ttl, null)
@@ -55,7 +55,7 @@ resource "aws_route53_record" "map" {
 
   # Alias Record Properties
   dynamic "alias" {
-    for_each = each.value.alias_record != null ? [each.value.alias_record] : []
+    for_each = try(each.value.alias_record, null) != null ? [each.value.alias_record] : []
 
     content {
       name                   = alias.value.dns_domain_name
@@ -65,7 +65,7 @@ resource "aws_route53_record" "map" {
   }
 
   dynamic "failover_routing_policy" {
-    for_each = each.value.failover_routing_policy != null ? [each.value.failover_routing_policy] : []
+    for_each = try(each.value.failover_routing_policy, null) != null ? [each.value.failover_routing_policy] : []
 
     content {
       type = failover_routing_policy.value.type
@@ -73,7 +73,7 @@ resource "aws_route53_record" "map" {
   }
 
   dynamic "geolocation_routing_policy" {
-    for_each = each.value.geolocation_routing_policy != null ? [each.value.geolocation_routing_policy] : []
+    for_each = try(each.value.geolocation_routing_policy, null) != null ? [each.value.geolocation_routing_policy] : []
 
     content {
       continent   = geolocation_routing_policy.value.continent
@@ -83,7 +83,7 @@ resource "aws_route53_record" "map" {
   }
 
   dynamic "latency_routing_policy" {
-    for_each = each.value.latency_routing_policy != null ? [each.value.latency_routing_policy] : []
+    for_each = try(each.value.latency_routing_policy, null) != null ? [each.value.latency_routing_policy] : []
 
     content {
       region = latency_routing_policy.value.aws_region
@@ -91,7 +91,7 @@ resource "aws_route53_record" "map" {
   }
 
   dynamic "weighted_routing_policy" {
-    for_each = each.value.weighted_routing_policy != null ? [each.value.weighted_routing_policy] : []
+    for_each = try(each.value.weighted_routing_policy, null) != null ? [each.value.weighted_routing_policy] : []
 
     content {
       weight = weighted_routing_policy.value.weight
