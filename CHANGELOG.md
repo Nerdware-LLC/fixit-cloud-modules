@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.24.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.1...v0.24.2) (2022-10-12)
+
+
+### Bug Fixes
+
+* **Route53:** wrap possibly-undefined 'record' property lookups in try ([0f98e2a](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/0f98e2aeb1fa0f48e597c550be60d13ae0381d94))
+
 ## [0.24.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.0...v0.24.1) (2022-10-12)
 
 
