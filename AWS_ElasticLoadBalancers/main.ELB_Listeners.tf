@@ -82,77 +82,77 @@ resource "aws_lb_listener" "map" {
 ### Listener Rules
 
 resource "aws_lb_listener_rule" "map" {
-  for_each = {
-    # Filter out listeners which aren't configured with non-default actions
-    for listener_name, listener in var.listeners : listener_name => listener
-    if length([for action in listener.actions : action if action.is_default_action == false]) > 0
-  }
+  for_each = merge(
+    [
+      for listener_name, listener in var.listeners : {
+        # Convert list of `actions` into map with unique keys
+        for action in listener.actions : "${listener_name} ${action.type}" => action
+        if action.is_default_action == false # <-- ignore default actions here
+      }
+    ]... # <-- ... spreads the list of objects into merge() fn args
+  )
 
-  listener_arn = aws_lb_listener.map[each.key].arn
+  listener_arn = aws_lb_listener.map[split(" ", each.key)[0]].arn
 
   # ACTIONS (non-default actions)
 
-  dynamic "action" {
-    for_each = toset([for action in each.value.actions : action if action.is_default_action != true])
+  action {
+    type = each.value.type
 
-    content {
-      type = action.value.type
+    # TYPE == "forward"
+    dynamic "forward" {
+      for_each = each.value.forward != null ? [each.value.forward] : []
 
-      # TYPE == "forward"
-      dynamic "forward" {
-        for_each = action.value.forward != null ? [action.value.forward] : []
+      content {
+        # (type == "forward").target_groups
+        dynamic "target_group" {
+          for_each = forward.value.target_groups
 
-        content {
-          # (type == "forward").target_groups
-          dynamic "target_group" {
-            for_each = forward.value.target_groups
-
-            content {
-              arn    = aws_lb_target_group.map[target_group.value.name].arn
-              weight = target_group.value.weight
-            }
+          content {
+            arn    = aws_lb_target_group.map[target_group.value.name].arn
+            weight = target_group.value.weight
           }
+        }
 
-          # (type == "forward").forward_stickiness
-          dynamic "stickiness" {
-            for_each = forward.value.stickiness != null ? [forward.value.stickiness] : []
+        # (type == "forward").forward_stickiness
+        dynamic "stickiness" {
+          for_each = forward.value.stickiness != null ? [forward.value.stickiness] : []
 
-            content {
-              duration = stickiness.value.duration
-              enabled  = stickiness.value.enabled
-            }
+          content {
+            duration = stickiness.value.duration
+            enabled  = stickiness.value.enabled
           }
         }
       }
+    }
 
-      # TYPE == "redirect"
-      dynamic "redirect" {
-        for_each = action.value.redirect != null ? [action.value.redirect] : []
+    # TYPE == "redirect"
+    dynamic "redirect" {
+      for_each = each.value.redirect != null ? [each.value.redirect] : []
 
-        content {
-          status_code = redirect.value.status_code
-          host        = redirect.value.host
-          port        = redirect.value.port
-          path        = redirect.value.path
-          protocol    = redirect.value.protocol
-          query       = redirect.value.query
-        }
+      content {
+        status_code = redirect.value.status_code
+        host        = redirect.value.host
+        port        = redirect.value.port
+        path        = redirect.value.path
+        protocol    = redirect.value.protocol
+        query       = redirect.value.query
       }
+    }
 
-      # TYPE == "fixed_response"
-      dynamic "fixed_response" {
-        for_each = action.value.fixed_response != null ? [action.value.fixed_response] : []
+    # TYPE == "fixed_response"
+    dynamic "fixed_response" {
+      for_each = each.value.fixed_response != null ? [each.value.fixed_response] : []
 
-        content {
-          content_type = fixed_response.value.content_type
-          message_body = fixed_response.value.message_body
-          status_code  = fixed_response.value.status_code
-        }
+      content {
+        content_type = fixed_response.value.content_type
+        message_body = fixed_response.value.message_body
+        status_code  = fixed_response.value.status_code
       }
     }
   }
 
-  # CONDITIONS
+  # CONDITIONS (min 1)
 
   dynamic "condition" {
     for_each = each.value.conditions != null ? each.value.conditions : []

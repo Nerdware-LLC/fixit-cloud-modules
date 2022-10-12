@@ -92,24 +92,24 @@ variable "listeners" {
         fixed_response = optional(object({
           content_type = string # "text/plain", "text/css", "text/html", "application/javascript", or "application/json"
           message_body = optional(string)
-          status_code  = optional(string) # "2XX", "4XX", or "5XX"
+          status_code  = optional(string)
         }))
+        # Conditions only apply to non-default actions
+        conditions = optional(list(object({
+          source_ips           = optional(list(string))
+          host_header_values   = optional(list(string))
+          http_request_methods = optional(list(string))
+          path_patterns        = optional(list(string))
+          http_headers = optional(list(object({
+            http_header_name = string
+            values           = list(string)
+          })))
+          query_strings = optional(list(object({
+            key   = optional(string)
+            value = string
+          })))
+        })))
       }))
-      # Conditions only apply to non-default actions
-      conditions = optional(list(object({
-        source_ips           = optional(list(string))
-        host_header_values   = optional(list(string))
-        http_request_methods = optional(list(string))
-        path_patterns        = optional(list(string))
-        http_headers = optional(list(object({
-          http_header_name = string
-          values           = list(string)
-        })))
-        query_strings = optional(list(object({
-          key   = optional(string)
-          value = string
-        })))
-      })))
     })
   )
 }
