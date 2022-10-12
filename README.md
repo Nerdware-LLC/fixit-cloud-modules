@@ -32,6 +32,7 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
   - [Lambda](/AWS_Lambda/README.md)
   - [OpenID Connect Providers](/AWS_OpenID_Connect_Providers/README.md)
   - [Organization](/AWS_Organization/README.md)
+  - [Route53](/AWS_Route53/README.md)
   - [S3](/AWS_S3/README.md)
   - [SecurityHub](/AWS_SecurityHub/README.md)
   - [SNS](/AWS_SNS/README.md)
