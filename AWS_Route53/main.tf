@@ -10,7 +10,7 @@ resource "aws_route53_zone" "map" {
   force_destroy     = each.value.should_force_destroy == true
 
   dynamic "vpc" {
-    for_each = each.value.vpc != null ? [each.value.vpc] : []
+    for_each = each.value.vpc_association != null ? [each.value.vpc_association] : []
 
     content {
       vpc_id     = vpc.value.vpc_id
