@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.23.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.22.0...v0.23.0) (2022-10-12)
+
+
+### Features
+
+* **Route53:** add option to auto-configure NS records for hosted zones ([2602ecc](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/2602ecc60ec9f3a30062504e9671a122d4d5e71a))
+
 # [0.22.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.21.8...v0.22.0) (2022-10-11)
 
 
