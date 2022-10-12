@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.24.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.0...v0.24.1) (2022-10-12)
+
+
+### Bug Fixes
+
+* **Route53:** correct dynamic vpc for_each ref from 'vpc' to 'vpc_association' ([f04b989](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/f04b98946e446b80ee3362172b6f947f2660f7aa))
+
 # [0.24.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.23.0...v0.24.0) (2022-10-12)
 
 
