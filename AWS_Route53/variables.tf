@@ -29,11 +29,11 @@ variable "hosted_zones" {
 
 variable "records" {
   description = <<-EOF
-  List of DNS resource record config objects. "hosted_zone_domain" values
-  must be present as keys in the `var.hosted_zones` input object. "type" must
-  be one of A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV or TXT.
-  One of either "non_alias_records" or "alias_record" must be provided. Only
-  1 type of routing policy may be provided.
+  (Optional) List of DNS resource record config objects. "hosted_zone_domain"
+  values must be present as keys in the `var.hosted_zones` input object. "type"
+  must be one of A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV or
+  TXT. One of either "non_alias_records" or "alias_record" must be provided.
+  Only 1 type of routing policy may be provided.
   EOF
 
   type = list(
@@ -70,13 +70,16 @@ variable "records" {
       multivalue_routing_policy = optional(bool, false)
     })
   )
+
+  default = []
 }
 
 #---------------------------------------------------------------------
 
 variable "delegation_sets" {
-  description = "List of delegation set names."
+  description = "(Optional) List of delegation set names."
   type        = list(string)
+  default     = []
 }
 
 ######################################################################

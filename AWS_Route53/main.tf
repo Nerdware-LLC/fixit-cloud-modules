@@ -102,7 +102,7 @@ resource "aws_route53_record" "map" {
 #---------------------------------------------------------------------
 
 resource "aws_route53_delegation_set" "map" {
-  for_each = toset(var.delegation_sets != null ? var.delegation_sets : [])
+  for_each = toset(var.delegation_sets)
 
   reference_name = each.value
 }
