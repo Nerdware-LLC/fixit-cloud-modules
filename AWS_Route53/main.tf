@@ -24,8 +24,21 @@ resource "aws_route53_zone" "map" {
 #---------------------------------------------------------------------
 
 resource "aws_route53_record" "map" {
-  # Convert var.records from list to map with unique keys
-  for_each = { for record in var.records : "${record.name} ${record.type}" => record }
+
+  for_each = merge(
+    # Convert var.records from list to map with unique keys
+    { for record in var.records : "${record.name} ${record.type}" => record },
+    # Setup NS records for hosted zones (disabled if "should_setup_ns_records"=false)
+    {
+      for domain, hosted_zone in aws_route53_zone.map : "${domain} NS" => {
+        non_alias_records = {
+          ttl    = 172800 # <-- 2 days
+          values = hosted_zone.name_servers
+        }
+      }
+      if var.hosted_zones[domain].should_setup_ns_records != false
+    }
+  )
 
   name    = split(" ", each.key)[0]
   type    = split(" ", each.key)[1]

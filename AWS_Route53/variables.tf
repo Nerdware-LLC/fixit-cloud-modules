@@ -5,7 +5,8 @@ variable "hosted_zones" {
   description = <<-EOF
   Map of domain names to Route53 hosted zone config objects. To create
   a private hosted zone, you must provide one of either "vpc_association"
-  or "delegation_set" (delegation set )
+  or "delegation_set". Unless "should_setup_ns_records" is set to false,
+  each hosted zones name servers will be setup as NS record resources.
   EOF
 
   type = map(
@@ -17,8 +18,9 @@ variable "hosted_zones" {
         vpc_id     = string
         vpc_region = optional(string)
       }))
-      should_force_destroy = optional(bool, false)
-      tags                 = optional(map(string))
+      should_force_destroy    = optional(bool, false)
+      should_setup_ns_records = optional(bool, true)
+      tags                    = optional(map(string))
     })
   )
 }
