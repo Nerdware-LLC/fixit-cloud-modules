@@ -10,7 +10,6 @@ resource "aws_lb" "map" {
   # NETWORK
   ip_address_type = each.value.is_dualstack == true ? "dualstack" : "ipv4"
   internal        = coalesce(each.value.is_internal, false)
-  subnets         = try(values(each.value.subnets)[*].subnet_id, null)
   security_groups = each.value.alb_security_group_ids
 
   dynamic "subnet_mapping" {
