@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.25.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.3...v0.25.0) (2022-10-13)
+
+
+### Features
+
+* **AccountBaseline:** add multi-region default VPC comp configs to lock them down ([e4c4dfc](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/e4c4dfc8591df2acb24da7b50d50f83b5f0ae036))
+
 ## [0.24.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.2...v0.24.3) (2022-10-12)
 
 
