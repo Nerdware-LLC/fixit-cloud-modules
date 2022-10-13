@@ -186,23 +186,23 @@ variable "network_acls" {
           # map keys: quoted rule numbers (e.g., "100")
           object({
             cidr_block = string
-            protocol   = optional(string)
+            protocol   = optional(string, "tcp")
             port       = optional(number)
             from_port  = optional(number)
             to_port    = optional(number)
           })
-        ))
+        ), {})
         egress = optional(map(
           # map keys: quoted rule numbers (e.g., "100")
           object({
             cidr_block = string
-            protocol   = optional(string)
+            protocol   = optional(string, "tcp")
             port       = optional(number)
             from_port  = optional(number)
             to_port    = optional(number)
           })
-        ))
-      }))
+        ), {})
+      }), { access = {}, ingress = {} })
       tags = optional(map(string))
     })
   )

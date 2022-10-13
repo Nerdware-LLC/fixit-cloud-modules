@@ -77,36 +77,36 @@ resource "aws_network_acl" "map" {
   subnet_ids = each.value.subnet_ids
 
   dynamic "ingress" {
-    for_each = try(coalesce(each.value.access.ingress, []), [])
+    for_each = try(coalesce(each.value.access.ingress, {}), {})
     iterator = rule
 
     content {
-      rule_no  = rule.value
+      rule_no  = rule.key
       action   = "allow"
-      protocol = coalesce(rule.value.protocol, "tcp")
+      protocol = rule.value.protocol
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = coalesce(rule.value.from_port, rule.value.port)
-      to_port   = coalesce(rule.value.to_port, rule.value.port)
+      from_port = can(rule.value.port) && try(rule.value.port, null) != null ? rule.value.port : rule.value.from_port
+      to_port   = can(rule.value.port) && try(rule.value.port, null) != null ? rule.value.port : rule.value.to_port
     }
   }
 
   dynamic "egress" {
-    for_each = try(coalesce(each.value.access.egress, []), [])
+    for_each = try(coalesce(each.value.access.egress, {}), {})
     iterator = rule
 
     content {
-      rule_no  = rule.value
+      rule_no  = rule.key
       action   = "allow"
-      protocol = coalesce(rule.value.protocol, "tcp")
+      protocol = rule.value.protocol
       cidr_block = try(
         one(local.AWS_SERVICE_CIDRS[rule.value.cidr_block]),
         rule.value.cidr_block
       )
-      from_port = coalesce(rule.value.from_port, rule.value.port)
-      to_port   = coalesce(rule.value.to_port, rule.value.port)
+      from_port = can(rule.value.port) && try(rule.value.port, null) != null ? rule.value.port : rule.value.from_port
+      to_port   = can(rule.value.port) && try(rule.value.port, null) != null ? rule.value.port : rule.value.to_port
     }
   }
 
