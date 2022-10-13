@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.0...v0.25.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* **VPC:** correct logic in NACL rule blocks from/to_port fallback to port ([cf5ff52](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/cf5ff5236428cec7915a57793fb9da41dc1841ee))
+
 # [0.25.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.24.3...v0.25.0) (2022-10-13)
 
 
