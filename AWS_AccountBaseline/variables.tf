@@ -5,8 +5,8 @@
 
 variable "iam_account_password_policy" {
   description = <<-EOF
-  Config object for customizing an account's IAM password policy. If not
-  provided, by default this module will set each value to the minimum
+  (Optional) Config object for customizing an account's IAM password policy.
+  If not provided, by default this module will set each value to the minimum
   required by CIS AWS Foundations Benchmark (v1.4.0). For "max_password_age",
   this value is 90 days, "min_password_length" is 14, and the number of times
   a password can be reused - "password_reuse_prevention" - is 24. Values which
@@ -15,9 +15,9 @@ variable "iam_account_password_policy" {
   EOF
 
   type = object({
-    max_password_age          = optional(number)
-    min_password_length       = optional(number)
-    password_reuse_prevention = optional(number)
+    max_password_age          = optional(number, 90)
+    min_password_length       = optional(number, 14)
+    password_reuse_prevention = optional(number, 24)
   })
 
   default = {
@@ -41,24 +41,24 @@ variable "iam_account_password_policy" {
 
 variable "default_vpc_component_tags" {
   description = <<-EOF
+  (Optional) Map of default resource types to tags for each respective type.
+  Any provided tags are applied to default resources of that type in all regions.
+
   In accordance with best practices, this module locks down the default VPC and all
   its components to ensure all ingress/egress traffic only uses infrastructure with
   purposefully-designed rules and configs. Default subnets must be deleted manually
   - they cannot be removed via Terraform. This variable allows you to customize the
-  tags on these "default" network components; defaults will be used if not provided.
+  tags on these default network components.
   EOF
+
   type = object({
     default_vpc            = optional(map(string))
     default_route_table    = optional(map(string))
     default_network_acl    = optional(map(string))
     default_security_group = optional(map(string))
   })
-  default = {
-    default_vpc            = null
-    default_route_table    = null
-    default_network_acl    = null
-    default_security_group = null
-  }
+
+  default = {}
 }
 
 ######################################################################
