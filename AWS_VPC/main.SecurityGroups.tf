@@ -27,11 +27,13 @@ locals {
     for sg_name, sg_config in var.security_groups : [
       for access_type, rules_list in coalesce(sg_config.access, {}) : [
         for rule in coalesce(rules_list, []) : {
+          # Create unique key for aws_security_group_rule to use in its for_each meta arg (based on TF reg import syntax for these rules)
+          _RULE_KEY = "${sg_name}_${access_type}_${rule.protocol}_${coalesce(rule.from_port, rule.port)}_${coalesce(rule.to_port, rule.port)}"
           # security_group_id = ID of the sec group to which the rule belongs
           security_group_id = aws_security_group.map[sg_name].id
           description       = rule.description
           type              = access_type
-          protocol          = coalesce(rule.protocol, "tcp")
+          protocol          = rule.protocol
           from_port         = coalesce(rule.from_port, rule.port)
           to_port           = coalesce(rule.to_port, rule.port)
           peer_security_group_id = try(
@@ -50,21 +52,22 @@ locals {
 }
 
 # Note: tfsec-ignore used for "description" due to erroneous flagging (description var is required)
-resource "aws_security_group_rule" "list" {
-  count = length(local.SecGroup_Rules)
+resource "aws_security_group_rule" "map" {
+  # Convert list into map with unique keys
+  for_each = { for sg_rule in local.SecGroup_Rules : sg_rule._RULE_KEY => sg_rule }
 
   # REQUIRED:
-  security_group_id = local.SecGroup_Rules[count.index].security_group_id
-  description       = local.SecGroup_Rules[count.index].description #tfsec:ignore:aws-vpc-add-description-to-security-group
-  type              = local.SecGroup_Rules[count.index].type
-  protocol          = local.SecGroup_Rules[count.index].protocol
-  from_port         = local.SecGroup_Rules[count.index].from_port
-  to_port           = local.SecGroup_Rules[count.index].to_port
+  security_group_id = each.value.security_group_id
+  description       = each.value.description #tfsec:ignore:aws-vpc-add-description-to-security-group
+  type              = each.value.type
+  protocol          = each.value.protocol
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
 
   # ONLY 1 OF THESE ALLOWED:
-  source_security_group_id = local.SecGroup_Rules[count.index].peer_security_group_id
-  cidr_blocks              = local.SecGroup_Rules[count.index].cidr_blocks
-  self                     = local.SecGroup_Rules[count.index].self
+  source_security_group_id = each.value.peer_security_group_id
+  cidr_blocks              = each.value.cidr_blocks
+  self                     = each.value.self
 }
 
 ######################################################################

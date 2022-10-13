@@ -256,7 +256,7 @@ variable "security_groups" {
         ingress = optional(list(
           object({
             description            = string
-            protocol               = optional(string)
+            protocol               = optional(string, "tcp")
             port                   = optional(number)
             from_port              = optional(number)
             to_port                = optional(number)
@@ -270,7 +270,7 @@ variable "security_groups" {
         egress = optional(list(
           object({
             description            = string
-            protocol               = optional(string)
+            protocol               = optional(string, "tcp")
             port                   = optional(number)
             from_port              = optional(number)
             to_port                = optional(number)
