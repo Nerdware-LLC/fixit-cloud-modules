@@ -103,11 +103,27 @@ resource "aws_cloudwatch_event_target" "map" {
 
   event_bus_name = each.value.event_bus_name
   role_arn       = each.value.role_arn
-  retry_policy   = each.value.retry_policy
 
-  input             = each.value.input
-  input_path        = each.value.input_path
-  input_transformer = each.value.input_transformer
+  dynamic "retry_policy" {
+    for_each = each.value.retry_policy != null ? [each.value.retry_policy] : []
+
+    content {
+      maximum_event_age_in_seconds = retry_policy.value.maximum_event_age_in_seconds
+      maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
+    }
+  }
+
+  input      = each.value.input
+  input_path = each.value.input_path
+
+  dynamic "input_transformer" {
+    for_each = each.value.input_transformer != null ? [each.value.input_transformer] : []
+
+    content {
+      input_template = input_transformer.value.input_template
+      input_paths    = input_transformer.value.input_paths
+    }
+  }
 }
 
 ######################################################################

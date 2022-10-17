@@ -85,14 +85,20 @@ variable "event_targets" {
   type = map(
     # map keys: event target assignment IDs
     object({
-      rule_name         = string
-      target_arn        = string
-      event_bus_name    = optional(string)
-      role_arn          = optional(string)
-      retry_policy      = optional(string)
-      input             = optional(string)
-      input_path        = optional(string)
-      input_transformer = optional(string)
+      rule_name      = string
+      target_arn     = string
+      event_bus_name = optional(string)
+      role_arn       = optional(string)
+      retry_policy = optional(object({
+        maximum_event_age_in_seconds = optional(number)
+        maximum_retry_attempts       = optional(number)
+      }))
+      input      = optional(string)
+      input_path = optional(string)
+      input_transformer = optional(object({
+        input_template = string # JSON-encoded string
+        input_paths    = optional(map(string))
+      }))
     })
   )
 
