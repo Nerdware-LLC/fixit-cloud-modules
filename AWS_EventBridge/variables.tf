@@ -38,6 +38,8 @@ variable "event_buses" {
       })))
     })
   )
+
+  default = {}
 }
 
 #---------------------------------------------------------------------
@@ -62,6 +64,7 @@ variable "event_rules" {
       tags                = optional(map(string))
     })
   )
+
   default = {}
 }
 
@@ -77,6 +80,8 @@ variable "event_targets" {
   "input_transformer". Note that each rule can have at most 5 event targets.
   EOF
 
+  # Add target config inputs for ECS, run-command, kinesis
+
   type = map(
     # map keys: event target assignment IDs
     object({
@@ -90,7 +95,8 @@ variable "event_targets" {
       input_transformer = optional(string)
     })
   )
-  # Add target config inputs for ECS, run-command, kinesis
+
+  default = {}
 }
 
 ######################################################################
