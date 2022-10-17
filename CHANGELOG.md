@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.2...v0.25.3) (2022-10-17)
+
+
+### Bug Fixes
+
+* **EventBridge:** add default values to optional vars ([d7f12cd](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/d7f12cdc84a9d4c88fa68a8ed28ea83fadca61ab))
+
 ## [0.25.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.1...v0.25.2) (2022-10-13)
 
 ## [0.25.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.0...v0.25.1) (2022-10-13)
