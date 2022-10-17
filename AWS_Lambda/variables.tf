@@ -44,12 +44,6 @@ variable "deployment_package_src" {
       object_version = string
     }))
   })
-
-  # Ensure one of the top-level keys has been provided
-  validation {
-    condition     = 1 == length(keys(var.deployment_package_src))
-    error_message = "Only 1 key-value pair can be provided to configure the deployment package source."
-  }
 }
 
 variable "execution_role" {
@@ -144,12 +138,12 @@ variable "event_source_mapping" {
     maximum_record_age_in_seconds      = optional(number)
     maximum_retry_attempts             = optional(number)
     destination_config = optional(object({
-      on_success_dest_resource_arn = string
+      on_success_dest_resource_arn = string # TODO this is not being used
       on_failure_dest_resource_arn = optional(string)
     }))
   })
 
-  default = {}
+  default = null
 }
 
 variable "lambda_permissions" {
@@ -177,6 +171,8 @@ variable "lambda_permissions" {
       principal_org_id = optional(string) # Principal would be the Org root account
     })
   )
+
+  default = {}
 
   # Ensure perms for AWS service principals are narrowed to a specific "source_arn"
   validation {

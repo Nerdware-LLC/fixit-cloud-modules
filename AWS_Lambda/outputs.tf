@@ -23,7 +23,7 @@ output "Lambda_Function_Permissions" {
 
 output "Lambda_Event_Source_Mappings" {
   description = "Map of Lambda event source mapping resource objects."
-  value       = aws_lambda_event_source_mapping.map
+  value       = one(aws_lambda_event_source_mapping.list)
 }
 
 ######################################################################

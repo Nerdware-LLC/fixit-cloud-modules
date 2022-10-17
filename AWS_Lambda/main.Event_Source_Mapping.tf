@@ -1,13 +1,13 @@
 ######################################################################
 ### AWS Lambda - Event Source Mapping
 
-resource "aws_lambda_event_source_mapping" "map" {
-  for_each = [var.event_source_mapping]
+resource "aws_lambda_event_source_mapping" "list" {
+  count = var.event_source_mapping != null ? 1 : 0
 
   function_name    = aws_lambda_function.this.arn
   event_source_arn = var.event_source_mapping.event_source_arn
   enabled          = var.event_source_mapping.enabled
-  queues           = var.event_source_mapping.queues
+  queues           = var.event_source_mapping.queues != null ? [var.event_source_mapping.queues] : null
 
   batch_size                         = var.event_source_mapping.batch_size
   maximum_batching_window_in_seconds = var.event_source_mapping.maximum_batching_window_in_seconds
@@ -18,8 +18,8 @@ resource "aws_lambda_event_source_mapping" "map" {
   starting_position_timestamp = var.event_source_mapping.starting_position_timestamp # RFC3339 timestamp
 
   # FILTERS
-  dynamic "filter_critera" {
-    for_each = (
+  dynamic "filter_criteria" {
+    for_each = toset(
       var.event_source_mapping.filter_patterns != null
       ? var.event_source_mapping.filter_patterns # <-- list var
       : []
@@ -27,7 +27,7 @@ resource "aws_lambda_event_source_mapping" "map" {
 
     content {
       filter {
-        pattern = filter_critera.value
+        pattern = filter_criteria.value
       }
     }
   }
@@ -41,8 +41,6 @@ resource "aws_lambda_event_source_mapping" "map" {
     )
 
     content {
-      destination_arn = destination_config.value.on_success_dest_resource_arn
-
       dynamic "on_failure" {
         for_each = (
           destination_config.value.on_failure_dest_resource_arn != null
@@ -51,7 +49,7 @@ resource "aws_lambda_event_source_mapping" "map" {
         )
 
         content {
-          destination_arn = on_failure.value.on_failure_dest_resource_arn
+          destination_arn = destination_config.value.on_failure_dest_resource_arn
         }
       }
     }
