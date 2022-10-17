@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.4...v0.25.5) (2022-10-17)
+
+
+### Bug Fixes
+
+* **Lambda:** correct var usage syntax in Fn+EventSrcMapping resources ([1159492](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/1159492124103c2c9eda6c145c326fe0bbb9a006))
+
 ## [0.25.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.3...v0.25.4) (2022-10-17)
 
 
