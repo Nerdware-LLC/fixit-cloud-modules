@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.5...v0.25.6) (2022-10-17)
+
+
+### Bug Fixes
+
+* **Lambda:** add 'package_type' to lambda fn resource to allow image_uri src ([85e212a](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/85e212a7a6b5e9b8e425beb59062da6eeb36ec1f))
+
 ## [0.25.5](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.4...v0.25.5) (2022-10-17)
 
 
