@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.4](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.3...v0.25.4) (2022-10-17)
+
+
+### Bug Fixes
+
+* **EventBridge:** correct param type for target 'retry_policy' and 'input_transformer' ([fe071a7](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/fe071a74abc2d50592fb13176ab79024c0790e02))
+
 ## [0.25.3](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.2...v0.25.3) (2022-10-17)
 
 
