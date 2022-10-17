@@ -22,6 +22,7 @@ resource "aws_lambda_function" "this" {
   filename          = var.deployment_package_src.local_file_abs_path
   source_code_hash  = var.deployment_package_src.local_file_abs_path != null ? filebase64sha256(var.deployment_package_src.local_file_abs_path) : null
   image_uri         = var.deployment_package_src.image_uri
+  package_type      = var.deployment_package_src.image_uri != null ? "Image" : "Zip"
   s3_bucket         = local.s3_bucket_src.bucket_name
   s3_key            = local.s3_bucket_src.object_key
   s3_object_version = local.s3_bucket_src.object_version
