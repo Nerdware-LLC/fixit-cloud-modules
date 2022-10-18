@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.26.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.0...v0.26.1) (2022-10-18)
+
+
+### Bug Fixes
+
+* **Lambda:** ensure 'handler' and 'runtime' aren't provided for Image package types ([13e813c](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/13e813cbc451f11fecd6aced69e6f145349b2f9b))
+
 # [0.26.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.7...v0.26.0) (2022-10-18)
 
 
