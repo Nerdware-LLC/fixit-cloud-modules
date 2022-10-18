@@ -13,7 +13,7 @@ variable "description" {
 }
 
 variable "handler" {
-  description = "The Lambda function handler."
+  description = "(Optional) The Lambda function handler."
   type        = string
   default     = "index.handler"
 }

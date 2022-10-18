@@ -15,9 +15,11 @@ resource "aws_lambda_function" "this" {
   function_name = var.name
   description   = var.description
   role          = aws_iam_role.Lambda_ExecRole.arn
-  handler       = var.handler
-  runtime       = var.runtime
   publish       = var.should_publish_new_version
+
+  # These two must not be provided when using an ECR image package type
+  handler = var.deployment_package_src.image_uri != null ? null : var.handler
+  runtime = var.deployment_package_src.image_uri != null ? null : var.runtime
 
   # Deployment Package Source
   filename          = var.deployment_package_src.local_file_abs_path
