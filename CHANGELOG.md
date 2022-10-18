@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.26.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.7...v0.26.0) (2022-10-18)
+
+
+### Features
+
+* **Lambda:** add 'should_publish' var to allow Lambda version bumps on module calls ([97c6876](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/97c6876ac45033fb3aa93f0d4e6e0799fd796640))
+
 ## [0.25.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.6...v0.25.7) (2022-10-18)
 
 
