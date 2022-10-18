@@ -124,6 +124,8 @@ resource "aws_cloudwatch_event_target" "map" {
       input_paths    = input_transformer.value.input_paths
     }
   }
+
+  depends_on = [aws_cloudwatch_event_rule.map]
 }
 
 ######################################################################
