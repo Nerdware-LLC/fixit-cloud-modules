@@ -46,6 +46,17 @@ variable "deployment_package_src" {
   })
 }
 
+variable "should_publish_new_version" {
+  description = <<-EOF
+  (Optional) Whether changes implemented by the module call should result
+  in a new version of the Lambda function; this is applicable to changes
+  made to existing Lambda functions as well as the creation of new ones.
+  EOF
+
+  type    = bool
+  default = true
+}
+
 variable "execution_role" {
   description = "Config object for the Lambda function's execution role."
   type = object({

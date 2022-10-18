@@ -17,6 +17,7 @@ resource "aws_lambda_function" "this" {
   role          = aws_iam_role.Lambda_ExecRole.arn
   handler       = var.handler
   runtime       = var.runtime
+  publish       = var.should_publish_new_version
 
   # Deployment Package Source
   filename          = var.deployment_package_src.local_file_abs_path

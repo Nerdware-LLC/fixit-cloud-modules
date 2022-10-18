@@ -82,6 +82,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | The Lambda function name. | `string` | n/a | yes |
 | <a name="input_provisioned_concurrent_executions"></a> [provisioned\_concurrent\_executions](#input\_provisioned\_concurrent\_executions) | (Optional) Amount of capacity to allocate. Must be greater than or equal to 1 (default 1). | `number` | `1` | no |
 | <a name="input_runtime"></a> [runtime](#input\_runtime) | (Optional) The Lambda function runtime; see link below for valid runtime values.<br>https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime | `string` | `null` | no |
+| <a name="input_should_publish_new_version"></a> [should\_publish\_new\_version](#input\_should\_publish\_new\_version) | (Optional) Whether changes implemented by the module call should result<br>in a new version of the Lambda function; this is applicable to changes<br>made to existing Lambda functions as well as the creation of new ones. | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) The Lambda function tags. | `map(string)` | `null` | no |
 | <a name="input_vpc_config"></a> [vpc\_config](#input\_vpc\_config) | (Optional) VPC configs for the Lambda function. | <pre>object({<br>    security_group_ids = list(string)<br>    subnet_ids         = list(string)<br>  })</pre> | `null` | no |
 
