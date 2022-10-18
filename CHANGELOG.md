@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.26.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.1...v0.26.2) (2022-10-18)
+
+
+### Bug Fixes
+
+* **EventBridge:** add Event target depends_on Event rule resources ([21f2582](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/21f2582b91ea484d054f217c2c0eb880e740f3b5))
+
 ## [0.26.1](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.0...v0.26.1) (2022-10-18)
 
 
