@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [0.25.7](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.6...v0.25.7) (2022-10-18)
+
+
+### Bug Fixes
+
+* **ECR:** add brackets around flatten-fn args in repo policy resource ([78381c4](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/78381c4c87dffec1b1bef9ab2c8c871741c49f09))
+
 ## [0.25.6](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.25.5...v0.25.6) (2022-10-17)
 
 
