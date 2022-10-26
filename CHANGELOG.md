@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.27.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.2...v0.27.0) (2022-10-26)
+
+
+### Features
+
+* **ELB:** add ACM certs data block and listener cert var ([#17](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/17)) ([df586b1](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/df586b1395026a66737df0bb3698686de9d5a345))
+
 ## [0.26.2](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.1...v0.26.2) (2022-10-18)
 
 
