@@ -11,7 +11,7 @@ resource "aws_lb_listener" "map" {
   protocol        = each.value.protocol
   ssl_policy      = each.value.ssl_policy
   alpn_policy     = each.value.tls_alpn_policy
-  certificate_arn = each.value.certificate_arn
+  certificate_arn = try(data.aws_acm_certificate.map[each.key].arn, each.value.certificate_arn)
   tags            = each.value.tags
 
   # DEFAULT ACTIONS:

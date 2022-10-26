@@ -42,7 +42,7 @@ inputs = {
       load_balancer_name = "Simple_ALB"
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = "arn:aws:iam::111111111111:server-certificate/test_cert_1a1a1a1a1a1a1a1a1a1a1a1a1a"
+      certificate        = { domain = "example.com" }
       ssl_policy         = "ELBSecurityPolicy-2016-08"
       actions = [
         {

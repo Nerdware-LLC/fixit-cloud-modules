@@ -63,9 +63,15 @@ variable "listeners" {
       port               = optional(number)
       protocol           = optional(string)
       certificate_arn    = optional(string)
-      ssl_policy         = optional(string) # Required for protocols HTTPS or TLS
-      tls_alpn_policy    = optional(string)
-      tags               = optional(map(string))
+      certificate = optional(object({
+        domain      = string
+        type        = optional(string, "AMAZON_ISSUED")
+        status      = optional(string, "ISSUED")
+        most_recent = optional(bool, true)
+      }))
+      ssl_policy      = optional(string) # Required for protocols HTTPS or TLS
+      tls_alpn_policy = optional(string)
+      tags            = optional(map(string))
       actions = list(object({
         # TODO Add support for listeners of type "authenticate-oidc" and "authenticate-cognito"
         type              = string # "forward", "redirect", or "fixed-response"
