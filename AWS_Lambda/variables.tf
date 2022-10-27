@@ -60,11 +60,12 @@ variable "should_publish_new_version" {
 variable "execution_role" {
   description = "Config object for the Lambda function's execution role."
   type = object({
-    name               = string
-    description        = optional(string)
-    path               = optional(string)
-    tags               = optional(map(string))
-    attach_policy_arns = optional(list(string))
+    name                       = string
+    description                = optional(string)
+    path                       = optional(string)
+    tags                       = optional(map(string))
+    add_edge_service_principal = optional(bool, false)
+    attach_policy_arns         = optional(list(string))
     attach_policies = optional(map(
       # map keys: IAM policy names/IDs
       object({
