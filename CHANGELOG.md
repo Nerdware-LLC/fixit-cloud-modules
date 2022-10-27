@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.28.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.27.0...v0.28.0) (2022-10-27)
+
+
+### Features
+
+* **Lambda:** add ability to include Lambda@Edge svc in exec role ([451ce00](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/451ce00a16ee1bce5277936c1cea8c0bf335bd6d))
+
 # [0.27.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.26.2...v0.27.0) (2022-10-26)
 
 
