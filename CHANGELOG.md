@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+# [0.29.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.28.0...v0.29.0) (2022-11-01)
+
+
+### Features
+
+* add CloudFront module, update repo README w new module info ([#18](https://github.com/Nerdware-LLC/fixit-cloud-modules/issues/18)) ([5a3c443](https://github.com/Nerdware-LLC/fixit-cloud-modules/commit/5a3c44349cc98c96513a23f424a3c149c7eb2616))
+
 # [0.28.0](https://github.com/Nerdware-LLC/fixit-cloud-modules/compare/v0.27.0...v0.28.0) (2022-10-27)
 
 
