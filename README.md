@@ -18,6 +18,7 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 - AWS
   - [Account Baseline](/AWS_AccountBaseline/README.md)
+  - [CloudFront](/AWS_CloudFront/README.md)
   - [CloudTrail](/AWS_CloudTrail/README.md)
   - [CloudWatch](/AWS_CloudWatch/README.md)
   - [Config](/AWS_Config/README.md)
@@ -44,10 +45,9 @@ Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
 The following modules have WIP feature branches which will be merged into the **main** branch upon PR review and acceptance. Resources contained in these modules reflect either a refactoring of existing modules, whereby resources commonly used by several modules are extracted and isolated into their own separate module, or resources which are entirely new to the FCM collection.
 
-| **Module**     | **Branch**          | **Description**                                             |
-| :------------- | :------------------ | :---------------------------------------------------------- |
-| AWS ACM        | feat/AWS_ACM        | AWS Certificate manager and cert-related Route53 resources. |
-| AWS CloudFront | feat/AWS_CloudFront | AWS CloudFront resources.                                   |
+| **Module** | **Branch**   | **Description**                                             |
+| :--------- | :----------- | :---------------------------------------------------------- |
+| AWS ACM    | feat/AWS_ACM | AWS Certificate manager and cert-related Route53 resources. |
 
 ## ⚙️ Developer Setup
 
