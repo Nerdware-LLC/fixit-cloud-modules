@@ -7,6 +7,8 @@
 
 Terraform modules for defining opinionated AWS and Terraform Cloud architecture.
 
+Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdware](https://github.com/Nerdware-LLC)
+
 [![pre-commit][pre-commit-shield]](https://github.com/pre-commit/pre-commit)
 [![semantic-release][semantic-shield]](https://github.com/semantic-release/semantic-release)
 
